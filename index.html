@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IAN XAU Trading | Forex Bot</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: white;
+      line-height: 1.6;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #050505;
+      border-bottom: 1px solid #222;
+      padding: 16px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      font-style: italic;
+    }
+
+    .logo span,
+    .yellow {
+      color: #dfff00;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #dfff00;
+      color: #000;
+      padding: 14px 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .hero {
+      min-height: 620px;
+      padding: 80px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      background:
+        radial-gradient(circle at 80% 40%, #263300 0, transparent 35%),
+        #050505;
+    }
+
+    .hero-text {
+      max-width: 600px;
+    }
+
+    .tag {
+      color: #aaa;
+      letter-spacing: 2px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(55px, 8vw, 100px);
+      line-height: .9;
+      margin-bottom: 25px;
+    }
+
+    .hero p {
+      color: #ccc;
+      max-width: 520px;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .outline {
+      background: transparent;
+      color: white;
+      border: 1px solid #dfff00;
+    }
+
+    .phone {
+      width: 300px;
+      height: 540px;
+      border: 8px solid #222;
+      border-radius: 35px;
+      padding: 30px 15px;
+      background: linear-gradient(160deg, #111, #020202);
+      box-shadow: 0 0 50px rgba(223,255,0,.15);
+      transform: rotate(3deg);
+    }
+
+    .chart {
+      height: 300px;
+      margin-top: 30px;
+      border-left: 2px solid #333;
+      border-bottom: 2px solid #333;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .line {
+      position: absolute;
+      width: 180%;
+      height: 3px;
+      background: #45ff45;
+      transform: rotate(-15deg);
+      top: 60%;
+      left: -20%;
+      box-shadow: 0 0 10px #45ff45;
+    }
+
+    .level {
+      position: absolute;
+      width: 120%;
+      height: 2px;
+      left: 0;
+    }
+
+    .asia-high {
+      top: 25%;
+      background: #48ff48;
+    }
+
+    .pdl {
+      top: 50%;
+      background: #168cff;
+    }
+
+    .asia-low {
+      top: 75%;
+      background: #ffe000;
+    }
+
+    .label {
+      position: absolute;
+      right: 0;
+      padding: 3px 7px;
+      font-size: 11px;
+      background: #111;
+    }
+
+    section {
+      padding: 75px 6%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-title h2 {
+      font-size: 40px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: #101214;
+      border: 1px solid #292d30;
+      border-radius: 18px;
+      padding: 35px 25px;
+      text-align: center;
+    }
+
+    .card h3 {
+      font-size: 28px;
+      margin: 15px 0;
+    }
+
+    .card p {
+      color: #bbb;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .product {
+      background: #0c0e10;
+      border: 1px solid #333;
+      border-radius: 18px;
+      padding: 35px;
+    }
+
+    .product h3 {
+      font-size: 30px;
+    }
+
+    .price {
+      font-size: 45px;
+      color: #dfff00;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .product ul {
+      list-style: none;
+      margin: 20px 0;
+    }
+
+    .product li {
+      margin: 10px 0;
+      color: #ccc;
+    }
+
+    .product li::before {
+      content: "✓ ";
+      color: #dfff00;
+      font-weight: bold;
+    }
+
+    .faq {
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #333;
+      padding: 20px 0;
+    }
+
+    .faq-question {
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .faq-answer {
+      display: none;
+      color: #aaa;
+      padding-top: 12px;
+    }
+
+    footer {
+      padding: 40px 6%;
+      text-align: center;
+      border-top: 1px solid #222;
+      color: #888;
+    }
+
+    @media (max-width: 800px) {
+      nav {
+        display: none;
+      }
+
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .buttons {
+        justify-content: center;
+      }
+
+      .cards,
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .phone {
+        width: 270px;
+        height: 500px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">IAN<span>XAU</span></div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#levels">Levels</a>
+    <a href="#products">Products</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+
+  <a href="#products" class="btn">GET THE BOT →</a>
+</header>
+
+<section class="hero" id="home">
+
+  <div class="hero-text">
+    <div class="tag">● PROFESSIONAL FOREX TOOLS</div>
+
+    <h1>
+      IAN FOREX<br>
+      <span class="yellow">BOT</span>
+    </h1>
+
+    <p>
+      Precision. Liquidity. Consistency.
+      Powerful trading tools built around key market levels.
+    </p>
+
+    <div class="buttons">
+      <a href="#products" class="btn">GET THE BOT — $50 →</a>
+      <a href="#products" class="btn outline">JOIN VIP — $120</a>
+    </div>
+  </div>
+
+  <div class="phone">
+    <strong>XAUUSD • M15</strong>
+    <small>Gold vs US Dollar</small>
+
+    <div class="chart">
+      <div class="level asia-high">
+        <span class="label">ASIA HIGH</span>
+      </div>
+
+      <div class="level pdl">
+        <span class="label">PDL</span>
+      </div>
+
+      <div class="level asia-low">
+        <span class="label">ASIA LOW</span>
+      </div>
+
+      <div class="line"></div>
+    </div>
+  </div>
+
+</section>
+
+<section id="levels">
+
+  <div class="section-title">
+    <p class="yellow">POWERFUL LEVELS</p>
+    <h2>LEVELS THAT MAKE <span class="yellow">THE DIFFERENCE</span></h2>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="yellow">◆</div>
+      <h3>PDL</h3>
+      <p>Previous Day Low</p>
+      <br>
+      <p>
+        A key liquidity level watched by traders for possible market reactions.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="yellow">▲</div>
+      <h3>ASIA HIGH</h3>
+      <p>Asia Session High</p>
+      <br>
+      <p>
+        A key session level that can become important during later market sessions.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="yellow">▼</div>
+      <h3>ASIA LOW</h3>
+      <p>Asia Session Low</p>
+      <br>
+      <p>
+        A key session level used to monitor potential reactions and liquidity.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<section id="products">
+
+  <div class="section-title">
+    <p class="yellow">CHOOSE YOUR EDGE</p>
+    <h2>OUR PRODUCTS</h2>
+  </div>
+
+  <div class="products">
+
+    <div class="product">
+      <h3>FOREX BOT</h3>
+      <p>All-in-One Trading Tool</p>
+
+      <div class="price">$50</div>
+
+      <ul>
+        <li>PDL + Asia High + Asia Low</li>
+        <li>MT4 / MT5 compatible</li>
+        <li>Lifetime access</li>
+        <li>Free updates</li>
+      </ul>
+
+      <button class="btn" onclick="buyProduct('Forex Bot', 50)">
+        GET THE BOT — $50 →
+      </button>
+    </div>
+
+    <div class="product">
+      <h3>VIP ACCESS</h3>
+      <p>Premium Trading Community</p>
+
+      <div class="price">$120</div>
+
+      <ul>
+        <li>Everything in BOT</li>
+        <li>Daily market analysis</li>
+        <li>High-probability setups</li>
+        <li>Private VIP group</li>
+        <li>Priority support</li>
+      </ul>
+
+      <button class="btn" onclick="buyProduct('VIP Access', 120)">
+        JOIN VIP — $120 →
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+<section id="faq">
+
+  <div class="section-title">
+    <p class="yellow">QUESTIONS</p>
+    <h2>FAQ</h2>
+  </div>
+
+  <div class="faq">
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        What is the Forex Bot?
+        <span>+</span>
+      </div>
+
+      <div class="faq-answer">
+        The Forex Bot is a trading tool designed around predefined market levels and rules.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        How much is the Bot?
+        <span>+</span>
+      </div>
+
+      <div class="faq-answer">
+        The Forex Bot is $50.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        How much is VIP?
+        <span>+</span>
+      </div>
+
+      <div class="faq-answer">
+        VIP Access is $120.
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<footer>
+  <h2>IAN<span class="yellow">XAU</span> TRADING</h2>
+
+  <p>
+    Trading involves risk. Nothing on this website is financial advice.
+  </p>
+
+  <br>
+
+  © 2026 IAN XAU Trading
+</footer>
+
+<script>
+
+function toggleFaq(element) {
+
+  const answer = element.nextElementSibling;
+
+  if (answer.style.display === "block") {
+    answer.style.display = "none";
+    element.querySelector("span").textContent = "+";
+  } else {
+    answer.style.display = "block";
+    element.querySelector("span").textContent = "−";
+  }
+
+}
+
+ 
+
+  function buyProduct(product, price) {
+
+  let message =
+    "Hello, I want to buy:\n\n" +
+    product +
+    "\nPrice: $" + price;
+
+  let phone = "254718835596"; // Replace with your WhatsApp number
+
+  let url =
+    "https://wa.me/" +
+    phone +
+    "?text=" +
+    encodeURIComponent(message);
+
+  window.open(url, "_blank");
+  }
+
+</script>
+
+</body>
+</html>
