@@ -541,6 +541,14 @@ function toggleFaq(element) {
  
 
   function buyProduct(product, price) {
+    const email = prompt("Enter your email address:");
+
+    if (!email) {
+        return;
+    }
+
+    alert("Payment setup is next. Product: " + product + " | Price: $" + price);
+  } {
 
   let message =
     "Hello, I want to buy:\n\n" +
