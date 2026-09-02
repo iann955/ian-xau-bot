@@ -8,7 +8,7 @@ app.use(express.static(__dirname));
 
 app.post("/api/paystack", async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, product } = req.body;
 
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
@@ -24,7 +24,7 @@ app.post("/api/paystack", async (req, res) => {
         },
         body: JSON.stringify({
           email: email,
-          amount: "5000",
+          amount: product === "vip" ? "12000" : "5000",
           currency: "USD",
           callback_url: `https://ian-xau-bot.onrender.com/payment-success`
         })
