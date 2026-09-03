@@ -540,7 +540,7 @@ function toggleFaq(element) {
 
  
 
-  function buyProduct(product, price) {
+  async function buyProduct(product, price) {
     const email = prompt("Enter your email address:");
 
     if (!email) {
@@ -548,7 +548,31 @@ function toggleFaq(element) {
     }
 
     alert("Payment setup is next. Product: " + product + " | Price: $" + price);
-  
+  const productKey = product === "VIP ACCESS" ? "vip" : "bot";
+
+try {
+    const response = await fetch("/api/paystack", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            product: productKey
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.url) {
+        throw new Error(data.error || "Payment could not be started.");
+    }
+
+    window.location.href = data.url;
+
+} catch (error) {
+    alert(error.message);
+  }
 
   let message =
     "Hello, I want to buy:\n\n" +
