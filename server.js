@@ -24,7 +24,7 @@ app.post("/api/paystack", async (req, res) => {
         },
         body: JSON.stringify({
           email: email,
-          amount: product === "vip" ? "12000" : "5000",
+          amount: product === "vip" ? "1550000" : "650000",
           currency: "KES",
           callback_url: `https://ian-xau-bot.onrender.com/payment-success`
         })
