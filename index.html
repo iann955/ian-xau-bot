@@ -1,1353 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>IAN XAU Trading | Forex Bot</title>
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-html{scroll-behavior:smooth}
-
-body{
-font-family:Arial,sans-serif;
-background:#050505;
-color:white;
-line-height:1.6;
-}
-
-header{
-position:sticky;
-top:0;
-z-index:1000;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:18px 6%;
-background:rgba(5,5,5,.96);
-border-bottom:1px solid #222;
-backdrop-filter:blur(10px);
-}
-
-.logo{
-font-size:24px;
-font-weight:900;
-font-style:italic;
-}
-
-.yellow{color:#dfff00}
-
-nav{
-display:flex;
-gap:22px;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-font-size:14px;
-transition:.3s;
-}
-
-nav a:hover{color:#dfff00}
-
-.btn{
-display:inline-block;
-padding:14px 22px;
-background:#dfff00;
-color:#050505;
-border:none;
-border-radius:8px;
-font-weight:900;
-text-decoration:none;
-cursor:pointer;
-transition:.3s;
-}
-
-.btn:hover{
-transform:translateY(-3px);
-box-shadow:0 0 25px rgba(223,255,0,.25);
-}
-
-.btn:disabled{
-opacity:.6;
-cursor:not-allowed;
-}
-
-.outline{
-background:transparent;
-color:white;
-border:1px solid #555;
-}
-
-.hero{
-min-height:90vh;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:40px;
-padding:80px 7%;
-}
-
-.hero-text{
-max-width:600px;
-animation:fadeUp 1s ease;
-}
-
-.tag{
-color:#dfff00;
-font-size:12px;
-letter-spacing:3px;
-margin-bottom:18px;
-}
-
-.hero h1{
-font-size:clamp(45px,8vw,85px);
-line-height:1;
-margin-bottom:25px;
-}
-
-.hero p{
-color:#aaa;
-max-width:500px;
-margin-bottom:30px;
-}
-
-.buttons{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-}
-
-.phone{
-width:300px;
-height:520px;
-border:2px solid #333;
-border-radius:35px;
-padding:25px;
-background:#0b0b0b;
-box-shadow:0 0 50px rgba(223,255,0,.08);
-animation:float 4s ease-in-out infinite;
-}
-
-.phone strong{
-display:block;
-font-size:18px;
-}
-
-.phone small{color:#777}
-
-.chart{
-position:relative;
-height:350px;
-margin-top:25px;
-border-left:1px solid #333;
-border-bottom:1px solid #333;
-}
-
-.level{
-position:absolute;
-width:100%;
-height:2px;
-}
-
-.asia-high{
-top:20%;
-background:#48ff48;
-}
-
-.pdl{
-top:50%;
-background:#168cff;
-}
-
-.asia-low{
-top:80%;
-background:#ffe000;
-}
-
-.label{
-position:absolute;
-right:5px;
-top:-18px;
-background:#111;
-padding:3px 6px;
-font-size:10px;
-}
-
-section{padding:90px 7%}
-
-.section-title{
-text-align:center;
-margin-bottom:45px;
-}
-
-.section-title p{
-color:#dfff00;
-letter-spacing:3px;
-font-size:12px;
-}
-
-.section-title h2{
-font-size:40px;
-margin-top:8px;
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
-max-width:1100px;
-margin:auto;
-}
-
-.card{
-background:#101214;
-border:1px solid #292d30;
-border-radius:18px;
-padding:35px 25px;
-text-align:center;
-transition:.4s;
-}
-
-.card:hover{
-transform:translateY(-8px);
-border-color:#dfff00;
-}
-
-.card-icon{
-width:10px;
-height:10px;
-background:#dfff00;
-border-radius:50%;
-margin:0 auto 20px;
-}
-
-.card h3{
-font-size:25px;
-margin-bottom:10px;
-}
-
-.card p{color:#aaa}
-
-.products{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:25px;
-max-width:950px;
-margin:auto;
-}
-
-.product{
-background:#0c0e10;
-border:1px solid #333;
-border-radius:18px;
-padding:35px;
-transition:.4s;
-}
-
-.product:hover{
-transform:translateY(-8px);
-border-color:#dfff00;
-}
-
-.product h3{font-size:28px}
-
-.product p{color:#999}
-
-.price{
-color:#dfff00;
-font-size:42px;
-font-weight:bold;
-margin:15px 0;
-}
-
-.product ul{
-list-style:none;
-margin:20px 0;
-}
-
-.product li{
-margin:10px 0;
-color:#ccc;
-}
-
-.product li::before{
-content:"✓ ";
-color:#dfff00;
-font-weight:bold;
-}
-
-.see-more{
-margin-top:15px;
-color:#dfff00;
-cursor:pointer;
-font-weight:bold;
-}
-
-.vip-details{
-display:none;
-margin-top:15px;
-padding:15px;
-border-top:1px solid #333;
-}
-
-.vip-details.show{display:block}
-
-.vip-details p{
-margin:8px 0;
-color:#ccc;
-}
-
-.login-section{
-min-height:80vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.login-box{
-width:100%;
-max-width:430px;
-background:#0b0b0b;
-border:1px solid #222;
-border-radius:18px;
-padding:40px 30px;
-box-shadow:0 0 40px rgba(223,255,0,.08);
-}
-
-.login-logo{
-text-align:center;
-font-size:32px;
-font-weight:900;
-font-style:italic;
-}
-
-.login-subtitle{
-text-align:center;
-color:#888;
-letter-spacing:3px;
-font-size:12px;
-margin:8px 0 30px;
-}
-
-.input{
-width:100%;
-padding:15px;
-margin-bottom:15px;
-background:#111;
-color:white;
-border:1px solid #333;
-border-radius:8px;
-outline:none;
-}
-
-.input:focus{
-border-color:#dfff00;
-box-shadow:0 0 12px rgba(223,255,0,.12);
-}
-
-.password-wrap{position:relative}
-
-.password-wrap .input{padding-right:65px}
-
-.show-password{
-position:absolute;
-right:12px;
-top:15px;
-background:none;
-border:none;
-color:#dfff00;
-cursor:pointer;
-font-size:10px;
-}
-
-.remember{
-display:flex;
-gap:8px;
-color:#888;
-font-size:13px;
-margin-bottom:20px;
-}
-
-.login-btn{width:100%}
-
-.faq{
-max-width:750px;
-margin:auto;
-}
-
-.faq-item{
-border-bottom:1px solid #333;
-padding:20px 0;
-}
-
-.faq-question{
-cursor:pointer;
-font-weight:bold;
-display:flex;
-justify-content:space-between;
-}
-
-.faq-answer{
-display:none;
-color:#aaa;
-padding-top:12px;
-}
-
-footer{
-text-align:center;
-padding:40px 6%;
-border-top:1px solid #222;
-color:#777;
-}
-
-
-/* CHECKOUT POPUP */
-
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.82);
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
-z-index:5000;
-backdrop-filter:blur(8px);
-}
-
-.modal.show{
-display:flex;
-animation:fadeIn .25s ease;
-}
-
-.checkout-box{
-width:100%;
-max-width:430px;
-background:#0c0c0c;
-border:1px solid #333;
-border-radius:20px;
-padding:30px;
-box-shadow:0 0 50px rgba(223,255,0,.12);
-animation:slideUp .35s ease;
-}
-
-.close{
-float:right;
-background:none;
-border:none;
-color:#777;
-font-size:25px;
-cursor:pointer;
-}
-
-.close:hover{color:white}
-
-.checkout-title{
-margin-top:15px;
-font-size:28px;
-}
-
-.checkout-price{
-color:#dfff00;
-font-size:30px;
-font-weight:bold;
-margin:8px 0 25px;
-}
-
-.checkout-label{
-display:block;
-color:#aaa;
-font-size:13px;
-margin-bottom:8px;
-}
-
-.checkout-input{
-width:100%;
-padding:15px;
-background:#111;
-color:white;
-border:1px solid #333;
-border-radius:8px;
-outline:none;
-margin-bottom:18px;
-}
-
-.checkout-input:focus{border-color:#dfff00}
-
-.checkout-btn{width:100%}
-
-.secure{
-text-align:center;
-color:#666;
-font-size:11px;
-margin-top:15px;
-}
-
-
-/* ANIMATIONS */
-
-@keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(35px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-@keyframes float{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-12px)}
-}
-
-@keyframes fadeIn{
-from{opacity:0}
-to{opacity:1}
-}
-
-@keyframes slideUp{
-from{
-opacity:0;
-transform:translateY(30px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-
-@media(max-width:800px){
-
-nav{display:none}
-
-.hero{
-flex-direction:column;
-text-align:center;
-}
-
-.hero p{
-margin-left:auto;
-margin-right:auto;
-}
-
-.buttons{justify-content:center}
-
-.cards{
-grid-template-columns:1fr;
-}
-
-.products{
-grid-template-columns:1fr;
-}
-
-.phone{width:270px}
-
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Forex Trading Bot</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #080b12;
+      color: white;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+    }
+
+    header h1 {
+      font-size: 28px;
+    }
+
+    header p {
+      color: #aaa;
+      margin-top: 5px;
+    }
+
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: 38px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: #bbb;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .section {
+      padding: 35px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .section h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #111620;
+      border: 1px solid #252b36;
+      border-radius: 14px;
+      padding: 25px;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+
+    .card p {
+      color: #aaa;
+    }
+
+    .pricing {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .plan {
+      background: #111620;
+      border: 1px solid #303744;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .plan h3 {
+      font-size: 24px;
+    }
+
+    .price {
+      font-size: 38px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .plan ul {
+      list-style: none;
+      margin-bottom: 25px;
+      color: #bbb;
+    }
+
+    .plan li {
+      margin: 8px 0;
+    }
+
+    .buy-btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .buy-btn:hover {
+      opacity: 0.85;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 30px;
+      border-top: 1px solid #222;
+      color: #777;
+    }
+
+    .warning {
+      text-align: center;
+      color: #888;
+      font-size: 13px;
+      padding: 20px;
+    }
+  </style>
 </head>
-
 
 <body>
 
-
-<header>
-
-<div class="logo">
-IAN <span class="yellow">XAU</span>
-</div>
-
-<nav>
-<a href="#home">Home</a>
-<a href="#levels">Levels</a>
-<a href="#products">Products</a>
-<a href="#login">Login</a>
-<a href="#faq">FAQ</a>
-</nav>
-
-<a href="#products" class="btn">
-GET STARTED
-</a>
-
-</header>
-
-
-<section class="hero" id="home">
-
-<div class="hero-text">
-
-<div class="tag">
-● PROFESSIONAL FOREX TOOLS
-</div>
-
-<h1>
-IAN FOREX
-<br>
-<span class="yellow">BOT</span>
-</h1>
-
-<p>
-Precision. Liquidity. Consistency.
-Powerful trading tools built around key market levels.
-</p>
-
-<div class="buttons">
-
-<a href="#products" class="btn">
-GET THE BOT →
-</a>
-
-<a href="#login" class="btn outline">
-MEMBERS LOGIN
-</a>
-
-</div>
-
-</div>
-
-
-<div class="phone">
-
-<strong>XAUUSD · M15</strong>
-
-<small>
-Gold vs US Dollar
-</small>
-
-<div class="chart">
-
-<div class="level asia-high">
-<span class="label">ASIA HIGH</span>
-</div>
-
-<div class="level pdl">
-<span class="label">PDL</span>
-</div>
-
-<div class="level asia-low">
-<span class="label">ASIA LOW</span>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="levels">
-
-<div class="section-title">
-
-<p>POWERFUL LEVELS</p>
-
-<h2>
-LEVELS THAT MAKE
-<span class="yellow">THE DIFFERENCE</span>
-</h2>
-
-</div>
-
-
-<div class="cards">
-
-<div class="card">
-
-<div class="card-icon"></div>
-
-<h3>PDL</h3>
-
-<p>Previous Day Low</p>
-
-<br>
-
-<p>
-A key liquidity level watched by traders for possible market reactions.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-icon"></div>
-
-<h3>ASIA HIGH</h3>
-
-<p>Asia Session High</p>
-
-<br>
-
-<p>
-A key session level that can become important during later market movement.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div class="card-icon"></div>
-
-<h3>ASIA LOW</h3>
-
-<p>Asia Session Low</p>
-
-<br>
-
-<p>
-A key session level used to monitor potential market reactions.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="products">
-
-<div class="section-title">
-
-<p>CHOOSE YOUR EDGE</p>
-
-<h2>
-OUR <span class="yellow">PRODUCTS</span>
-</h2>
-
-</div>
-
-
-<div class="products">
-
-
-<div class="product">
-
-<h3>FOREX BOT</h3>
-
-<p>Automated trading tool</p>
-
-<div class="price">$50</div>
-
-<ul>
-
-<li>Automated trading system</li>
-<li>Built around key market levels</li>
-<li>PDL analysis</li>
-<li>Asia High & Asia Low</li>
-<li>Free updates</li>
-
-</ul>
-
-<button
-class="btn"
-onclick="window.location.href='https://flutterwave.com/pay/hkorwwhrz8cw'"
-
-GET THE BOT →
-
-</button>
-
-</div>
-
-
-<div class="product">
-
-<h3>VIP ACCESS</h3>
-
-<p>Premium Trading Community</p>
-
-<div class="price">$120</div>
-
-<ul>
-
-<li>Everything in BOT</li>
-<li>Daily market analysis</li>
-<li>High-probability setups</li>
-<li>Private VIP group</li>
-<li>Priority support</li>
-
-</ul>
-
-
-<div
-class="see-more"
-onclick="toggleVip()">
-
-+ SEE MORE
-
-</div>
-
-
-<div
-class="vip-details"
-id="vipDetails">
-
-<p>
-✓ Auto trading during volatile sessions
-</p>
-
-<p>
-✓ Opens and closes trades automatically
-</p>
-
-</div>
-
-<br>
-
-
-<button
-class="btn"
-onclick="openCheckout('VIP ACCESS',120)">
-
-JOIN VIP →
-
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- CHECKOUT POPUP -->
-
-<div
-class="modal"
-id="checkoutModal">
-
-<div class="checkout-box">
-
-<button
-class="close"
-onclick="closeCheckout()">
-
-×
-</button>
-
-<p class="tag">
-SECURE CHECKOUT
-</p>
-
-<h2
-class="checkout-title"
-id="checkoutProduct">
-
-FOREX BOT
-
-</h2>
-
-<div
-class="checkout-price"
-id="checkoutPrice">
-
-$50
-
-</div>
-
-<label class="checkout-label">
-Email address
-</label>
-
-<input
-type="email"
-id="checkoutEmail"
-class="checkout-input"
-placeholder="you@example.com"
-autocomplete="email"
->
-
-<button
-class="btn checkout-btn"
-onclick="startPayment()">
-
-CONTINUE TO PAYMENT →
-
-</button>
-
-<p class="secure">
-🔒 Secure checkout
-</p>
-
-</div>
-
-</div>
-
-
-<section id="login" class="login-section">
-
-<div class="login-box">
-
-<div class="login-logo">
-IAN <span class="yellow">XAU</span>
-</div>
-
-<p class="login-subtitle">
-MEMBERS LOGIN
-</p>
-
-<form id="loginForm">
-
-<input
-class="input"
-type="email"
-id="loginEmail"
-placeholder="Email address"
-required
->
-
-<div class="password-wrap">
-
-<input
-class="input"
-type="password"
-id="loginPassword"
-placeholder="Password"
-required
->
-
-<button
-type="button"
-class="show-password"
-onclick="showPassword()">
-
-SHOW
-
-</button>
-
-</div>
-
-<label class="remember">
-
-<input type="checkbox">
-
-Remember me
-
-</label>
-
-<button
-class="btn login-btn"
-type="submit">
-
-LOGIN →
-
-</button>
-
-</form>
-
-</div>
-
-</section>
-
-
-<section id="faq">
-
-<div class="section-title">
-
-<p>QUESTIONS</p>
-
-<h2>
-FREQUENTLY ASKED
-<span class="yellow">QUESTIONS</span>
-</h2>
-
-</div>
-
-
-<div class="faq">
-
-
-<div class="faq-item">
-
-<div
-class="faq-question"
-onclick="toggleFaq(this)">
-
-What is the Forex Bot?
-
-<span>+</span>
-
-</div>
-
-<div class="faq-answer">
-
-The Forex Bot is an automated trading tool designed around predefined market levels and trading rules.
-
-</div>
-
-</div>
-
-
-<div class="faq-item">
-
-<div
-class="faq-question"
-onclick="toggleFaq(this)">
-
-What is VIP?
-
-<span>+</span>
-
-</div>
-
-<div class="faq-answer">
-
-VIP includes the bot, market analysis, trading setups, community access and additional features.
-
-</div>
-
-</div>
-
-
-<div class="faq-item">
-
-<div
-class="faq-question"
-onclick="toggleFaq(this)">
-
-How much is the BOT?
-
-<span>+</span>
-
-</div>
-
-<div class="faq-answer">
-
-The Forex Bot is $50.
-
-</div>
-
-</div>
-
-
-<div class="faq-item">
-
-<div
-class="faq-question"
-onclick="toggleFaq(this)">
-
-How much is VIP?
-
-<span>+</span>
-
-</div>
-
-<div class="faq-answer">
-
-VIP Access is $120.
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<footer>
-
-© 2026 IAN XAU Trading
-
-<br><br>
-
-Forex trading involves risk. Nothing on this website is financial advice.
-
-</footer>
-
-
-<script>
-
-let selectedProduct = "";
-let selectedPrice = 0;
-
-
-/* VIP */
-
-function toggleVip(){
-
-const box =
-document.getElementById("vipDetails");
-
-box.classList.toggle("show");
-
-}
-
-
-/* CHECKOUT */
-
-function openCheckout(product,price){
-
-selectedProduct = product;
-
-selectedPrice = price;
-
-document.getElementById("checkoutProduct").textContent =
-product;
-
-document.getElementById("checkoutPrice").textContent =
-"$" + price;
-
-document.getElementById("checkoutEmail").value = "";
-
-document.getElementById("checkoutModal").classList.add("show");
-
-setTimeout(function(){
-
-document.getElementById("checkoutEmail").focus();
-
-},300);
-
-}
-
-
-function closeCheckout(){
-
-document
-.getElementById("checkoutModal")
-.classList.remove("show");
-
-}
-
-
-/* PAYMENT */
-
-async function startPayment(){
-
-const email =
-document.getElementById("checkoutEmail").value.trim();
-
-
-if(!email){
-
-alert("Please enter your email address.");
-
-return;
-
-}
-
-
-const emailPattern =
-/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-if(!emailPattern.test(email)){
-
-alert("Please enter a valid email address.");
-
-return;
-
-}
-
-
-const button =
-document.querySelector(".checkout-btn");
-
-button.disabled = true;
-
-button.textContent = "PROCESSING...";
-
-
-try{
-
-const productKey =
-selectedProduct === "VIP ACCESS"
-? "vip"
-: "bot";
-
-
-const response =
-await fetch("/api/paystack",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-email:email,
-
-product:productKey
-
-})
-
-});
-
-
-const data =
-await response.json();
-
-
-if(!response.ok || !data.url){
-
-throw new Error(
-data.error ||
-"Payment could not be started."
-);
-
-}
-
-
-window.location.href =
-data.url;
-
-
-}catch(error){
-
-alert(error.message);
-
-button.disabled = false;
-
-button.textContent =
-"CONTINUE TO PAYMENT →";
-
-}
-
-}
-
-
-/* PASSWORD */
-
-function showPassword(){
-
-const password =
-document.getElementById("loginPassword");
-
-const button =
-document.querySelector(".show-password");
-
-
-if(password.type === "password"){
-
-password.type = "text";
-
-button.textContent = "HIDE";
-
-}else{
-
-password.type = "password";
-
-button.textContent = "SHOW";
-
-}
-
-}
-
-
-/* LOGIN */
-
-document
-.getElementById("loginForm")
-.addEventListener("submit",async function(e){
-
-e.preventDefault();
-
-
-const email =
-document.getElementById("loginEmail").value.trim();
-
-const password =
-document.getElementById("loginPassword").value;
-
-
-try{
-
-const response =
-await fetch("/api/login",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-email:email,
-
-password:password
-
-})
-
-});
-
-
-const data =
-await response.json();
-
-
-if(!response.ok){
-
-throw new Error(
-data.error || "Login failed."
-);
-
-}
-
-
-alert("Login successful.");
-
-}catch(error){
-
-alert(error.message);
-
-}
-
-});
-
-
-/* FAQ */
-
-function toggleFaq(element){
-
-const answer =
-element.nextElementSibling;
-
-const symbol =
-element.querySelector("span");
-
-
-if(answer.style.display === "block"){
-
-answer.style.display = "none";
-
-symbol.textContent = "+";
-
-}else{
-
-answer.style.display = "block";
-
-symbol.textContent = "−";
-
-}
-
-}
-
-
-/* CLOSE POPUP OUTSIDE */
-
-document
-.getElementById("checkoutModal")
-.addEventListener("click",function(e){
-
-if(e.target === this){
-
-closeCheckout();
-
-}
-
-});
-
-</script>
+  <header>
+    <h1>FOREX BOT</h1>
+    <p>Trading tools for the modern trader</p>
+  </header>
+
+  <section class="hero">
+    <h2>Trade Smarter</h2>
+    <p>
+      Access our trading bot and VIP package designed around
+      structured market concepts and automated trading tools.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Trading Concepts</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>PDL</h3>
+        <p>
+          Previous Day Low. A key market level that traders can
+          monitor for liquidity and potential price reactions.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Asia High</h3>
+        <p>
+          The highest price formed during the Asian trading session.
+          Traders can monitor this level when analyzing later sessions.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Asia Low</h3>
+        <p>
+          The lowest price formed during the Asian trading session.
+          This level can be used as part of a broader market analysis.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="pricing">
+
+    <h2 style="text-align:center; margin-bottom:25px;">
+      Choose Your Access
+    </h2>
+
+    <div class="plans">
+
+      <!-- $50 BOT -->
+
+      <div class="plan">
+        <h3>Trading Bot</h3>
+
+        <div class="price">$50</div>
+
+        <ul>
+          <li>✓ Trading Bot Access</li>
+          <li>✓ Trading Concepts</li>
+          <li>✓ PDL Analysis</li>
+          <li>✓ Asia High & Low</li>
+        </ul>
+
+        <a
+          class="buy-btn"
+          href="https://paystack.shop/pay/wskkrhlvqd"
+          target="_blank">
+          BUY BOT — $50
+        </a>
+      </div>
+
+
+      <!-- $150 VIP -->
+
+      <div class="plan">
+        <h3>VIP Access</h3>
+
+        <div class="price">$150</div>
+
+        <ul>
+          <li>✓ VIP Access</li>
+          <li>✓ Trading Bot</li>
+          <li>✓ Trading Concepts</li>
+          <li>✓ Additional Support</li>
+        </ul>
+
+        <a
+          class="buy-btn"
+          href="https://paystack.shop/pay/6a5-rkdehj"
+          target="_blank">
+          BUY VIP — $150
+        </a>
+      </div>
+
+    </div>
+
+  </section>
+
+  <div class="warning">
+    Trading involves risk. Past performance does not guarantee future results.
+  </div>
+
+  <footer class="footer">
+    © 2026 Forex Bot. All rights reserved.
+  </footer>
 
 </body>
-  </html>
+</html>
