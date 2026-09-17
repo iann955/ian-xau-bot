@@ -3,20 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IAN XAU AI — Trading Bot</title>
-<meta name="description" content="IAN XAU AI trading bot demo and strategy information.">
 
-<style>
-:root{
-  --bg:#030603;
-  --card:#081009;
-  --line:#<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IAN XAU AI — Trading Bot</title>
-<meta name="description" content="IAN XAU AI trading bot demo and strategy information.">
+
+<meta name="description"
+content="IAN XAU AI rule-based XAUUSD trading system. Explore the strategy, demo and access plans.">
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -28,9 +22,13 @@
   --muted:#9aa99e;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
-html{scroll-behavior:smooth}
+html{
+  scroll-behavior:smooth;
+}
 
 body{
   margin:0;
@@ -47,8 +45,8 @@ a{
 nav{
   position:sticky;
   top:0;
-  z-index:20;
-  background:#030603ef;
+  z-index:100;
+  background:rgba(3,6,3,.96);
   border-bottom:1px solid var(--line);
   backdrop-filter:blur(12px);
 }
@@ -100,6 +98,7 @@ nav{
 
 .secondary{
   background:#071008;
+  color:white;
 }
 
 .container{
@@ -342,14 +341,46 @@ ul{
   border:1px solid var(--line);
   border-radius:9px;
   color:white;
+  outline:none;
 }
 
-footer{
-  border-top:1px solid var(--line);
-  padding:35px 20px;
-  text-align:center;
+.input:focus{
+  border-color:var(--green);
+}
+
+.auth-message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:9px;
+  border:1px solid var(--line);
   color:var(--muted);
   font-size:12px;
+  line-height:1.5;
+}
+
+.auth-message.show{
+  display:block;
+}
+
+.auth-links{
+  text-align:center;
+  margin-top:15px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.auth-links a{
+  color:var(--green);
+  cursor:pointer;
+}
+
+.auth-form{
+  display:none;
+}
+
+.auth-form.active{
+  display:block;
 }
 
 .notice{
@@ -359,6 +390,15 @@ footer{
   border-radius:10px;
   color:#b9c7bd;
   font-size:11px;
+  line-height:1.5;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  padding:35px 20px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
 }
 
 @media(max-width:800px){
@@ -396,6 +436,14 @@ footer{
   .hero{
     min-height:70vh;
   }
+
+  .nav{
+    padding:13px 15px;
+  }
+
+  .nav > .btn{
+    padding:10px 12px;
+  }
 }
 </style>
 </head>
@@ -424,9 +472,9 @@ Get Access
 </div>
 </nav>
 
-
 <main id="home">
 
+<!-- HERO -->
 <section class="hero">
 
 <div>
@@ -445,7 +493,7 @@ FOLLOW THE RULES.
 <p class="lead">
 IAN XAU AI is designed around structured market levels,
 liquidity behavior and confirmation-based entries.
-Explore the demo before choosing an access plan.
+Explore the system before choosing an access plan.
 </p>
 
 <div class="actions">
@@ -467,201 +515,117 @@ SEE STRATEGY
 
 </section>
 
-
+<!-- CONCEPTS -->
 <section>
 
 <div class="container">
 
 <div class="section-title">
-
-<h2>
-What the system watches
-</h2>
-
-<p>
-Core concepts used in the strategy.
-</p>
-
+<h2>What the system watches</h2>
+<p>Core concepts used in the strategy.</p>
 </div>
-
 
 <div class="grid">
 
 <div class="card">
-
 <div class="icon">◈</div>
-
-<h3>
-Asia High
-</h3>
-
+<h3>Asia High</h3>
 <p>
 Tracks the Asian-session high as a reference
 level for later price interaction.
 </p>
-
 </div>
 
-
 <div class="card">
-
 <div class="icon">◈</div>
-
-<h3>
-Asia Low
-</h3>
-
+<h3>Asia Low</h3>
 <p>
 Tracks the Asian-session low and watches how
 price reacts around that area.
 </p>
-
 </div>
 
-
 <div class="card">
-
 <div class="icon">◈</div>
-
-<h3>
-PDH / PDL
-</h3>
-
+<h3>PDH / PDL</h3>
 <p>
 Previous Day High and Previous Day Low are
 mapped as additional reference levels.
 </p>
-
 </div>
 
-
 <div class="card">
-
 <div class="icon">◈</div>
-
-<h3>
-Confirmation
-</h3>
-
+<h3>Confirmation</h3>
 <p>
 The example logic waits for confirmation rather
 than treating every level touch as an entry.
 </p>
-
 </div>
 
 </div>
-
 </div>
-
 </section>
 
-
+<!-- STRATEGY -->
 <section id="strategy">
 
 <div class="container">
 
 <div class="section-title">
-
-<h2>
-How the strategy works
-</h2>
-
-<p>
-A simple view of the decision process.
-</p>
-
+<h2>How the strategy works</h2>
+<p>A simple view of the decision process.</p>
 </div>
-
 
 <div class="steps">
 
 <div class="card step">
-
-<strong>
-01 — LEVELS
-</strong>
-
-<h3>
-Map key areas
-</h3>
-
+<strong>01 — LEVELS</strong>
+<h3>Map key areas</h3>
 <p>
 Asia High, Asia Low, PDH and PDL are identified.
 </p>
-
 </div>
 
-
 <div class="card step">
-
-<strong>
-02 — LIQUIDITY
-</strong>
-
-<h3>
-Watch interaction
-</h3>
-
+<strong>02 — LIQUIDITY</strong>
+<h3>Watch interaction</h3>
 <p>
 The system looks for meaningful movement
 around tracked levels.
 </p>
-
 </div>
 
-
 <div class="card step">
-
-<strong>
-03 — CONFIRM
-</strong>
-
-<h3>
-Wait for structure
-</h3>
-
+<strong>03 — CONFIRM</strong>
+<h3>Wait for structure</h3>
 <p>
 A qualifying reaction or structure confirmation
 is required by the example rules.
 </p>
-
 </div>
 
-
 <div class="card step">
-
-<strong>
-04 — RISK
-</strong>
-
-<h3>
-Define the trade
-</h3>
-
+<strong>04 — RISK</strong>
+<h3>Define the trade</h3>
 <p>
 Entry, stop-loss and target are planned before
 the example trade.
 </p>
-
 </div>
 
 </div>
-
 </div>
-
 </section>
 
-
+<!-- CHART -->
 <section id="chart">
 
 <div class="container">
 
 <div class="section-title">
 
-<h2>
-Real XAUUSD chart
-</h2>
+<h2>Real XAUUSD chart</h2>
 
 <p>
 Live market chart supplied by TradingView.
@@ -670,10 +634,7 @@ Market data and execution can differ by broker.
 
 </div>
 
-
 <div class="chart-wrap">
-
-<div class="chart">
 
 <div class="tradingview-widget-container"
 style="height:100%;width:100%">
@@ -703,29 +664,16 @@ async>
 </script>
 
 </div>
-
 </div>
-
-</div>
-
 
 <div class="trade-panel">
-
 
 <div class="trade-box">
 
 <div class="trade-head">
-
-<h3>
-Why This Trade?
-</h3>
-
-<span class="signal">
-EXAMPLE BUY
-</span>
-
+<h3>Why This Trade?</h3>
+<span class="signal">EXAMPLE</span>
 </div>
-
 
 <div class="trade-row">
 <span>Market</span>
@@ -739,12 +687,12 @@ EXAMPLE BUY
 
 <div class="trade-row">
 <span>Liquidity</span>
-<b>Low swept</b>
+<b>Low interaction</b>
 </div>
 
 <div class="trade-row">
 <span>Confirmation</span>
-<b>Price reaction confirmed</b>
+<b>Price reaction</b>
 </div>
 
 <div class="trade-row">
@@ -752,48 +700,19 @@ EXAMPLE BUY
 <b>Defined SL + TP</b>
 </div>
 
-<div class="trade-row">
-<span>Bot action</span>
-<b>Entry considered</b>
 </div>
-
-</div>
-
 
 <div class="trade-box">
 
 <div class="trade-head">
-
-<h3>
-Decision Logic
-</h3>
-
-<span class="signal">
-RULES
-</span>
-
+<h3>Decision Logic</h3>
+<span class="signal">RULES</span>
 </div>
 
-<p>
-<span class="check">✓</span>
-Key levels were already mapped.
-</p>
-
-<p>
-<span class="check">✓</span>
-Price interacted with a tracked liquidity area.
-</p>
-
-<p>
-<span class="check">✓</span>
-The example waited for confirmation.
-</p>
-
-<p>
-<span class="check">✓</span>
-Stop-loss and target were defined before
-the example entry.
-</p>
+<p><span class="check">✓</span> Key levels were mapped.</p>
+<p><span class="check">✓</span> Price interacted with a tracked area.</p>
+<p><span class="check">✓</span> Confirmation was required.</p>
+<p><span class="check">✓</span> Risk parameters were defined.</p>
 
 <div class="notice">
 Illustrative example only — not a live trading
@@ -805,14 +724,43 @@ signal or a guarantee of results.
 </div>
 
 </div>
-
 </section>
 
-
+<!-- DEMO -->
 <section id="demo">
 
 <div class="container">
 
+<div id="demoPreview">
+
+<div class="section-title">
+
+<h2>See the system in action</h2>
+
+<p>
+Tap the button to open the interactive demo.
+</p>
+
+</div>
+
+<div class="demo-box">
+
+<img
+src="demo-storyboard.png"
+alt="IAN XAU AI demo storyboard">
+
+<div class="actions">
+
+<button class="btn primary"
+onclick="openDemo()">
+OPEN DEMO
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 <div class="demo-screen" id="demoScreen">
 
@@ -820,9 +768,7 @@ signal or a guarantee of results.
 
 <div>
 
-<h2>
-IAN XAU AI — DEMO
-</h2>
+<h2>IAN XAU AI — DEMO</h2>
 
 <div class="demo-status">
 ● SYSTEM MONITORING
@@ -832,11 +778,10 @@ IAN XAU AI — DEMO
 
 <button class="btn secondary"
 onclick="closeDemo()">
-Back
+BACK
 </button>
 
 </div>
-
 
 <div class="chart-wrap">
 
@@ -868,27 +813,16 @@ async>
 </script>
 
 </div>
-
 </div>
 
-
 <div class="trade-panel">
-
 
 <div class="trade-box">
 
 <div class="trade-head">
-
-<h3>
-Why This Trade?
-</h3>
-
-<span class="signal">
-DEMO LOGIC
-</span>
-
+<h3>Why This Trade?</h3>
+<span class="signal">DEMO LOGIC</span>
 </div>
-
 
 <div class="trade-row">
 <span>Setup</span>
@@ -917,40 +851,17 @@ DEMO LOGIC
 
 </div>
 
-
 <div class="trade-box">
 
 <div class="trade-head">
-
-<h3>
-What the bot checks
-</h3>
-
-<span class="signal">
-AI LOGIC
-</span>
-
+<h3>What the bot checks</h3>
+<span class="signal">AI LOGIC</span>
 </div>
 
-<p>
-<span class="check">✓</span>
-Key level location
-</p>
-
-<p>
-<span class="check">✓</span>
-Liquidity behavior
-</p>
-
-<p>
-<span class="check">✓</span>
-Confirmation
-</p>
-
-<p>
-<span class="check">✓</span>
-Risk-defined setup
-</p>
+<p><span class="check">✓</span> Key level location</p>
+<p><span class="check">✓</span> Liquidity behavior</p>
+<p><span class="check">✓</span> Confirmation</p>
+<p><span class="check">✓</span> Risk-defined setup</p>
 
 <div class="notice">
 This demo explains the strategy. It does not promise
@@ -961,11 +872,9 @@ profits or represent a guaranteed live signal.
 
 </div>
 
-
 <div class="actions">
 
-<a class="btn primary"
-href="#pricing">
+<a class="btn primary" href="#pricing">
 GET FULL ACCESS
 </a>
 
@@ -973,72 +882,27 @@ GET FULL ACCESS
 
 </div>
 
-
-<div id="demoPreview">
-
-<div class="section-title">
-
-<h2>
-See the system in action
-</h2>
-
-<p>
-Tap the button to open the interactive demo.
-</p>
-
 </div>
-
-
-<div class="demo-box">
-
-<img
-src="demo-storyboard.png"
-alt="IAN XAU AI demo storyboard"
->
-
-<div class="actions">
-
-<button class="btn primary"
-onclick="openDemo()">
-OPEN DEMO
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </section>
 
-
+<!-- PRICING -->
 <section id="pricing">
 
 <div class="container">
 
 <div class="section-title">
 
-<h2>
-Choose access
-</h2>
+<h2>Choose access</h2>
 
-<p>
-Pay securely through Paystack.
-</p>
+<p>Pay securely through Paystack.</p>
 
 </div>
 
-
 <div class="pricing">
-
 
 <div class="card">
 
-<span class="badge">
-BOT ACCESS
-</span>
+<span class="badge">BOT ACCESS</span>
 
 <div class="price">
 $50
@@ -1056,7 +920,8 @@ $50
 class="btn primary"
 style="width:100%;text-align:center"
 href="https://paystack.shop/pay/wskkrhlvqd"
-target="_blank">
+target="_blank"
+rel="noopener">
 
 BUY BOT — $50
 
@@ -1064,12 +929,9 @@ BUY BOT — $50
 
 </div>
 
-
 <div class="card">
 
-<span class="badge">
-VIP ACCESS
-</span>
+<span class="badge">VIP ACCESS</span>
 
 <div class="price">
 $150
@@ -1087,7 +949,8 @@ $150
 class="btn primary"
 style="width:100%;text-align:center"
 href="https://paystack.shop/pay/6a5-rkdehj"
-target="_blank">
+target="_blank"
+rel="noopener">
 
 BUY VIP — $150
 
@@ -1096,97 +959,195 @@ BUY VIP — $150
 </div>
 
 </div>
-
 </div>
-
 </section>
 
-
+<!-- LOGIN -->
 <section id="login">
 
 <div class="container">
 
 <div class="section-title">
 
-<h2>
-Client Login
-</h2>
+<h2>Client Account</h2>
 
 <p>
-Demo interface for your future member area.
+Create an account or log in to your IAN XAU AI account.
 </p>
 
 </div>
 
-
 <div class="login-box">
 
-<input
-class="input"
-id="email"
-placeholder="Email or username"
->
+<!-- LOGIN FORM -->
+<div id="loginForm" class="auth-form active">
+
+<h3>Log in</h3>
 
 <input
 class="input"
-id="password"
+id="loginEmail"
+type="email"
+placeholder="Email">
+
+<input
+class="input"
+id="loginPassword"
 type="password"
-placeholder="Password"
->
-
+placeholder="Password">
 
 <div class="actions">
 
 <button
 class="btn primary"
-onclick="loginDemo()">
+style="width:100%"
+onclick="loginUser()">
 
-LOGIN
+LOG IN
 
 </button>
 
 </div>
 
+<div class="auth-links">
 
-<p
-style="text-align:center;font-size:12px;color:var(--muted)">
-
-<a
-href="#"
-onclick="forgot();return false">
-
-Forgot password?
-
+<a onclick="showForm('signupForm')">
+Create account
 </a>
 
 &nbsp; | &nbsp;
 
-<a
-href="#"
-onclick="createAccount();return false">
-
-Create account
-
+<a onclick="showForm('forgotForm')">
+Forgot password?
 </a>
 
+</div>
+
+</div>
+
+<!-- SIGNUP FORM -->
+<div id="signupForm" class="auth-form">
+
+<h3>Create account</h3>
+
+<input
+class="input"
+id="signupName"
+type="text"
+placeholder="Full name">
+
+<input
+class="input"
+id="signupEmail"
+type="email"
+placeholder="Email">
+
+<input
+class="input"
+id="signupPassword"
+type="password"
+placeholder="Password — minimum 8 characters">
+
+<div class="actions">
+
+<button
+class="btn primary"
+style="width:100%"
+onclick="createUser()">
+
+CREATE ACCOUNT
+
+</button>
+
+</div>
+
+<div class="auth-links">
+
+<a onclick="showForm('loginForm')">
+Back to login
+</a>
+
+</div>
+
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="forgotForm" class="auth-form">
+
+<h3>Reset password</h3>
+
+<p style="color:var(--muted);font-size:13px;line-height:1.6">
+Enter your email and Supabase will send a password
+reset link.
 </p>
 
+<input
+class="input"
+id="forgotEmail"
+type="email"
+placeholder="Your email">
+
+<div class="actions">
+
+<button
+class="btn primary"
+style="width:100%"
+onclick="resetPassword()">
+
+SEND RESET LINK
+
+</button>
+
+</div>
+
+<div class="auth-links">
+
+<a onclick="showForm('loginForm')">
+Back to login
+</a>
+
+</div>
+
+</div>
+
+<!-- NEW PASSWORD -->
+<div id="updateForm" class="auth-form">
+
+<h3>Set new password</h3>
+
+<input
+class="input"
+id="newPassword"
+type="password"
+placeholder="New password — minimum 8 characters">
+
+<div class="actions">
+
+<button
+class="btn primary"
+style="width:100%"
+onclick="updatePassword()">
+
+UPDATE PASSWORD
+
+</button>
+
+</div>
+
+</div>
+
+<div id="authMessage" class="auth-message"></div>
 
 <div class="notice">
-
-Demo UI only. Real authentication requires a secure
-backend/database. Never store passwords in this HTML file.
-
+Your password is handled by Supabase authentication.
+It is not stored in this HTML file.
 </div>
 
 </div>
-
 </div>
-
 </section>
 
 </main>
-
 
 <footer>
 
@@ -1195,414 +1156,232 @@ Past performance does not guarantee future results.
 
 </footer>
 
-
 <script>
+
+/* ==============================
+   SUPABASE CONNECTION
+============================== */
+
+const SUPABASE_URL =
+"https://elnqijtvqstzaxrydyox.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
+
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* ==============================
+   DEMO
+============================== */
 
 function openDemo(){
 
-document
-.getElementById('demoScreen')
-.classList.add('active');
+  document
+  .getElementById("demoScreen")
+  .classList.add("active");
 
-document
-.getElementById('demoPreview')
-.style.display='none';
+  document
+  .getElementById("demoPreview")
+  .style.display="none";
 
-document
-.getElementById('demo')
-.scrollIntoView({
-behavior:'smooth'
-});
-
+  document
+  .getElementById("demo")
+  .scrollIntoView({
+    behavior:"smooth"
+  });
 }
-
 
 function closeDemo(){
 
-document
-.getElementById('demoScreen')
-.classList.remove('active');
+  document
+  .getElementById("demoScreen")
+  .classList.remove("active");
 
-document
-.getElementById('demoPreview')
-.style.display='block';
-
+  document
+  .getElementById("demoPreview")
+  .style.display="block";
 }
 
 
-function loginDemo(){
+/* ==============================
+   AUTH UI
+============================== */
 
-alert(
-"Demo login only. Connect a secure backend before using real client accounts."
-);
+function showForm(formId){
 
+  document
+  .querySelectorAll(".auth-form")
+  .forEach(form=>{
+    form.classList.remove("active");
+  });
+
+  document
+  .getElementById(formId)
+  .classList.add("active");
+
+  clearMessage();
+}
+
+function showMessage(message){
+
+  const box =
+  document.getElementById("authMessage");
+
+  box.textContent=message;
+  box.classList.add("show");
+}
+
+function clearMessage(){
+
+  const box =
+  document.getElementById("authMessage");
+
+  box.textContent="";
+  box.classList.remove("show");
 }
 
 
-function forgot(){
+/* ==============================
+   CREATE ACCOUNT
+============================== */
 
-alert(
-"Password recovery will be connected to your secure backend."
-);
+async function createUser(){
 
-}
+  clearMessage();
 
+  const name =
+  document.getElementById("signupName").value.trim();
 
-function createAccount(){
+  const email =
+  document.getElementById("signupEmail").value.trim();
 
-alert(
-"Account creation will be connected to your secure backend."
-);
+  const password =
+  document.getElementById("signupPassword").value;
 
-}
+  if(!name || !email || !password){
 
-</script>
+    showMessage(
+      "Please fill in all fields."
+    );
 
-</body>
-  </html>
-;
-  --green:#39ff78;
-  --text:#f4fff6;
-  --muted:#9aa99e;
-}
-
-*{box-sizing:border-box}
-
-html{scroll-behavior:smooth}
-
-body{
-  margin:0;
-  background:radial-gradient(circle at 50% -10%,#12351b 0,#030603 38%);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-a{
-  text-decoration:none;
-  color:inherit;
-}
-
-nav{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:#030603ef;
-  border-bottom:1px solid var(--line);
-  backdrop-filter:blur(12px);
-}
-
-.nav{
-  max-width:1150px;
-  margin:auto;
-  padding:15px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-}
-
-.logo{
-  font-weight:900;
-  letter-spacing:1px;
-}
-
-.logo span{
-  color:var(--green);
-}
-
-.navlinks{
-  display:flex;
-  gap:18px;
-  font-size:13px;
-  color:#c8d2cb;
-}
-
-.navlinks a:hover{
-  color:var(--green);
-}
-
-.btn{
-  display:inline-block;
-  padding:13px 18px;
-  border-radius:10px;
-  border:1px solid var(--green);
-  font-weight:900;
-  font-size:13px;
-  cursor:pointer;
-}
-
-.primary{
-  background:var(--green);
-  color:#001a07;
-}
-
-.secondary{
-  background:#071008;
-}
-
-.container{
-  max-width:1150px;
-  margin:auto;
-  padding:0 20px;
-}
-
-.hero{
-  min-height:78vh;
-  display:grid;
-  place-items:center;
-  text-align:center;
-  padding:80px 20px;
-}
-
-.badge{
-  display:inline-block;
-  border:1px solid var(--line);
-  background:#071009;
-  padding:7px 11px;
-  border-radius:99px;
-  color:var(--green);
-  font-size:11px;
-  font-weight:800;
-}
-
-h1{
-  font-size:clamp(42px,8vw,82px);
-  line-height:.95;
-  margin:20px 0 15px;
-  letter-spacing:-3px;
-}
-
-h2{
-  font-size:32px;
-  margin:0 0 12px;
-}
-
-h3{
-  margin:0 0 10px;
-}
-
-.lead{
-  max-width:720px;
-  margin:0 auto;
-  color:var(--muted);
-  line-height:1.7;
-}
-
-.actions{
-  margin-top:28px;
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-section{
-  padding:75px 0;
-}
-
-.section-title{
-  text-align:center;
-  margin-bottom:32px;
-}
-
-.section-title p{
-  color:var(--muted);
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-}
-
-.card,
-.trade-box,
-.login-box{
-  background:linear-gradient(145deg,#09120b,#050905);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:22px;
-}
-
-.card p,
-.trade-box p{
-  color:var(--muted);
-  line-height:1.6;
-  font-size:13px;
-}
-
-.icon{
-  color:var(--green);
-  font-size:22px;
-  margin-bottom:12px;
-}
-
-.steps{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-}
-
-.step strong{
-  color:var(--green);
-  font-size:12px;
-}
-
-.chart-wrap{
-  height:560px;
-  background:#050805;
-  border:1px solid var(--line);
-  border-radius:16px;
-  overflow:hidden;
-}
-
-.chart{
-  height:100%;
-}
-
-.trade-panel{
-  margin-top:18px;
-  display:grid;
-  grid-template-columns:1.1fr .9fr;
-  gap:16px;
-}
-
-.trade-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.signal{
-  font-size:10px;
-  font-weight:900;
-  color:#001b08;
-  background:var(--green);
-  padding:5px 8px;
-  border-radius:99px;
-}
-
-.trade-row{
-  display:flex;
-  justify-content:space-between;
-  padding:11px 0;
-  border-bottom:1px solid #14331c;
-  font-size:13px;
-  gap:15px;
-}
-
-.trade-row span{
-  color:var(--muted);
-}
-
-.trade-row b{
-  text-align:right;
-}
-
-.check{
-  color:var(--green);
-  font-weight:900;
-  margin-right:7px;
-}
-
-.demo-box{
-  background:#050905;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:20px;
-}
-
-.demo-box img{
-  width:100%;
-  display:block;
-  border-radius:12px;
-  border:1px solid var(--line);
-}
-
-.demo-screen{
-  display:none;
-}
-
-.demo-screen.active{
-  display:block;
-}
-
-.demo-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:20px;
-}
-
-.demo-status{
-  color:var(--green);
-  font-size:12px;
-  font-weight:900;
-}
-
-.pricing{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-  max-width:800px;
-  margin:auto;
-}
-
-.price{
-  font-size:42px;
-  font-weight:900;
-  margin:14px 0;
-}
-
-.price small{
-  font-size:13px;
-  color:var(--muted);
-}
-
-ul{
-  padding-left:20px;
-  color:var(--muted);
-  line-height:2;
-}
-
-.login-box{
-  max-width:430px;
-  margin:auto;
-}
-
-.input{
-  width:100%;
-  padding:13px;
-  margin:7px 0;
-  background:#030603;
-  border:1px solid var(--line);
-  border-radius:9px;
-  color:white;
-}
-
-footer{
-  border-top:1px solid var(--line);
-  padding:35px 20px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.notice{
-  margin-top:18px;
-  padding:12px;
-  border:1px solid #29482f;
-  border-radius:10px;
-  color:#b9c7bd;
-  font-size:11px;
-}
-
-@media(max-width:800px){
-
-  .navlinks{
-    display:none;
+    return;
   }
 
-  .gr
+  if(password.length < 8){
+
+    showMessage(
+      "Password must contain at least 8 characters."
+    );
+
+    return;
+  }
+
+  showMessage("Creating your account...");
+
+  const {data,error} =
+  await supabaseClient.auth.signUp({
+
+    email:email,
+
+    password:password,
+
+    options:{
+      data:{
+        full_name:name
+      }
+    }
+
+  });
+
+  if(error){
+
+    showMessage(error.message);
+    return;
+  }
+
+  showMessage(
+    "Account created. Check your email to confirm your account before logging in."
+  );
+
+  document
+  .getElementById("signupPassword")
+  .value="";
+}
+
+
+/* ==============================
+   LOGIN
+============================== */
+
+async function loginUser(){
+
+  clearMessage();
+
+  const email =
+  document.getElementById("loginEmail").value.trim();
+
+  const password =
+  document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+
+    showMessage(
+      "Enter your email and password."
+    );
+
+    return;
+  }
+
+  showMessage("Logging in...");
+
+  const {data,error} =
+  await supabaseClient.auth.signInWithPassword({
+
+    email:email,
+    password:password
+
+  });
+
+  if(error){
+
+    showMessage(error.message);
+    return;
+  }
+
+  showMessage(
+    "Login successful. Welcome to IAN XAU AI."
+  );
+}
+
+
+/* ==============================
+   FORGOT PASSWORD
+============================== */
+
+async function resetPassword(){
+
+  clearMessage();
+
+  const email =
+  document.getElementById("forgotEmail").value.trim();
+
+  if(!email){
+
+    showMessage(
+      "Enter your email address."
+    );
+
+    return;
+  }
+
+  showMessage(
+    "Sending password reset link..."
+  );
+
+  const redirectTo =
+    window.locat
