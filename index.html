@@ -4,14 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>IAN XAU AI — Trading Bot</title>
+  <title>IAN XAU AI — Rule-Based XAUUSD Trading System</title>
+  <meta name="description" content="IAN XAU AI — a rule-based XAUUSD trading system focused on structured market levels and confirmation.">
+  <meta name="theme-color" content="#07100a">
 
-  <meta
-    name="description"
-    content="IAN XAU AI — Rule-based XAUUSD trading system using Asia High, Asia Low, PDH, PDL and confirmation."
-  >
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --bg: #050806;
+      --bg2: #09100b;
+      --card: #0c140e;
+      --card2: #101a12;
+      --green: #38e879;
+      --green2: #22c55e;
+      --green-dark: #12351e;
+      --text: #f1f5f2;
+      --muted: #9ca8a0;
+      --border: #1b2b20;
+      --danger: #ff6b6b;
+      --gold: #d9b75c;
+      --max: 1180px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -23,717 +38,845 @@
     }
 
     body {
+      background:
+        radial-gradient(circle at 80% 10%, rgba(56,232,121,.08), transparent 25%),
+        radial-gradient(circle at 10% 30%, rgba(34,197,94,.05), transparent 25%),
+        var(--bg);
+      color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
-      background: #050806;
-      color: #f2f5f3;
       line-height: 1.6;
     }
 
     a {
+      color: inherit;
       text-decoration: none;
     }
 
     button,
     input {
-      font-family: inherit;
+      font: inherit;
     }
 
-    nav {
+    .container {
+      width: min(92%, var(--max));
+      margin: auto;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    header {
       position: sticky;
       top: 0;
       z-index: 1000;
+      background: rgba(5,8,6,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
 
+    nav {
+      min-height: 70px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      padding: 15px 6%;
-
-      background: rgba(5, 8, 6, 0.96);
-
-      border-bottom: 1px solid #17351f;
-
-      backdrop-filter: blur(12px);
+      gap: 20px;
     }
 
     .logo {
-      color: #37e879;
-      font-size: 21px;
-      font-weight: 800;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--green);
     }
 
     .navlinks {
       display: flex;
+      gap: 24px;
       align-items: center;
-      gap: 20px;
     }
 
     .navlinks a {
-      color: #aebbb2;
-      font-size: 14px;
-      transition: 0.2s;
+      color: #aeb8b1;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .2s;
     }
 
     .navlinks a:hover {
-      color: #37e879;
+      color: var(--green);
     }
 
-    .btn {
-      display: inline-block;
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
 
-      padding: 13px 21px;
+    .login-nav {
+      color: var(--green);
+      border: 1px solid #245c36;
+      padding: 9px 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
 
-      border-radius: 9px;
+    .login-nav:hover {
+      background: #102519;
+    }
 
-      border: 1px solid #2bd66c;
-
-      font-size: 14px;
-      font-weight: 700;
-
+    .menu-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: white;
+      border-radius: 8px;
+      padding: 8px 11px;
       cursor: pointer;
+    }
 
-      transition: 0.2s;
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 12px 0 18px;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 11px 0;
+      color: #b5c0b8;
+      font-size: 14px;
+    }
+
+    .mobile-menu.show {
+      display: block;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 9px;
+      padding: 12px 18px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .3px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: .2s;
     }
 
     .btn.primary {
-      background: #27d66a;
-      color: #031007;
+      background: var(--green);
+      color: #041007;
     }
 
     .btn.primary:hover {
-      background: #55ed8d;
       transform: translateY(-1px);
+      background: #55ed8a;
     }
 
     .btn.secondary {
-      background: #09120c;
-      color: #37e879;
+      border-color: #294332;
+      background: #0b120d;
+      color: white;
     }
 
     .btn.secondary:hover {
-      background: #112218;
+      border-color: var(--green);
+      color: var(--green);
     }
+
+    /* ================= HERO ================= */
 
     .hero {
-      min-height: 88vh;
-
-      display: flex;
-      align-items: center;
-
-      padding: 80px 7%;
-
-      background:
-        radial-gradient(
-          circle at 75% 30%,
-          rgba(29, 207, 92, 0.14),
-          transparent 30%
-        ),
-        radial-gradient(
-          circle at 20% 80%,
-          rgba(24, 150, 70, 0.08),
-          transparent 30%
-        ),
-        #050806;
+      padding: 95px 0 80px;
     }
 
-    .hero-content {
-      max-width: 850px;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 60px;
+      align-items: center;
     }
 
     .badge {
-      display: inline-block;
-
-      padding: 7px 12px;
-
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       border: 1px solid #245c36;
-
-      border-radius: 30px;
-
-      background: #09150d;
-
-      color: #42ed82;
-
-      font-size: 12px;
-      font-weight: 700;
-
+      background: rgba(56,232,121,.06);
+      color: var(--green);
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
       margin-bottom: 22px;
     }
 
-    .hero h1 {
-      font-size: clamp(42px, 8vw, 82px);
-
-      line-height: 1;
-
-      letter-spacing: -2px;
-
-      margin-bottom: 25px;
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--green);
     }
 
-    .green {
-      color: #37e879;
+    .hero h1 {
+      font-size: clamp(43px, 7vw, 76px);
+      line-height: .98;
+      letter-spacing: -3px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span {
+      color: var(--green);
     }
 
     .hero p {
-      max-width: 680px;
-
-      color: #a8b5ac;
-
-      font-size: 18px;
-
+      color: var(--muted);
+      max-width: 640px;
+      font-size: 17px;
       margin-bottom: 30px;
     }
 
-    .hero-actions {
+    .hero-buttons {
       display: flex;
-
-      flex-wrap: wrap;
-
       gap: 12px;
+      flex-wrap: wrap;
     }
 
-    section {
-      padding: 85px 7%;
+    .hero-note {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #758078;
+    }
 
-      border-top: 1px solid #102117;
+    .hero-panel {
+      background:
+        linear-gradient(145deg, rgba(56,232,121,.09), transparent 45%),
+        var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.35);
+    }
+
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .panel-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #b6c1ba;
+    }
+
+    .live {
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .price-box {
+      padding: 25px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .price-box small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .price-box strong {
+      display: block;
+      font-size: 40px;
+      margin-top: 4px;
+    }
+
+    .market-bars {
+      margin-top: 20px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .market-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 11px;
+      border: 1px solid var(--border);
+      background: #081009;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .green {
+      color: var(--green);
+    }
+
+    /* ================= SECTION ================= */
+
+    section {
+      padding: 85px 0;
+      border-top: 1px solid rgba(27,43,32,.55);
     }
 
     .section-title {
-      max-width: 760px;
-
-      margin-bottom: 40px;
+      max-width: 720px;
+      margin-bottom: 42px;
     }
 
     .section-title span {
-      color: #37e879;
-
-      font-size: 12px;
-
-      font-weight: 800;
-
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 900;
       letter-spacing: 2px;
     }
 
     .section-title h2 {
-      font-size: 38px;
-
-      margin: 8px 0 12px;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      margin: 10px 0 15px;
     }
 
     .section-title p {
-      color: #9aa89f;
+      color: var(--muted);
+      font-size: 15px;
     }
+
+    /* ================= CARDS ================= */
 
     .grid {
       display: grid;
-
       grid-template-columns: repeat(4, 1fr);
-
-      gap: 15px;
+      gap: 14px;
     }
 
     .card {
-      padding: 25px;
-
-      background: #09100c;
-
-      border: 1px solid #17351f;
-
+      background: linear-gradient(145deg, #0d160f, #09100b);
+      border: 1px solid var(--border);
       border-radius: 14px;
+      padding: 24px;
+    }
+
+    .card:hover {
+      border-color: #285a37;
     }
 
     .number {
-      width: 38px;
-      height: 38px;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      margin-bottom: 18px;
-
-      border-radius: 50%;
-
-      background: #102b19;
-
-      color: #3bea7c;
-
-      font-weight: 800;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 20px;
     }
 
     .card h3 {
-      margin-bottom: 10px;
+      font-size: 16px;
+      margin-bottom: 9px;
     }
 
     .card p {
-      color: #8f9d94;
-
-      font-size: 14px;
+      color: var(--muted);
+      font-size: 13px;
     }
+
+    /* ================= STRATEGY ================= */
 
     .strategy-grid {
       display: grid;
-
       grid-template-columns: 1fr 1fr;
-
-      gap: 20px;
+      gap: 18px;
     }
 
     .strategy-box {
-      padding: 30px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #09110c,
-          #060a07
-        );
-
-      border: 1px solid #17351f;
-
-      border-radius: 15px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      background: #09100b;
     }
 
     .strategy-box h3 {
-      color: #38e879;
-
+      font-size: 20px;
       margin-bottom: 12px;
     }
 
-    .strategy-box ul {
-      padding-left: 20px;
-
-      color: #a4b0a8;
+    .strategy-box p {
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    .strategy-box li {
-      margin: 8px 0;
+    .check-list {
+      margin-top: 18px;
+      display: grid;
+      gap: 11px;
     }
+
+    .check-list div {
+      color: #c9d2cc;
+      font-size: 13px;
+    }
+
+    .check-list span {
+      color: var(--green);
+      margin-right: 7px;
+    }
+
+    /* ================= CHART ================= */
 
     .chart-wrap {
-      width: 100%;
-
-      height: 610px;
-
-      overflow: hidden;
-
-      background: #050805;
-
-      border: 1px solid #183621;
-
+      height: 560px;
+      border: 1px solid var(--border);
+      background: #050806;
       border-radius: 15px;
-    }
-
-    .tradingview-widget-container {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* CALENDAR */
-
-    .calendar-card {
       overflow: hidden;
-
-      background: #070c08;
-
-      border: 1px solid #17351f;
-
-      border-radius: 16px;
     }
 
-    .calendar-header {
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding: 18px 20px;
-
-      background: #09130c;
-
-      border-bottom: 1px solid #17351f;
-    }
-
-    .calendar-header strong {
-      font-size: 16px;
-    }
-
-    .live-status {
-      color: #37e879;
-
-      font-size: 11px;
-
-      font-weight: 800;
-    }
-
-    .calendar-widget {
-      width: 100%;
-
-      height: 650px;
-    }
-
-    .calendar-widget .tradingview-widget-container {
-      width: 100%;
-      height: 100%;
-    }
-
-    .calendar-widget
+    .tradingview-widget-container,
     .tradingview-widget-container__widget {
       width: 100%;
       height: 100%;
     }
 
-    .calendar-footer {
-      padding: 12px 15px;
+    /* ================= TRADE EXAMPLE ================= */
 
-      color: #657269;
-
-      font-size: 11px;
-
-      text-align: center;
-
-      border-top: 1px solid #17351f;
+    .trade-example {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
     }
 
-    .calendar-footer a {
-      color: #37e879;
+    .trade-card {
+      background: #09100b;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
     }
 
-    /* DEMO */
-
-    .demo-box {
-      overflow: hidden;
-
-      background: #070c08;
-
-      border: 1px solid #183621;
-
-      border-radius: 16px;
+    .trade-card h3 {
+      margin-bottom: 20px;
     }
 
-    .demo-header {
+    .trade-step {
       display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding: 16px 20px;
-
-      border-bottom: 1px solid #183621;
+      gap: 14px;
+      margin-bottom: 18px;
     }
 
-    .status {
-      color: #3bea7c;
-
-      font-size: 12px;
-
-      font-weight: 800;
+    .trade-step b {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      background: var(--green-dark);
+      color: var(--green);
+      border-radius: 7px;
+      font-size: 11px;
+      flex-shrink: 0;
     }
 
-    /* PRICING */
+    .trade-step p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ================= CALENDAR ================= */
+
+    .calendar-box {
+      height: 600px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      overflow: hidden;
+      background: #050806;
+    }
+
+    /* ================= HOW IT WORKS ================= */
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+    }
+
+    .step {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #09100b;
+    }
+
+    .step-number {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .step h3 {
+      margin-bottom: 9px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ================= PRICING ================= */
 
     .pricing {
       display: grid;
-
-      grid-template-columns: repeat(2, 1fr);
-
-      gap: 20px;
-
-      max-width: 900px;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      max-width: 850px;
     }
 
     .price-card {
       position: relative;
-
       padding: 32px;
-
-      background: #09100c;
-
-      border: 1px solid #1a4025;
-
+      background: linear-gradient(145deg, #0d160f, #081009);
+      border: 1px solid var(--border);
       border-radius: 16px;
     }
 
     .price-card.vip {
-      border-color: #36d971;
-
-      box-shadow:
-        0 0 35px rgba(46, 224, 110, 0.08);
+      border-color: #315f3e;
+      box-shadow: 0 0 40px rgba(56,232,121,.05);
     }
 
     .popular {
       position: absolute;
-
-      top: 18px;
       right: 18px;
+      top: 18px;
+      color: #07100a;
+      background: var(--green);
+      padding: 5px 8px;
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: 900;
+    }
 
-      padding: 5px 9px;
-
-      background: #1c5b30;
-
-      color: #58ee91;
-
-      border-radius: 20px;
-
+    .price-card .label {
+      color: var(--green);
       font-size: 10px;
-
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: 1px;
     }
 
     .price {
-      font-size: 45px;
-
-      font-weight: 800;
-
-      margin: 12px 0 20px;
+      font-size: 48px;
+      font-weight: 900;
+      margin: 12px 0 5px;
     }
 
-    .price small {
-      color: #78877d;
-
+    .price-card > p {
+      color: var(--muted);
       font-size: 13px;
-
-      font-weight: normal;
+      min-height: 42px;
     }
 
     .features {
-      list-style: none;
-
-      margin-bottom: 25px;
+      margin: 25px 0;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      display: grid;
+      gap: 12px;
     }
 
-    .features li {
-      color: #a5b1a9;
+    .features div {
+      font-size: 13px;
+      color: #cbd4cd;
+    }
 
+    .features span {
+      color: var(--green);
+      margin-right: 8px;
+    }
+
+    .price-card .btn {
+      width: 100%;
+    }
+
+    /* ================= FAQ ================= */
+
+    .faq {
+      max-width: 850px;
+      display: grid;
+      gap: 10px;
+    }
+
+    details {
+      border: 1px solid var(--border);
+      background: #09100b;
+      border-radius: 11px;
+      padding: 18px 20px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
       font-size: 14px;
-
-      margin: 11px 0;
     }
 
-    .features li::before {
-      content: "✓";
-
-      color: #3bea7c;
-
-      font-weight: bold;
-
-      margin-right: 9px;
+    details p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
     }
 
-    /* AUTH */
+    /* ================= AUTH ================= */
 
     .auth-section {
-      max-width: 600px;
-
-      margin-left: auto;
-      margin-right: auto;
+      margin-bottom: 30px;
     }
 
     .auth-box {
-      padding: 30px;
-
-      background: #09100c;
-
-      border: 1px solid #17351f;
-
+      max-width: 470px;
+      margin: auto;
+      background: linear-gradient(145deg,#0d160f,#081009);
+      border: 1px solid var(--border);
       border-radius: 16px;
+      padding: 30px;
     }
 
     .auth-tabs {
       display: grid;
-
       grid-template-columns: 1fr 1fr;
-
-      gap: 8px;
-
       margin-bottom: 22px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 4px;
     }
 
-    .auth-tabs button {
-      padding: 12px;
-
-      background: #071009;
-
-      color: #9cac9f;
-
-      border: 1px solid #21462b;
-
-      border-radius: 8px;
-
+    .auth-tab {
+      border: 0;
+      background: transparent;
+      color: #829088;
+      padding: 10px;
+      border-radius: 7px;
       cursor: pointer;
+      font-weight: 800;
+      font-size: 12px;
     }
 
-    .auth-tabs button.active {
-      background: #173d23;
-
-      color: #42ed82;
-
-      border-color: #2bd66c;
+    .auth-tab.active {
+      background: var(--green);
+      color: #041007;
     }
 
     .auth-form {
-      display: none;
+      display: grid;
+      gap: 13px;
     }
 
-    .auth-form.active {
-      display: block;
+    .auth-form label {
+      color: #aeb9b1;
+      font-size: 11px;
+      font-weight: 700;
     }
 
-    label {
-      display: block;
-
-      color: #aab6ae;
-
-      font-size: 13px;
-
-      margin: 13px 0 7px;
-    }
-
-    input {
+    .auth-form input {
       width: 100%;
-
+      margin-top: 6px;
       padding: 13px;
-
-      background: #050906;
-
+      background: #050806;
       color: white;
-
-      border: 1px solid #23472d;
-
+      border: 1px solid var(--border);
       border-radius: 8px;
-
       outline: none;
     }
 
-    input:focus {
-      border-color: #36d971;
-    }
-
-    .form-btn {
-      width: 100%;
-
-      margin-top: 18px;
-    }
-
-    .link-button {
-      display: block;
-
-      margin: 15px auto 0;
-
-      background: none;
-
-      border: none;
-
-      color: #37e879;
-
-      cursor: pointer;
-
-      font-size: 13px;
+    .auth-form input:focus {
+      border-color: var(--green);
     }
 
     .auth-message {
-      min-height: 20px;
-
       margin-top: 15px;
-
-      color: #8e9d94;
-
-      font-size: 13px;
-    }
-
-    #memberArea {
+      padding: 12px;
+      border-radius: 8px;
+      background: #07100a;
+      color: #9faaa2;
+      font-size: 12px;
       display: none;
-
-      max-width: 900px;
-
-      margin: 30px auto 0;
     }
 
-    .member-box {
-      padding: 35px;
+    .auth-message.show {
+      display: block;
+    }
 
-      background: #09100c;
+    .auth-message.error {
+      color: var(--danger);
+    }
 
-      border: 1px solid #1c4828;
+    .forgot {
+      background: transparent;
+      border: 0;
+      color: var(--green);
+      cursor: pointer;
+      font-size: 11px;
+      text-align: right;
+    }
 
+    .dashboard {
+      display: none;
+      max-width: 700px;
+      margin: auto;
+      padding: 30px;
+      border: 1px solid var(--border);
       border-radius: 16px;
-
-      text-align: center;
+      background: #09100b;
     }
 
-    .member-icon {
-      font-size: 45px;
+    .dashboard.show {
+      display: block;
+    }
 
-      color: #3bea7c;
-
+    .dashboard h3 {
       margin-bottom: 10px;
     }
 
-    .member-email {
-      margin: 10px 0 25px;
-
-      color: #9aa89f;
-    }
-
-    .member-grid {
-      display: grid;
-
-      grid-template-columns: repeat(3, 1fr);
-
-      gap: 12px;
-
-      margin: 25px 0;
-    }
-
-    .member-card {
-      padding: 20px;
-
-      background: #071009;
-
-      border: 1px solid #17351f;
-
-      border-radius: 12px;
-    }
-
-    .member-card strong {
-      display: block;
-
-      color: #37e879;
-
-      margin-bottom: 5px;
-    }
-
-    .member-card span {
-      color: #8d9a92;
-
+    .dashboard p {
+      color: var(--muted);
       font-size: 13px;
     }
 
+    /* ================= FOOTER ================= */
+
     footer {
-      padding: 40px 7%;
+      border-top: 1px solid var(--border);
+      padding: 45px 0 25px;
+    }
 
-      border-top: 1px solid #17351f;
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 35px;
+    }
 
-      color: #718077;
+    .footer-brand {
+      max-width: 430px;
+    }
 
+    .footer-brand p {
+      color: #7e8981;
       font-size: 12px;
-
-      text-align: center;
+      margin-top: 12px;
     }
 
-    footer strong {
-      color: #a5b2a9;
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      flex-wrap: wrap;
     }
 
-    @media(max-width: 900px) {
+    .footer-links a {
+      color: #929d95;
+      font-size: 12px;
+    }
 
-      .grid {
-        grid-template-columns: 1fr 1fr;
+    .risk {
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      color: #69746d;
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .copyright {
+      color: #566159;
+      font-size: 10px;
+      margin-top: 18px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:900px) {
+      .hero-grid,
+      .strategy-grid,
+      .trade-example {
+        grid-template-columns: 1fr;
       }
 
-      .strategy-grid {
+      .grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .hero {
+        padding-top: 65px;
+      }
+
+      .navlinks {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-actions {
+        margin-left: auto;
+      }
+    }
+
+    @media(max-width:650px) {
+      .container {
+        width: 91%;
+      }
+
+      nav {
+        min-height: 62px;
+      }
+
+      .logo {
+        font-size: 16px;
+      }
+
+      .login-nav {
+        padding: 8px 9px;
+        font-size: 10px;
+      }
+
+      .nav-actions .btn {
+        padding: 8px 9px;
+        font-size: 9px;
+      }
+
+      .hero {
+        padding: 55px 0;
+      }
+
+      .hero h1 {
+        font-size: 43px;
+        letter-spacing: -2px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      .hero-panel {
+        padding: 20px;
+      }
+
+      section {
+        padding: 60px 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
         grid-template-columns: 1fr;
       }
 
@@ -741,63 +884,24 @@
         grid-template-columns: 1fr;
       }
 
-      .member-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media(max-width: 650px) {
-
-      nav {
-        padding: 14px 4%;
-      }
-
-      .navlinks {
-        display: none;
-      }
-
-      nav > .btn {
-        padding: 10px 12px;
-
-        font-size: 11px;
-      }
-
-      .hero {
-        min-height: 80vh;
-
-        padding: 65px 6%;
-      }
-
-      .hero h1 {
-        font-size: 48px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
-      section {
-        padding: 65px 5%;
-      }
-
-      .section-title h2 {
-        font-size: 30px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
       .chart-wrap {
+        height: 450px;
+      }
+
+      .calendar-box {
         height: 500px;
       }
 
-      .tradingview-widget-container {
-        height: 500px;
+      .footer-grid {
+        flex-direction: column;
       }
 
-      .calendar-widget {
-        height: 650px;
+      .footer-links {
+        gap: 13px;
+      }
+
+      .auth-box {
+        padding: 22px;
       }
     }
   </style>
@@ -805,209 +909,202 @@
 
 <body>
 
-  <!-- NAVIGATION -->
+<!-- ================= NAVIGATION ================= -->
 
-  <nav>
+<header>
+  <div class="container">
 
-    <a href="#top" class="logo">
-      IAN XAU AI
-    </a>
-
-    <div class="navlinks">
-
-      <a href="#strategy">
-        Strategy
+    <nav>
+      <a href="#top" class="logo">
+        IAN <span>XAU AI</span>
       </a>
 
-      <a href="#charts">
-        Charts
-      </a>
+      <div class="navlinks">
+        <a href="#strategy">Strategy</a>
+        <a href="#charts">Charts</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#demo">Demo</a>
+        <a href="#pricing">Pricing</a>
+      </div>
 
-      <a href="#calendar">
-        Calendar
-      </a>
+      <div class="nav-actions">
+        <a href="#login" class="login-nav">LOGIN</a>
+        <a href="#pricing" class="btn primary">GET ACCESS</a>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </nav>
 
-      <a href="#demo">
-        Demo
-      </a>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#strategy">Strategy</a>
+      <a href="#charts">Charts</a>
+      <a href="#calendar">Economic Calendar</a>
+      <a href="#demo">Demo</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#login">Login</a>
+    </div>
 
-      <a href="#pricing">
-        Pricing
-      </a>
+  </div>
+</header>
 
-      <a href="#login">
-        Login
-      </a>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+  <div class="container">
+
+    <div class="hero-grid">
+
+      <div>
+
+        <div class="badge">
+          <span class="dot"></span>
+          RULE-BASED XAUUSD SYSTEM
+        </div>
+
+        <h1>
+          READ THE MARKET.<br>
+          <span>FOLLOW THE RULES.</span>
+        </h1>
+
+        <p>
+          IAN XAU AI is built around structured XAUUSD market levels,
+          liquidity areas and confirmation conditions instead of random entries.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#pricing" class="btn primary">
+            GET ACCESS
+          </a>
+
+          <a href="#strategy" class="btn secondary">
+            VIEW STRATEGY
+          </a>
+        </div>
+
+        <div class="hero-note">
+          XAUUSD focused • M15 chart structure • Rule-based approach
+        </div>
+
+      </div>
+
+
+      <div class="hero-panel">
+
+        <div class="panel-top">
+          <div class="panel-title">SYSTEM OVERVIEW</div>
+          <div class="live">● MONITORING</div>
+        </div>
+
+        <div class="price-box">
+          <small>MARKET</small>
+          <strong>XAUUSD</strong>
+        </div>
+
+        <div class="market-bars">
+
+          <div class="market-row">
+            <span>Primary timeframe</span>
+            <strong class="green">M15</strong>
+          </div>
+
+          <div class="market-row">
+            <span>Asia High / Low</span>
+            <strong>LEVELS</strong>
+          </div>
+
+          <div class="market-row">
+            <span>PDH / PDL</span>
+            <strong>LEVELS</strong>
+          </div>
+
+          <div class="market-row">
+            <span>Confirmation</span>
+            <strong class="green">REQUIRED</strong>
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
-    <a href="#pricing" class="btn primary">
-      GET ACCESS
-    </a>
-
-  </nav>
+  </div>
+</section>
 
 
-  <!-- HERO -->
+<!-- ================= TRUST ================= -->
 
-  <section class="hero" id="top">
-
-    <div class="hero-content">
-
-      <div class="badge">
-        RULE-BASED XAUUSD TRADING SYSTEM
-      </div>
-
-      <h1>
-        READ THE MARKET.
-        <br>
-        <span class="green">
-          FOLLOW THE RULES.
-        </span>
-      </h1>
-
-      <p>
-        IAN XAU AI is a rule-based XAUUSD trading system
-        built around market structure, Asia session levels,
-        previous-day levels, liquidity and confirmation.
-      </p>
-
-      <div class="hero-actions">
-
-        <a href="#demo" class="btn primary">
-          WATCH DEMO
-        </a>
-
-        <a href="#strategy" class="btn secondary">
-          HOW IT WORKS
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- SYSTEM -->
-
-  <section>
+<section>
+  <div class="container">
 
     <div class="section-title">
-
-      <span>
-        THE SYSTEM
-      </span>
-
-      <h2>
-        What does it watch?
-      </h2>
-
+      <span>TRANSPARENCY FIRST</span>
+      <h2>Know what you are getting.</h2>
       <p>
-        The strategy focuses on specific price levels
-        and confirmation instead of entering randomly.
+        The website is designed to show the strategy structure,
+        charts, pricing and risk information before you decide to purchase.
       </p>
-
     </div>
-
 
     <div class="grid">
 
       <div class="card">
-
-        <div class="number">
-          01
-        </div>
-
-        <h3>
-          Asia High
-        </h3>
-
+        <div class="number">01</div>
+        <h3>Structured Levels</h3>
         <p>
-          The high created during the Asia session
-          can become an important liquidity reference.
+          Asia High, Asia Low, Previous Day High and Previous Day Low
+          are part of the market structure.
         </p>
-
       </div>
 
-
       <div class="card">
-
-        <div class="number">
-          02
-        </div>
-
-        <h3>
-          Asia Low
-        </h3>
-
+        <div class="number">02</div>
+        <h3>Confirmation</h3>
         <p>
-          The Asia session low is monitored as a possible
-          liquidity and reaction area.
+          The system focuses on market reaction and confirmation rather
+          than treating every level as an automatic entry.
         </p>
-
       </div>
 
-
       <div class="card">
-
-        <div class="number">
-          03
-        </div>
-
-        <h3>
-          PDH / PDL
-        </h3>
-
+        <div class="number">03</div>
+        <h3>Live Market Tools</h3>
         <p>
-          Previous Day High and Previous Day Low
-          are used as important reference levels.
+          Review the live XAUUSD chart and economic calendar directly
+          from the website.
         </p>
-
       </div>
 
-
       <div class="card">
-
-        <div class="number">
-          04
-        </div>
-
-        <h3>
-          Confirmation
-        </h3>
-
+        <div class="number">04</div>
+        <h3>Clear Pricing</h3>
         <p>
-          A level alone is not enough.
-          The strategy looks for price reaction before an entry.
+          Access options are displayed openly so customers can see the
+          price before checkout.
         </p>
-
       </div>
 
     </div>
 
-  </section>
+  </div>
+</section>
 
 
-  <!-- STRATEGY -->
+<!-- ================= STRATEGY ================= -->
 
-  <section id="strategy">
+<section id="strategy">
+
+  <div class="container">
 
     <div class="section-title">
-
-      <span>
-        STRATEGY
-      </span>
-
-      <h2>
-        Simple rules. Defined conditions.
-      </h2>
-
+      <span>THE METHOD</span>
+      <h2>A structured way to read XAUUSD.</h2>
       <p>
-        The system follows a structured process
-        instead of chasing every market movement.
+        The strategy is organized around important market levels and
+        confirmation conditions.
       </p>
-
     </div>
 
 
@@ -1015,353 +1112,1227 @@
 
       <div class="strategy-box">
 
-        <h3>
-          01 — Mark the levels
-        </h3>
+        <h3>Asia High & Asia Low</h3>
 
-        <ul>
+        <p>
+          The Asian session range provides important reference points.
+          Price interaction around these levels can help identify areas
+          that deserve attention.
+        </p>
 
-          <li>
-            Asia High
-          </li>
-
-          <li>
-            Asia Low
-          </li>
-
-          <li>
-            Previous Day High
-          </li>
-
-          <li>
-            Previous Day Low
-          </li>
-
-        </ul>
+        <div class="check-list">
+          <div><span>✓</span> Mark Asia High</div>
+          <div><span>✓</span> Mark Asia Low</div>
+          <div><span>✓</span> Watch liquidity interaction</div>
+        </div>
 
       </div>
 
 
       <div class="strategy-box">
 
-        <h3>
-          02 — Watch liquidity
-        </h3>
+        <h3>PDH & PDL</h3>
 
-        <ul>
+        <p>
+          Previous Day High and Previous Day Low are used as additional
+          reference levels when evaluating market structure.
+        </p>
 
-          <li>
-            Price approaches a key level
-          </li>
-
-          <li>
-            Liquidity may be taken
-          </li>
-
-          <li>
-            Market reaction is monitored
-          </li>
-
-        </ul>
+        <div class="check-list">
+          <div><span>✓</span> Previous Day High</div>
+          <div><span>✓</span> Previous Day Low</div>
+          <div><span>✓</span> Observe price reaction</div>
+        </div>
 
       </div>
 
 
       <div class="strategy-box">
 
-        <h3>
-          03 — Wait for confirmation
-        </h3>
+        <h3>Liquidity Interaction</h3>
 
-        <ul>
+        <p>
+          A level alone does not automatically create a trade.
+          Price behavior around the level is part of the decision process.
+        </p>
 
-          <li>
-            Price reaction
-          </li>
-
-          <li>
-            Market structure confirmation
-          </li>
-
-          <li>
-            Entry condition must be satisfied
-          </li>
-
-        </ul>
+        <div class="check-list">
+          <div><span>✓</span> Identify important level</div>
+          <div><span>✓</span> Watch for liquidity sweep</div>
+          <div><span>✓</span> Wait for reaction</div>
+        </div>
 
       </div>
 
 
       <div class="strategy-box">
 
-        <h3>
-          04 — Define the risk
-        </h3>
+        <h3>Defined Trade Structure</h3>
 
-        <ul>
+        <p>
+          When conditions are met, the trade can be structured with
+          defined entry, stop-loss and take-profit levels.
+        </p>
 
-          <li>
-            Stop loss defined before entry
-          </li>
-
-          <li>
-            Take profit defined
-          </li>
-
-          <li>
-            No guaranteed outcome
-          </li>
-
-        </ul>
+        <div class="check-list">
+          <div><span>✓</span> Entry condition</div>
+          <div><span>✓</span> Stop-loss structure</div>
+          <div><span>✓</span> Take-profit structure</div>
+        </div>
 
       </div>
 
     </div>
 
-  </section>
+  </div>
+
+</section>
 
 
-  <!-- MAIN CHART -->
+<!-- ================= CHART ================= -->
 
-  <section id="charts">
+<section id="charts">
+
+  <div class="container">
 
     <div class="section-title">
-
-      <span>
-        LIVE CHART
-      </span>
-
-      <h2>
-        XAUUSD Market
-      </h2>
-
+      <span>LIVE MARKET</span>
+      <h2>XAUUSD chart.</h2>
       <p>
-        Monitor Gold/USD price action and study
-        how the strategy identifies important levels.
+        Use the live chart to study price structure and market levels.
       </p>
+    </div>
 
+    <div class="chart-wrap">
+
+      <div class="tradingview-widget-container">
+
+        <div class="tradingview-widget-container__widget"></div>
+
+        <script
+          type="text/javascript"
+          src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
+          async>
+        {
+          "autosize": true,
+          "symbol": "OANDA:XAUUSD",
+          "interval": "15",
+          "timezone": "Etc/UTC",
+          "theme": "dark",
+          "style": "1",
+          "locale": "en",
+          "allow_symbol_change": true,
+          "calendar": false,
+          "support_host": "https://www.tradingview.com"
+        }
+        </script>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= TRADE EXAMPLE ================= -->
+
+<section>
+
+  <div class="container">
+
+    <div class="section-title">
+      <span>TRADE LOGIC</span>
+      <h2>Example of the decision process.</h2>
+      <p>
+        A simplified example showing how the levels and confirmation can
+        work together.
+      </p>
+    </div>
+
+
+    <div class="trade-example">
+
+      <div class="trade-card">
+
+        <h3>XAUUSD M15 Example</h3>
+
+        <div class="trade-step">
+          <b>01</b>
+          <p>Asia Low and PDL form an important reference area.</p>
+        </div>
+
+        <div class="trade-step">
+          <b>02</b>
+          <p>Price moves into the area and liquidity is taken.</p>
+        </div>
+
+        <div class="trade-step">
+          <b>03</b>
+          <p>Price shows a reaction and confirmation is evaluated.</p>
+        </div>
+
+        <div class="trade-step">
+          <b>04</b>
+          <p>A trade is considered only when the defined conditions are satisfied.</p>
+        </div>
+
+      </div>
+
+
+      <div class="trade-card">
+
+        <h3>Risk Structure</h3>
+
+        <div class="trade-step">
+          <b>SL</b>
+          <p>Stop-loss should be defined before entering the trade.</p>
+        </div>
+
+        <div class="trade-step">
+          <b>TP</b>
+          <p>Take-profit should be based on the planned trade structure.</p>
+        </div>
+
+        <div class="trade-step">
+          <b>R</b>
+          <p>Risk should be controlled according to the trader's own risk tolerance.</p>
+        </div>
+
+        <div class="trade-step">
+          <b>!</b>
+          <p>Past or example setups do not guarantee future results.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= CALENDAR ================= -->
+
+<section id="calendar">
+
+  <div class="container">
+
+    <div class="section-title">
+      <span>ECONOMIC EVENTS</span>
+      <h2>Keep an eye on the calendar.</h2>
+      <p>
+        Major economic events can affect gold volatility. Check the
+        economic calendar before making trading decisions.
+      </p>
+    </div>
+
+
+    <div class="calendar-box">
+
+      <div
+        class="tradingview-widget-container"
+        style="height:100%;width:100%;">
+
+        <div
+          class="tradingview-widget-container__widget"
+          style="height:100%;width:100%;">
+        </div>
+
+        <script
+          type="text/javascript"
+          src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
+          async>
+        {
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "locale": "en",
+          "countryFilter": "us,gb,eu,jp,cn,ca,au,de,fr",
+          "importanceFilter": "-1,0,1",
+          "width": "100%",
+          "height": "100%"
+        }
+        </script>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section>
+
+  <div class="container">
+
+    <div class="section-title">
+      <span>HOW IT WORKS</span>
+      <h2>Simple process.</h2>
+      <p>
+        Review the system, choose access and use the member area after
+        creating your account.
+      </p>
+    </div>
+
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-number">STEP 01</div>
+        <h3>Study the system</h3>
+        <p>
+          Review the strategy, charts, examples and risk information
+          before purchasing.
+        </p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">STEP 02</div>
+        <h3>Choose access</h3>
+        <p>
+          Select the BOT ACCESS or VIP ACCESS option and continue to
+          the checkout.
+        </p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">STEP 03</div>
+        <h3>Member access</h3>
+        <p>
+          Create an account or log in to access the member area.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= DEMO ================= -->
+
+<section id="demo">
+
+  <div class="container">
+
+    <div class="section-title">
+      <span>LIVE DEMO</span>
+      <h2>Study the market before you decide.</h2>
+      <p>
+        Use the chart below to observe XAUUSD price movement.
+      </p>
     </div>
 
 
     <div class="chart-wrap">
 
-      <div
-        id="tradingview_main"
-        class="tradingview-widget-container">
+      <div class="tradingview-widget-container">
+
+        <div class="tradingview-widget-container__widget"></div>
+
+        <script
+          type="text/javascript"
+          src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
+          async>
+        {
+          "autosize": true,
+          "symbol": "OANDA:XAUUSD",
+          "interval": "15",
+          "timezone": "Etc/UTC",
+          "theme": "dark",
+          "style": "1",
+          "locale": "en",
+          "allow_symbol_change": false,
+          "calendar": false,
+          "support_host": "https://www.tradingview.com"
+        }
+        </script>
+
       </div>
 
     </div>
 
-  </section>
+  </div>
+
+</section>
 
 
-  <!-- TRADE EXAMPLE -->
+<!-- ================= PRICING ================= -->
 
-  <section>
+<section id="pricing">
+
+  <div class="container">
 
     <div class="section-title">
-
-      <span>
-        TRADE EXAMPLE
-      </span>
-
-      <h2>
-        Why this trade?
-      </h2>
-
+      <span>ACCESS</span>
+      <h2>Choose your access.</h2>
       <p>
-        Example of how a setup can be explained
-        before taking a position.
+        Select the package that matches what you want to access.
+        Payment is processed through Pesapal.
       </p>
-
     </div>
 
 
-    <div class="strategy-grid">
+    <div class="pricing">
 
-      <div class="strategy-box">
+      <!-- BOT -->
 
-        <h3>
-          Example — XAUUSD M15
-        </h3>
+      <div class="price-card">
 
-        <ul>
+        <div class="label">BOT ACCESS</div>
 
-          <li>
-            <strong>Setup:</strong>
-            Asia Low + PDL area
-          </li>
+        <div class="price">$50</div>
 
-          <li>
-            <strong>Liquidity:</strong>
-            Low swept
-          </li>
+        <p>
+          Access option for the core IAN XAU AI system.
+        </p>
 
-          <li>
-            <strong>Reaction:</strong>
-            Price reaction confirmed
-          </li>
+        <div class="features">
 
-          <li>
-            <strong>Risk:</strong>
-            Defined SL + TP
-          </li>
-
-          <li>
-            <strong>Bot action:</strong>
-            Entry considered
-          </li>
-
-        </ul>
-
-      </div>
-
-
-      <div class="strategy-box">
-
-        <h3>
-          Decision Logic
-        </h3>
-
-        <ul>
-
-          <li>
-            ✓ Key levels were already mapped.
-          </li>
-
-          <li>
-            ✓ Price interacted with a tracked liquidity area.
-          </li>
-
-          <li>
-            ✓ The example waited for confirmation.
-          </li>
-
-          <li>
-            ✓ Stop-loss and target were defined before the example entry.
-          </li>
-
-        </ul>
-
-        <div
-          style="
-            margin-top:18px;
-            padding:12px;
-            border:1px solid #203b28;
-            border-radius:8px;
-            color:#7e8d83;
-            font-size:11px;
-          "
-        >
-          Illustrative example only — not a live trading
-          signal or a guarantee of results.
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ECONOMIC CALENDAR -->
-
-  <section id="calendar">
-
-    <div class="section-title">
-
-      <span>
-        MARKET EVENTS
-      </span>
-
-      <h2>
-        Economic Calendar
-      </h2>
-
-      <p>
-        Monitor important economic events and market-impact
-        information before trading XAUUSD.
-      </p>
-
-    </div>
-
-
-    <div class="calendar-card">
-
-      <div class="calendar-header">
-
-        <strong>
-          TradingView Economic Calendar
-        </strong>
-
-        <span class="live-status">
-          ● LIVE
-        </span>
-
-      </div>
-
-
-      <div class="calendar-widget">
-
-        <div
-          class="tradingview-widget-container"
-          style="height:100%;width:100%;"
-        >
-
-          <div
-            class="tradingview-widget-container__widget"
-            style="height:100%;width:100%;"
-          ></div>
-
-
-          <div
-            class="tradingview-widget-copyright"
-            style="
-              text-align:center;
-              padding:5px;
-              font-size:10px;
-            "
-          >
-
-            <a
-              href="https://www.tradingview.com/economic-calendar/"
-              rel="noopener nofollow"
-              target="_blank"
-              style="color:#37e879;"
-            >
-              Economic Calendar
-            </a>
-
-            <span style="color:#657269;">
-              by TradingView
-            </span>
-
+          <div>
+            <span>✓</span>
+            XAUUSD-focused system
           </div>
 
+          <div>
+            <span>✓</span>
+            Rule-based strategy structure
+          </div>
 
-          <script
-            type="text/javascript"
-            src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
-            async
-          >
-          {
-            "colorTheme": "dark",
-            "isTransparent": true,
-            "locale": "en",
-            "countryFilter": "us,gb,eu,jp,cn,ca,au,de,fr",
-            "importanceFilter": "-1,0,1",
-            "width": "100%",
-            "height": "100%"
-          }
-          </script>
+          <div>
+            <span>✓</span>
+            Strategy information
+          </div>
+
+          <div>
+            <span>✓</span>
+            Member area access
+          </div>
 
         </div>
+
+        <a
+          href="https://store.pesapal.com/ianxauai"
+          target="_blank"
+          rel="noopener"
+          class="btn primary">
+          BUY BOT ACCESS
+        </a>
 
       </div>
 
 
-      <div class="calendar-footer">
+      <!-- VIP -->
 
-        Economic calendar information is provided by
+      <div class="price-card vip">
+
+        <div class="popular">VIP</div>
+
+        <div class="label">VIP ACCESS</div>
+
+        <div class="price">$150</div>
+
+        <p>
+          Premium access option for customers who want the VIP package.
+        </p>
+
+        <div class="features">
+
+          <div>
+            <span>✓</span>
+            XAUUSD-focused system
+          </div>
+
+          <div>
+            <span>✓</span>
+            Core strategy structure
+          </div>
+
+          <div>
+            <span>✓</span>
+            VIP package access
+          </div>
+
+          <div>
+            <span>✓</span>
+            Member area access
+          </div>
+
+        </div>
+
         <a
-    
+          href="https://store.pesapal.com/ianxauai"
+          target="_blank"
+          rel="noopener"
+          class="btn primary">
+          BUY VIP ACCESS
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= FAQ ================= -->
+
+<section>
+
+  <div class="container">
+
+    <div class="section-title">
+      <span>FAQ</span>
+      <h2>Questions before purchasing?</h2>
+    </div>
+
+
+    <div class="faq">
+
+      <details>
+        <summary>Is profit guaranteed?</summary>
+        <p>
+          No. Trading involves substantial risk and no profit or
+          performance guarantee is made by this website.
+        </p>
+      </details>
+
+
+      <details>
+        <summary>What market does the system focus on?</summary>
+        <p>
+          The system is designed around XAUUSD (gold).
+        </p>
+      </details>
+
+
+      <details>
+        <summary>Can I study the strategy before purchasing?</summary>
+        <p>
+          Yes. The website provides strategy information, live charts,
+          examples and an economic calendar so you can understand the
+          approach before deciding.
+        </p>
+      </details>
+
+
+      <details>
+        <summary>Where is payment processed?</summary>
+        <p>
+          The checkout button currently directs customers to the Pesapal
+          store used for the purchase.
+        </p>
+      </details>
+
+
+      <details>
+        <summary>Does trading involve risk?</summary>
+        <p>
+          Yes. Losses are possible. Customers should understand the risks
+          of leveraged financial markets before trading.
+        </p>
+      </details>
+
+
+      <details>
+        <summary>Is IAN XAU AI financial advice?</summary>
+        <p>
+          No. Information provided on this website is not personalized
+          financial advice.
+        </p>
+      </details>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= LOGIN ================= -->
+
+<section id="login">
+
+  <div class="container">
+
+    <div class="section-title auth-section">
+      <span>SECURE MEMBER AREA</span>
+      <h2>Login to IAN XAU AI.</h2>
+      <p>
+        Existing members can log in below. New customers can create
+        an account.
+      </p>
+    </div>
+
+
+    <div class="auth-box" id="authBox">
+
+      <div class="auth-tabs">
+
+        <button
+          class="auth-tab active"
+          id="loginTab">
+          LOGIN
+        </button>
+
+        <button
+          class="auth-tab"
+          id="signupTab">
+          CREATE ACCOUNT
+        </button>
+
+      </div>
+
+
+      <!-- LOGIN FORM -->
+
+      <form id="loginForm" class="auth-form">
+
+        <label>
+          Email
+          <input
+            id="loginEmail"
+            type="email"
+            placeholder="you@example.com"
+            required>
+        </label>
+
+        <label>
+          Password
+          <input
+            id="loginPassword"
+            type="password"
+            placeholder="Your password"
+            required>
+        </label>
+
+        <button
+          type="submit"
+          class="btn primary">
+          LOGIN
+        </button>
+
+        <button
+          type="button"
+          class="forgot"
+          id="forgotBtn">
+          Forgot password?
+        </button>
+
+      </form>
+
+
+      <!-- SIGNUP FORM -->
+
+      <form
+        id="signupForm"
+        class="auth-form"
+        style="display:none;">
+
+        <label>
+          Email
+          <input
+            id="signupEmail"
+            type="email"
+            placeholder="you@example.com"
+            required>
+        </label>
+
+        <label>
+          Password
+          <input
+            id="signupPassword"
+            type="password"
+            minlength="6"
+            placeholder="Minimum 6 characters"
+            required>
+        </label>
+
+        <button
+          type="submit"
+          class="btn primary">
+          CREATE ACCOUNT
+        </button>
+
+      </form>
+
+
+      <div
+        id="authMessage"
+        class="auth-message">
+      </div>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+
+    <div
+      id="dashboard"
+      class="dashboard">
+
+      <h3>Welcome to IAN XAU AI.</h3>
+
+      <p id="userEmail"></p>
+
+      <br>
+
+      <p>
+        Your account is active. Member resources can be connected to
+        this dashboard as the product delivery system is developed.
+      </p>
+
+      <br>
+
+      <button
+        id="logoutBtn"
+        class="btn secondary">
+        LOG OUT
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+  <div class="container">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+
+        <div class="logo">
+          IAN <span>XAU AI</span>
+        </div>
+
+        <p>
+          A rule-based XAUUSD trading system focused on structured
+          market levels, confirmation and disciplined execution.
+        </p>
+
+      </div>
+
+
+      <div class="footer-links">
+        <a href="#strategy">Strategy</a>
+        <a href="#charts">Charts</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#login">Login</a>
+      </div>
+
+    </div>
+
+
+    <div class="risk">
+      <strong>RISK DISCLOSURE:</strong>
+      Trading foreign exchange, gold and other leveraged financial
+      instruments involves significant risk and may result in the loss
+      of capital. Past performance and example setups are not guarantees
+      of future results. Nothing on this website constitutes personalized
+      financial, investment or trading advice. Only trade with money you
+      can afford to lose and make your own assessment of the risks.
+    </div>
+
+
+    <div class="copyright">
+      © 2026 IAN XAU AI. All rights reserved.
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+  /* ============================================
+     SUPABASE
+  ============================================ */
+
+  const SUPABASE_URL =
+    "https://elnqijtvqstzaxrydyox.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
+
+  const { createClient } =
+    supabase;
+
+  const supabaseClient =
+    createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* ============================================
+     MOBILE MENU
+  ============================================ */
+
+  const menuBtn =
+    document.getElementById("menuBtn");
+
+  const mobileMenu =
+    document.getElementById("mobileMenu");
+
+  menuBtn.addEventListener("click", () => {
+
+    mobileMenu.classList.toggle("show");
+
+  });
+
+
+  document.querySelectorAll(
+    ".mobile-menu a"
+  ).forEach(link => {
+
+    link.addEventListener("click", () => {
+
+      mobileMenu.classList.remove("show");
+
+    });
+
+  });
+
+
+  /* ============================================
+     AUTH ELEMENTS
+  ============================================ */
+
+  const loginTab =
+    document.getElementById("loginTab");
+
+  const signupTab =
+    document.getElementById("signupTab");
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const signupForm =
+    document.getElementById("signupForm");
+
+  const authMessage =
+    document.getElementById("authMessage");
+
+  const authBox =
+    document.getElementById("authBox");
+
+  const dashboard =
+    document.getElementById("dashboard");
+
+  const userEmail =
+    document.getElementById("userEmail");
+
+
+  /* ============================================
+     MESSAGE
+  ============================================ */
+
+  function showMessage(message, error = false) {
+
+    authMessage.textContent = message;
+
+    authMessage.classList.add("show");
+
+    if (error) {
+      authMessage.classList.add("error");
+    } else {
+      authMessage.classList.remove("error");
+    }
+
+  }
+
+
+  function clearMessage() {
+
+    authMessage.textContent = "";
+
+    authMessage.classList.remove("show");
+    authMessage.classList.remove("error");
+
+  }
+
+
+  /* ============================================
+     TABS
+  ============================================ */
+
+  loginTab.addEventListener("click", () => {
+
+    loginTab.classList.add("active");
+    signupTab.classList.remove("active");
+
+    loginForm.style.display = "grid";
+    signupForm.style.display = "none";
+
+    clearMessage();
+
+  });
+
+
+  signupTab.addEventListener("click", () => {
+
+    signupTab.classList.add("active");
+    loginTab.classList.remove("active");
+
+    signupForm.style.display = "grid";
+    loginForm.style.display = "none";
+
+    clearMessage();
+
+  });
+
+
+  /* ============================================
+     LOGIN
+  ============================================ */
+
+  loginForm.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+      clearMessage();
+
+      const email =
+        document.getElementById(
+          "loginEmail"
+        ).value.trim();
+
+      const password =
+        document.getElementById(
+          "loginPassword"
+        ).value;
+
+      if (!email || !password) {
+
+        showMessage(
+          "Enter your email and password.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      showMessage("Logging in...");
+
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+
+      if (error) {
+
+        showMessage(
+          error.message,
+          true
+        );
+
+        return;
+
+      }
+
+
+      if (data.user) {
+
+        showDashboard(
+          data.user
+        );
+
+      }
+
+    }
+  );
+
+
+  /* ============================================
+     CREATE ACCOUNT
+  ============================================ */
+
+  signupForm.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+      clearMessage();
+
+      const email =
+        document.getElementById(
+          "signupEmail"
+        ).value.trim();
+
+      const password =
+        document.getElementById(
+          "signupPassword"
+        ).value;
+
+
+      if (!email || !password) {
+
+        showMessage(
+          "Enter an email and password.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      if (password.length < 6) {
+
+        showMessage(
+          "Password must contain at least 6 characters.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      showMessage(
+        "Creating your account..."
+      );
+
+
+      const redirectUrl =
+        window.location.origin +
+        window.location.pathname +
+        "#login";
+
+
+      const { data, error } =
+        await supabaseClient.auth.signUp({
+
+          email: email,
+
+          password: password,
+
+          options: {
+            emailRedirectTo: redirectUrl
+          }
+
+        });
+
+
+      if (error) {
+
+        showMessage(
+          error.message,
+          true
+        );
+
+        return;
+
+      }
+
+
+      if (data.session && data.user) {
+
+        showDashboard(
+          data.user
+        );
+
+        return;
+
+      }
+
+
+      showMessage(
+        "Account created. Check your email to verify your account."
+      );
+
+    }
+  );
+
+
+  /* ============================================
+     FORGOT PASSWORD
+  ============================================ */
+
+  document
+    .getElementById("forgotBtn")
+    .addEventListener(
+      "click",
+      async () => {
+
+        clearMessage();
+
+        const email =
+          document.getElementById(
+            "loginEmail"
+          ).value.trim();
+
+
+        if (!email) {
+
+          showMessage(
+            "Enter your email first.",
+            true
+          );
+
+          return;
+
+        }
+
+
+        const redirectUrl =
+          window.location.origin +
+          window.location.pathname +
+          "#login";
+
+
+        showMessage(
+          "Sending password reset email..."
+        );
+
+
+        const { error } =
+          await supabaseClient.auth.resetPasswordForEmail(
+            email,
+            {
+              redirectTo: redirectUrl
+            }
+          );
+
+
+        if (error) {
+
+          showMessage(
+            error.message,
+            true
+          );
+
+          return;
+
+        }
+
+
+        showMessage(
+          "Password reset email sent. Check your inbox."
+        );
+
+      }
+    );
+
+
+  /* ============================================
+     SHOW DASHBOARD
+  ============================================ */
+
+  function showDashboard(user) {
+
+    authBox.style.display = "none";
+
+    dashboard.classList.add("show");
+
+    userEmail.textContent =
+      "Logged in as: " + user.email;
+
+  }
+
+
+  /* ============================================
+     LOGOUT
+  ============================================ */
+
+  document
+    .getElementById("logoutBtn")
+    .addEventListener(
+      "click",
+      async () => {
+
+        await supabaseClient.auth.signOut();
+
+        dashboard.classList.remove("show");
+
+        authBox.style.display = "block";
+
+        loginTab.click();
+
+      }
+    );
+
+
+  /* ============================================
+     CHECK EXISTING SESSION
+  ============================================ */
+
+  async function checkSession() {
+
+    const {
+      data
+    } = await supabaseClient.auth.getSession();
+
+
+    if (
+      data &&
+      data.session &&
+      data.session.user
+    ) {
+
+      showDashboard(
+        data.session.user
+      );
+
+    }
+
+  }
+
+
+  checkSession();
+
+
+  /* ============================================
+     AUTH STATE CHANGES
+  ============================================ */
+
+  supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
+
+      if (
+        session &&
+        session.user
+      ) {
+
+        showDashboard(
+          session.user
+        );
+
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
