@@ -4,848 +4,964 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>IAN XAU AI — Rule-Based XAUUSD Trading System</title>
+<title>IAN XAU AI — XAUUSD Trading System</title>
 
-<meta name="description" content="IAN XAU AI — a rule-based XAUUSD trading system focused on structured market levels, confirmation and defined risk.">
-<meta name="theme-color" content="#07100a">
+<meta name="description" content="IAN XAU AI — Rule-based XAUUSD trading system.">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
-    box-sizing:border-box;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 html{
-    scroll-behavior:smooth;
+  scroll-behavior:smooth;
 }
 
 body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#050806;
-    color:#f4f7f5;
-    line-height:1.6;
+  background:#050806;
+  color:#f2f5f3;
+  font-family:Arial,Helvetica,sans-serif;
+  line-height:1.6;
 }
 
 a{
-    color:inherit;
-    text-decoration:none;
+  color:inherit;
+  text-decoration:none;
 }
 
 button,
-a{
-    -webkit-tap-highlight-color:transparent;
+input{
+  font:inherit;
 }
 
-:root{
-    --bg:#050806;
-    --card:#0a100c;
-    --card2:#0d1510;
-    --green:#38e879;
-    --green2:#19c85c;
-    --text:#f4f7f5;
-    --muted:#9ba9a0;
-    --border:#1b2b20;
-    --danger:#ff6767;
+.container{
+  width:92%;
+  max-width:1150px;
+  margin:auto;
 }
 
 /* NAVIGATION */
 
-.nav{
-    position:sticky;
-    top:0;
-    z-index:9999;
-    background:rgba(5,8,6,.96);
-    border-bottom:1px solid var(--border);
-    backdrop-filter:blur(12px);
+header{
+  position:sticky;
+  top:0;
+  z-index:9999;
+  background:rgba(5,8,6,.97);
+  border-bottom:1px solid #1b2b20;
 }
 
-.nav-inner{
-    max-width:1200px;
-    margin:auto;
-    min-height:68px;
-    padding:0 20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
+nav{
+  min-height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
 
 .logo{
-    font-size:20px;
-    font-weight:900;
-    letter-spacing:.5px;
+  font-size:19px;
+  font-weight:900;
 }
 
 .logo span{
-    color:var(--green);
+  color:#38e879;
 }
 
-.nav-links{
-    display:flex;
-    align-items:center;
-    gap:18px;
+.navlinks{
+  display:flex;
+  gap:20px;
 }
 
-.nav-links a{
-    color:#dce5df;
-    font-size:14px;
-    font-weight:700;
+.navlinks a{
+  color:#aab5ad;
+  font-size:12px;
+  font-weight:700;
 }
 
-.nav-links a:hover{
-    color:var(--green);
+.navlinks a:hover{
+  color:#38e879;
 }
 
-.nav-login{
-    color:var(--green)!important;
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:7px;
 }
 
-.nav-access{
-    background:var(--green);
-    color:#041008!important;
-    padding:10px 14px;
-    border-radius:8px;
+.login-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #2c633c;
+  color:#38e879;
+  padding:9px 12px;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:900;
 }
 
-.menu-btn{
-    display:none;
-    border:1px solid var(--border);
-    background:#0a100c;
-    color:white;
-    border-radius:8px;
-    width:44px;
-    height:40px;
-    font-size:23px;
-    cursor:pointer;
+.menu-button{
+  display:none;
+  border:1px solid #294332;
+  background:#09100b;
+  color:#38e879;
+  width:40px;
+  height:38px;
+  border-radius:8px;
+  font-size:20px;
+  cursor:pointer;
 }
 
 .mobile-menu{
-    display:none;
-    border-top:1px solid var(--border);
-    background:#070c08;
-    padding:12px 20px 18px;
-}
-
-.mobile-menu.show{
-    display:block;
+  display:none;
+  background:#080e09;
+  border-top:1px solid #1b2b20;
+  padding:12px 0 16px;
 }
 
 .mobile-menu a{
-    display:block;
-    padding:13px 0;
-    border-bottom:1px solid #152019;
-    font-weight:700;
+  display:block;
+  padding:12px 4px;
+  color:#b5c0b8;
+  font-size:14px;
+  font-weight:700;
 }
 
-.mobile-menu a:last-child{
-    border-bottom:0;
+.mobile-menu a:hover{
+  color:#38e879;
 }
 
-/* GENERAL */
-
-.container{
-    width:min(1200px,92%);
-    margin:auto;
-}
-
-section{
-    padding:80px 0;
-    scroll-margin-top:80px;
-}
-
-.eyebrow{
-    color:var(--green);
-    font-size:12px;
-    font-weight:900;
-    letter-spacing:2px;
-    margin-bottom:12px;
-}
-
-h1,h2,h3{
-    margin-top:0;
-}
-
-h2{
-    font-size:36px;
-    line-height:1.15;
-}
-
-.muted{
-    color:var(--muted);
-}
+/* BUTTONS */
 
 .btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-height:48px;
-    padding:0 20px;
-    border-radius:9px;
-    border:1px solid var(--border);
-    font-weight:900;
-    cursor:pointer;
-    transition:.2s;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  padding:12px 18px;
+  border-radius:8px;
+  border:1px solid transparent;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
 }
 
-.btn:hover{
-    transform:translateY(-1px);
+.btn-green{
+  background:#38e879;
+  color:#041007;
 }
 
-.btn.primary{
-    background:var(--green);
-    color:#041008;
-    border-color:var(--green);
-}
-
-.btn.secondary{
-    background:#0b120d;
-    color:white;
-}
-
-.btn.full{
-    width:100%;
-}
-
-.grid{
-    display:grid;
-    gap:18px;
+.btn-dark{
+  background:#09100b;
+  border-color:#294332;
+  color:white;
 }
 
 /* HERO */
 
 .hero{
-    padding:100px 0 80px;
+  padding:85px 0;
 }
 
 .hero-grid{
-    display:grid;
-    grid-template-columns:1.2fr .8fr;
-    gap:50px;
-    align-items:center;
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:50px;
+  align-items:center;
+}
+
+.badge{
+  display:inline-block;
+  color:#38e879;
+  border:1px solid #245c36;
+  padding:7px 11px;
+  border-radius:30px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1px;
+  margin-bottom:20px;
 }
 
 .hero h1{
-    font-size:clamp(42px,7vw,76px);
-    line-height:.98;
-    margin:0 0 22px;
-    letter-spacing:-3px;
+  font-size:clamp(42px,7vw,72px);
+  line-height:1;
+  letter-spacing:-3px;
+  margin-bottom:22px;
 }
 
 .hero h1 span{
-    color:var(--green);
+  color:#38e879;
 }
 
 .hero p{
-    color:var(--muted);
-    max-width:680px;
-    font-size:18px;
+  color:#9ca8a0;
+  max-width:620px;
+  font-size:15px;
+  margin-bottom:26px;
 }
 
 .hero-buttons{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-top:28px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.hero-note{
+  color:#66736b;
+  font-size:10px;
+  margin-top:17px;
 }
 
 .hero-card{
-    background:linear-gradient(145deg,#0d1710,#071009);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:26px;
-    box-shadow:0 20px 70px rgba(0,0,0,.35);
+  background:#0b130d;
+  border:1px solid #1b2b20;
+  border-radius:16px;
+  padding:25px;
 }
 
-.status{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    color:var(--green);
-    font-size:12px;
-    font-weight:900;
-    letter-spacing:1px;
+.hero-card-title{
+  color:#aab5ad;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:20px;
 }
 
-.dot{
-    width:9px;
-    height:9px;
-    background:var(--green);
-    border-radius:50%;
-    box-shadow:0 0 15px rgba(56,232,121,.7);
+.market{
+  border-top:1px solid #1b2b20;
+  border-bottom:1px solid #1b2b20;
+  padding:22px 0;
+  margin-bottom:14px;
 }
 
-.level-box{
-    margin-top:24px;
-    padding:18px;
-    border:1px solid var(--border);
-    border-radius:12px;
-    background:#08100a;
+.market small{
+  color:#7c8880;
+  font-size:9px;
 }
 
-.level-row{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    padding:11px 0;
-    border-bottom:1px solid #142019;
+.market strong{
+  display:block;
+  font-size:38px;
 }
 
-.level-row:last-child{
-    border-bottom:0;
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  background:#071009;
+  border:1px solid #1b2b20;
+  padding:10px;
+  margin-top:8px;
+  border-radius:7px;
+  font-size:10px;
 }
 
-.level-row span:first-child{
-    color:var(--muted);
+.green{
+  color:#38e879;
 }
 
-.level-row span:last-child{
-    color:var(--green);
-    font-weight:900;
+/* SECTIONS */
+
+section{
+  padding:75px 0;
+  border-top:1px solid #132018;
+}
+
+.section-title{
+  max-width:700px;
+  margin-bottom:35px;
+}
+
+.section-title span{
+  color:#38e879;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.section-title h2{
+  font-size:clamp(30px,5vw,47px);
+  line-height:1.05;
+  margin:9px 0 13px;
+}
+
+.section-title p{
+  color:#9ca8a0;
+  font-size:13px;
 }
 
 /* CARDS */
 
-.cards-4{
-    grid-template-columns:repeat(4,1fr);
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
 }
 
 .card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:24px;
+  background:#0a120c;
+  border:1px solid #1b2b20;
+  border-radius:13px;
+  padding:22px;
+}
+
+.card-number{
+  color:#38e879;
+  font-weight:900;
+  font-size:11px;
+  margin-bottom:15px;
 }
 
 .card h3{
-    margin-bottom:8px;
+  font-size:15px;
+  margin-bottom:7px;
 }
 
 .card p{
-    margin:0;
-    color:var(--muted);
+  color:#9ca8a0;
+  font-size:11px;
 }
 
 /* STRATEGY */
 
 .strategy-grid{
-    grid-template-columns:repeat(2,1fr);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
 }
 
-.step-number{
-    color:var(--green);
-    font-size:13px;
-    font-weight:900;
-    letter-spacing:1px;
+.strategy{
+  background:#09100b;
+  border:1px solid #1b2b20;
+  border-radius:13px;
+  padding:25px;
+}
+
+.strategy h3{
+  margin-bottom:9px;
+}
+
+.strategy p{
+  color:#9ca8a0;
+  font-size:12px;
+}
+
+.strategy ul{
+  margin-top:15px;
+  list-style:none;
+}
+
+.strategy li{
+  color:#c5cec8;
+  font-size:11px;
+  margin:8px 0;
+}
+
+.strategy li::before{
+  content:"✓";
+  color:#38e879;
+  margin-right:8px;
 }
 
 /* CHART */
 
-.chart-box{
-    background:#070b08;
-    border:1px solid var(--border);
-    border-radius:14px;
-    overflow:hidden;
-    min-height:500px;
+.chart{
+  height:540px;
+  border:1px solid #1b2b20;
+  border-radius:13px;
+  overflow:hidden;
 }
 
-.tradingview-widget-container{
-    height:500px;
+.tradingview-widget-container,
+.tradingview-widget-container__widget{
+  width:100%;
+  height:100%;
 }
 
-/* TRADE EXAMPLE */
+/* PURCHASE FLOW */
 
-.example{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
+.purchase-flow{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
 }
 
-.example-box{
-    padding:25px;
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
+.flow{
+  background:#09100b;
+  border:1px solid #1b2b20;
+  border-radius:12px;
+  padding:20px;
 }
 
-.check{
-    color:var(--green);
-    font-weight:900;
+.flow-number{
+  color:#38e879;
+  font-size:10px;
+  font-weight:900;
+}
+
+.flow h3{
+  font-size:14px;
+  margin:7px 0;
+}
+
+.flow p{
+  color:#9ca8a0;
+  font-size:11px;
 }
 
 /* PRICING */
 
 .pricing{
-    grid-template-columns:repeat(2,1fr);
-    max-width:900px;
-    margin:auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  max-width:850px;
 }
 
 .price-card{
-    position:relative;
-    background:linear-gradient(145deg,#0b120d,#070c08);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:30px;
+  background:#0a120c;
+  border:1px solid #1b2b20;
+  border-radius:15px;
+  padding:28px;
 }
 
-.price-card.featured{
-    border-color:#28683d;
+.price-card.vip{
+  border-color:#326340;
+}
+
+.price-label{
+  color:#38e879;
+  font-size:10px;
+  font-weight:900;
 }
 
 .price{
-    font-size:50px;
-    font-weight:900;
-    margin:10px 0;
+  font-size:47px;
+  font-weight:900;
+  margin:8px 0;
 }
 
-.price small{
-    font-size:14px;
-    color:var(--muted);
+.price-description{
+  color:#9ca8a0;
+  font-size:12px;
 }
 
 .features{
-    padding:0;
-    list-style:none;
+  border-top:1px solid #1b2b20;
+  margin:20px 0;
+  padding-top:18px;
 }
 
-.features li{
-    padding:10px 0;
-    border-bottom:1px solid #152019;
+.features div{
+  color:#c5cec8;
+  font-size:11px;
+  margin:10px 0;
 }
 
-.features li::before{
-    content:"✓";
-    color:var(--green);
-    font-weight:900;
-    margin-right:9px;
+.features span{
+  color:#38e879;
+  margin-right:7px;
+}
+
+.price-card .btn{
+  width:100%;
 }
 
 /* FAQ */
 
 .faq{
-    max-width:850px;
-    margin:auto;
+  max-width:850px;
 }
 
 details{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:12px;
+  background:#09100b;
+  border:1px solid #1b2b20;
+  border-radius:9px;
+  padding:16px;
+  margin-bottom:9px;
 }
 
 summary{
-    cursor:pointer;
-    font-weight:800;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:800;
 }
 
 details p{
-    color:var(--muted);
+  color:#9ca8a0;
+  font-size:11px;
+  margin-top:10px;
 }
 
-/* AUTH */
+/* LOGIN */
 
-.auth-wrap{
-    max-width:520px;
-    margin:auto;
+.auth-container{
+  max-width:470px;
+  margin:auto;
 }
 
-.auth-card{
-    background:#090f0b;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:28px;
+.auth-box{
+  background:#09100b;
+  border:1px solid #1b2b20;
+  border-radius:15px;
+  padding:27px;
 }
 
 .auth-tabs{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-bottom:22px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  padding:4px;
+  background:#050806;
+  border:1px solid #1b2b20;
+  border-radius:8px;
+  margin-bottom:22px;
 }
 
 .auth-tab{
-    border:1px solid var(--border);
-    background:#070b08;
-    color:#aeb9b2;
-    padding:12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:800;
+  border:0;
+  background:transparent;
+  color:#849088;
+  padding:11px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
 }
 
 .auth-tab.active{
-    background:var(--green);
-    color:#041008;
-    border-color:var(--green);
+  background:#38e879;
+  color:#041007;
 }
 
 .auth-form{
-    display:none;
+  display:grid;
+  gap:13px;
 }
 
-.auth-form.active{
-    display:block;
+.auth-form label{
+  color:#aeb8b1;
+  font-size:11px;
+  font-weight:700;
 }
 
-.field{
-    margin-bottom:15px;
+.auth-form input{
+  width:100%;
+  padding:13px;
+  margin-top:6px;
+  background:#050806;
+  border:1px solid #1b2b20;
+  border-radius:8px;
+  color:white;
+  outline:none;
 }
 
-.field label{
-    display:block;
-    font-size:13px;
-    color:#c8d2cc;
-    font-weight:700;
-    margin-bottom:7px;
-}
-
-.field input{
-    width:100%;
-    height:48px;
-    padding:0 14px;
-    background:#050806;
-    border:1px solid var(--border);
-    border-radius:8px;
-    color:white;
-    outline:none;
-}
-
-.field input:focus{
-    border-color:var(--green);
-}
-
-.auth-message{
-    margin-top:15px;
-    font-size:14px;
-    color:var(--muted);
-    min-height:20px;
-}
-
-.auth-message.error{
-    color:var(--danger);
-}
-
-.auth-message.success{
-    color:var(--green);
+.auth-form input:focus{
+  border-color:#38e879;
 }
 
 .forgot{
-    display:block;
-    margin:13px 0 18px;
-    color:var(--green);
-    font-size:13px;
-    cursor:pointer;
-    text-align:right;
+  border:0;
+  background:none;
+  color:#38e879;
+  cursor:pointer;
+  font-size:10px;
+  text-align:right;
 }
 
-/* DASHBOARD */
+.auth-message{
+  display:none;
+  padding:12px;
+  margin-top:14px;
+  border-radius:8px;
+  background:#071009;
+  color:#aab5ad;
+  font-size:11px;
+}
+
+.auth-message.show{
+  display:block;
+}
+
+.auth-message.error{
+  color:#ff6b6b;
+}
 
 .dashboard{
-    display:none;
-    max-width:900px;
-    margin:auto;
+  display:none;
+  background:#09100b;
+  border:1px solid #1b2b20;
+  border-radius:15px;
+  padding:28px;
+  max-width:700px;
+  margin:auto;
 }
 
 .dashboard.show{
-    display:block;
+  display:block;
 }
 
-.dashboard-grid{
-    grid-template-columns:repeat(2,1fr);
+.dashboard p{
+  color:#9ca8a0;
+  font-size:12px;
 }
 
-.dashboard-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:24px;
+/* CONTACT */
+
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
 }
 
-.dashboard-status{
-    color:var(--green);
-    font-weight:900;
+.contact{
+  background:#09100b;
+  border:1px solid #1b2b20;
+  border-radius:13px;
+  padding:25px;
 }
 
-.logout-btn{
-    background:#170909;
-    color:#ff7777;
-    border:1px solid #442020;
+.contact h3{
+  margin-bottom:7px;
+}
+
+.contact p{
+  color:#9ca8a0;
+  font-size:12px;
+  margin-bottom:15px;
+}
+
+.contact a{
+  color:#38e879;
+  font-size:13px;
+  font-weight:900;
 }
 
 /* FOOTER */
 
 footer{
-    border-top:1px solid var(--border);
-    padding:45px 0;
-    color:var(--muted);
+  border-top:1px solid #1b2b20;
+  padding:40px 0 25px;
 }
 
-.footer-grid{
-    display:flex;
-    justify-content:space-between;
-    gap:30px;
-    flex-wrap:wrap;
+.footer-top{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:25px;
+}
+
+.footer-text{
+  max-width:450px;
+}
+
+.footer-text p{
+  color:#727e76;
+  font-size:10px;
+  margin-top:9px;
 }
 
 .footer-links{
-    display:flex;
-    gap:18px;
-    flex-wrap:wrap;
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
 }
 
-.footer-links a:hover{
-    color:var(--green);
+.footer-links a{
+  color:#8b968f;
+  font-size:10px;
 }
 
-.disclaimer{
-    margin-top:25px;
-    padding-top:20px;
-    border-top:1px solid var(--border);
-    font-size:12px;
+.risk{
+  border-top:1px solid #1b2b20;
+  padding-top:18px;
+  color:#66716a;
+  font-size:9px;
+  line-height:1.7;
 }
 
-/* RESPONSIVE */
+.copy{
+  color:#505b54;
+  font-size:9px;
+  margin-top:14px;
+}
+
+/* MOBILE */
 
 @media(max-width:900px){
 
-    .nav-links{
-        display:none;
-    }
+  .navlinks{
+    display:none;
+  }
 
-    .menu-btn{
-        display:block;
-    }
+  .menu-button{
+    display:block;
+  }
 
-    .hero-grid,
-    .example{
-        grid-template-columns:1fr;
-    }
+  .hero-grid{
+    grid-template-columns:1fr;
+  }
 
-    .cards-4{
-        grid-template-columns:repeat(2,1fr);
-    }
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
 
-    .strategy-grid,
-    .pricing{
-        grid-template-columns:1fr;
-    }
+  .strategy-grid{
+    grid-template-columns:1fr;
+  }
 
+  .purchase-flow{
+    grid-template-columns:1fr 1fr;
+  }
 }
 
 @media(max-width:600px){
 
-    section{
-        padding:60px 0;
-    }
+  .container{
+    width:91%;
+  }
 
-    .hero{
-        padding:70px 0 55px;
-    }
+  .logo{
+    font-size:16px;
+  }
 
-    .hero h1{
-        font-size:46px;
-        letter-spacing:-2px;
-    }
+  .login-button{
+    padding:8px 9px;
+    font-size:9px;
+  }
 
-    .hero p{
-        font-size:16px;
-    }
+  .nav-actions .btn{
+    padding:8px 9px;
+    font-size:9px;
+  }
 
-    h2{
-        font-size:30px;
-    }
+  .hero{
+    padding:55px 0;
+  }
 
-    .cards-4,
-    .dashboard-grid{
-        grid-template-columns:1fr;
-    }
+  .hero h1{
+    font-size:43px;
+    letter-spacing:-2px;
+  }
 
-    .chart-box,
-    .tradingview-widget-container{
-        min-height:420px;
-        height:420px;
-    }
+  section{
+    padding:60px 0;
+  }
 
-    .price{
-        font-size:43px;
-    }
+  .grid,
+  .purchase-flow,
+  .pricing,
+  .contact-grid{
+    grid-template-columns:1fr;
+  }
+
+  .chart{
+    height:440px;
+  }
+
+  .footer-top{
+    flex-direction:column;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAVIGATION -->
+<header>
 
-<header class="nav">
-    <div class="nav-inner">
+<div class="container">
 
-        <a href="#home" class="logo">
-            IAN <span>XAU AI</span>
-        </a>
+<nav>
 
-        <nav class="nav-links">
-            <a href="#strategy">STRATEGY</a>
-            <a href="#charts">CHARTS</a>
-            <a href="#calendar">CALENDAR</a>
-            <a href="#demo">DEMO</a>
-            <a href="#pricing">PRICING</a>
-            <a href="#login" class="nav-login">LOGIN</a>
-            <a href="#pricing" class="nav-access">GET ACCESS</a>
-        </nav>
+<a href="#top" class="logo">
+IAN <span>XAU AI</span>
+</a>
 
-        <button
-            type="button"
-            id="menuBtn"
-            class="menu-btn"
-            aria-label="Open menu"
-            aria-expanded="false">
-            ☰
-        </button>
+<div class="navlinks">
+<a href="#strategy">Strategy</a>
+<a href="#charts">Charts</a>
+<a href="#pricing">Pricing</a>
+<a href="#login">Login</a>
+</div>
 
-    </div>
+<div class="nav-actions">
 
-    <div id="mobileMenu" class="mobile-menu">
+<a href="#login" class="login-button">
+LOGIN
+</a>
 
-        <a href="#strategy">STRATEGY</a>
-        <a href="#charts">CHARTS</a>
-        <a href="#calendar">CALENDAR</a>
-        <a href="#demo">DEMO</a>
-        <a href="#pricing">PRICING</a>
-        <a href="#login" class="mobile-login">LOGIN</a>
+<a href="#pricing" class="btn btn-green">
+GET ACCESS
+</a>
 
-    </div>
+<button
+type="button"
+class="menu-button"
+id="menuButton"
+aria-label="Open menu">
+☰
+</button>
+
+</div>
+
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+
+<a href="#strategy">Strategy</a>
+<a href="#charts">Charts</a>
+<a href="#calendar">Economic Calendar</a>
+<a href="#demo">Demo</a>
+<a href="#pricing">Pricing</a>
+<a href="#purchase">How to Activate</a>
+<a href="#login">Login / Create Account</a>
+<a href="#contact">Contact</a>
+
+</div>
+
+</div>
+
 </header>
 
 
+<main id="top">
+
 <!-- HERO -->
 
-<main>
+<section class="hero">
 
-<section id="home" class="hero">
+<div class="container">
 
-    <div class="container hero-grid">
+<div class="hero-grid">
 
-        <div>
+<div>
 
-            <div class="eyebrow">
-                RULE-BASED XAUUSD TRADING SYSTEM
-            </div>
+<div class="badge">
+RULE-BASED XAUUSD SYSTEM
+</div>
 
-            <h1>
-                READ THE MARKET.<br>
-                <span>FOLLOW THE RULES.</span>
-            </h1>
+<h1>
+READ THE MARKET.<br>
+<span>FOLLOW THE RULES.</span>
+</h1>
 
-            <p>
-                IAN XAU AI is built around structured XAUUSD levels,
-                liquidity behaviour, confirmation and defined risk.
-                No random entries. No emotional decision-making.
-            </p>
+<p>
+IAN XAU AI is a rule-based XAUUSD trading system focused on
+structured market levels, liquidity and confirmation conditions.
+</p>
 
-            <div class="hero-buttons">
+<div class="hero-buttons">
 
-                <a href="#pricing" class="btn primary">
-                    VIEW BOT
-                </a>
+<a href="#pricing" class="btn btn-green">
+GET ACCESS
+</a>
 
-                <a href="#strategy" class="btn secondary">
-                    HOW IT WORKS
-                </a>
+<a href="#strategy" class="btn btn-dark">
+VIEW STRATEGY
+</a>
 
-            </div>
+</div>
 
-        </div>
+<div class="hero-note">
+XAUUSD • M15 • Asia High/Low • PDH/PDL • Confirmation
+</div>
 
-        <div class="hero-card">
+</div>
 
-            <div class="status">
-                <span class="dot"></span>
-                SYSTEM MONITORING
-            </div>
 
-            <h3 style="margin-top:20px;">
-                XAUUSD MARKET STRUCTURE
-            </h3>
+<div class="hero-card">
 
-            <div class="level-box">
+<div class="hero-card-title">
+SYSTEM OVERVIEW
+</div>
 
-                <div class="level-row">
-                    <span>Asia High</span>
-                    <span>MARKED</span>
-                </div>
+<div class="market">
+<small>MARKET</small>
+<strong>XAUUSD</strong>
+</div>
 
-                <div class="level-row">
-                    <span>Asia Low</span>
-                    <span>MARKED</span>
-                </div>
+<div class="info-row">
+<span>Timeframe</span>
+<strong class="green">M15</strong>
+</div>
 
-                <div class="level-row">
-                    <span>PDH / PDL</span>
-                    <span>MARKED</span>
-                </div>
+<div class="info-row">
+<span>Asia High / Low</span>
+<strong>LEVELS</strong>
+</div>
 
-                <div class="level-row">
-                    <span>Confirmation</span>
-                    <span>REQUIRED</span>
-                </div>
+<div class="info-row">
+<span>PDH / PDL</span>
+<strong>LEVELS</strong>
+</div>
 
-            </div>
+<div class="info-row">
+<span>Confirmation</span>
+<strong class="green">REQUIRED</strong>
+</div>
 
-        </div>
+</div>
 
-    </div>
+</div>
+
+</div>
 
 </section>
 
 
-<!-- TRANSPARENCY -->
+<!-- FEATURES -->
 
 <section>
 
-    <div class="container">
+<div class="container">
 
-        <div class="eyebrow">SYSTEM FOUNDATION</div>
+<div class="section-title">
+<span>TRANSPARENCY</span>
+<h2>Know what you are getting.</h2>
+<p>
+Review the system before purchasing.
+</p>
+</div>
 
-        <h2>Built around rules, not guesses.</h2>
+<div class="grid">
 
-        <div class="grid cards-4" style="margin-top:30px;">
+<div class="card">
+<div class="card-number">01</div>
+<h3>Structured Levels</h3>
+<p>
+Asia High, Asia Low, PDH and PDL are used as reference levels.
+</p>
+</div>
 
-            <div class="card">
-                <h3>Structured Levels</h3>
-                <p>
-                    Key market levels are identified before looking for an entry.
-                </p>
-            </div>
+<div class="card">
+<div class="card-number">02</div>
+<h3>Confirmation</h3>
+<p>
+Price reaction is evaluated before a setup is considered.
+</p>
+</div>
 
-            <div class="card">
-                <h3>Liquidity</h3>
-                <p>
-                    The system watches how price interacts with important levels.
-                </p>
-            </div>
+<div class="card">
+<div class="card-number">03</div>
+<h3>Live Charts</h3>
+<p>
+Study current XAUUSD price movement through the live chart.
+</p>
+</div>
 
-            <div class="card">
-                <h3>Confirmation</h3>
-                <p>
-                    A level alone is not treated as an automatic trade signal.
-                </p>
-            </div>
+<div class="card">
+<div class="card-number">04</div>
+<h3>Support</h3>
+<p>
+After payment, customers can contact WhatsApp for activation.
+</p>
+</div>
 
-            <div class="card">
-                <h3>Defined Risk</h3>
-                <p>
-                    Stop loss and take profit are defined as part of the setup.
-                </p>
-            </div>
+</div>
 
-        </div>
-
-    </div>
+</div>
 
 </section>
 
@@ -854,53 +970,77 @@ footer{
 
 <section id="strategy">
 
-    <div class="container">
+<div class="container">
 
-        <div class="eyebrow">THE STRATEGY</div>
+<div class="section-title">
+<span>STRATEGY</span>
+<h2>How the system reads XAUUSD.</h2>
+<p>
+The approach uses important market levels together with confirmation.
+</p>
+</div>
 
-        <h2>Four stages before an entry.</h2>
+<div class="strategy-grid">
 
-        <div class="grid strategy-grid" style="margin-top:30px;">
+<div class="strategy">
+<h3>Asia High & Asia Low</h3>
+<p>
+The Asian session range provides reference levels for later
+price movement.
+</p>
 
-            <div class="card">
-                <div class="step-number">01 — MARK THE LEVELS</div>
-                <h3>Asia High / Asia Low</h3>
-                <p>
-                    The Asian session range is used as a reference area for
-                    later price behaviour.
-                </p>
-            </div>
+<ul>
+<li>Mark Asia High</li>
+<li>Mark Asia Low</li>
+<li>Watch price interaction</li>
+</ul>
+</div>
 
-            <div class="card">
-                <div class="step-number">02 — MARK PREVIOUS DAY LEVELS</div>
-                <h3>PDH / PDL</h3>
-                <p>
-                    Previous Day High and Previous Day Low provide additional
-                    reference points.
-                </p>
-            </div>
+<div class="strategy">
+<h3>PDH & PDL</h3>
+<p>
+Previous Day High and Previous Day Low provide additional
+market reference points.
+</p>
 
-            <div class="card">
-                <div class="step-number">03 — WATCH LIQUIDITY</div>
-                <h3>Wait for the reaction</h3>
-                <p>
-                    Price can sweep or interact with a level before the system
-                    looks for confirmation.
-                </p>
-            </div>
+<ul>
+<li>Previous Day High</li>
+<li>Previous Day Low</li>
+<li>Observe reaction</li>
+</ul>
+</div>
 
-            <div class="card">
-                <div class="step-number">04 — CONFIRM & DEFINE RISK</div>
-                <h3>Entry / SL / TP</h3>
-                <p>
-                    Once the setup conditions are satisfied, the trade structure
-                    is defined before execution.
-                </p>
-            </div>
+<div class="strategy">
+<h3>Liquidity</h3>
+<p>
+Price interaction around important levels is evaluated for
+possible liquidity sweeps and reactions.
+</p>
 
-        </div>
+<ul>
+<li>Identify level</li>
+<li>Watch liquidity</li>
+<li>Wait for reaction</li>
+</ul>
+</div>
 
-    </div>
+<div class="strategy">
+<h3>Trade Structure</h3>
+<p>
+When the required conditions are satisfied, entry, stop-loss
+and take-profit can be defined.
+</p>
+
+<ul>
+<li>Entry condition</li>
+<li>Stop-loss</li>
+<li>Take-profit</li>
+</ul>
+</div>
+
+</div>
+
+</div>
 
 </section>
 
@@ -909,119 +1049,45 @@ footer{
 
 <section id="charts">
 
-    <div class="container">
+<div class="container">
 
-        <div class="eyebrow">LIVE MARKET</div>
+<div class="section-title">
+<span>LIVE MARKET</span>
+<h2>XAUUSD chart.</h2>
+<p>
+Study the current XAUUSD market.
+</p>
+</div>
 
-        <h2>XAUUSD chart</h2>
+<div class="chart">
 
-        <p class="muted">
-            Market data is provided through TradingView. This chart is for
-            information and demonstration purposes.
-        </p>
+<div class="tradingview-widget-container">
 
-        <div class="chart-box" style="margin-top:25px;">
+<div class="tradingview-widget-container__widget"></div>
 
-            <div class="tradingview-widget-container">
+<script
+type="text/javascript"
+src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
+async>
+{
+"autosize":true,
+"symbol":"OANDA:XAUUSD",
+"interval":"15",
+"timezone":"Etc/UTC",
+"theme":"dark",
+"style":"1",
+"locale":"en",
+"allow_symbol_change":true,
+"calendar":false,
+"support_host":"https://www.tradingview.com"
+}
+</script>
 
-                <div
-                    class="tradingview-widget-container__widget"
-                    style="height:100%;width:100%;">
-                </div>
+</div>
 
-                <script
-                    type="text/javascript"
-                    src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
-                    async>
-                {
-                  "autosize": true,
-                  "symbol": "OANDA:XAUUSD",
-                  "interval": "15",
-                  "timezone": "Etc/UTC",
-                  "theme": "dark",
-                  "style": "1",
-                  "locale": "en",
-                  "allow_symbol_change": false,
-                  "calendar": false,
-                  "support_host": "https://www.tradingview.com"
-                }
-                </script>
+</div>
 
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- TRADE EXAMPLE -->
-
-<section>
-
-    <div class="container">
-
-        <div class="eyebrow">TRADE EXAMPLE</div>
-
-        <h2>Why the system may take a trade.</h2>
-
-        <div class="example" style="margin-top:30px;">
-
-            <div class="example-box">
-
-                <h3>XAUUSD — M15</h3>
-
-                <p class="muted">
-                    Example setup:
-                </p>
-
-                <p>
-                    <span class="check">✓</span>
-                    Asia Low identified
-                </p>
-
-                <p>
-                    <span class="check">✓</span>
-                    PDL located in the same area
-                </p>
-
-                <p>
-                    <span class="check">✓</span>
-                    Liquidity sweep observed
-                </p>
-
-                <p>
-                    <span class="check">✓</span>
-                    Price reaction confirmed
-                </p>
-
-                <p>
-                    <span class="check">✓</span>
-                    Defined SL + TP
-                </p>
-
-            </div>
-
-            <div class="example-box">
-
-                <h3>The principle</h3>
-
-                <p class="muted">
-                    The system is designed to wait for a structured setup
-                    instead of entering simply because price reaches a level.
-                </p>
-
-                <p class="muted">
-                    Actual trading results can vary. Historical examples do
-                    not guarantee future results.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </section>
 
@@ -1030,53 +1096,42 @@ footer{
 
 <section id="calendar">
 
-    <div class="container">
+<div class="container">
 
-        <div class="eyebrow">MARKET EVENTS</div>
+<div class="section-title">
+<span>ECONOMIC CALENDAR</span>
+<h2>Watch important events.</h2>
+<p>
+Economic events can affect gold volatility.
+</p>
+</div>
 
-        <h2>Economic calendar</h2>
+<div class="chart">
 
-        <p class="muted">
-            Monitor scheduled economic events that can affect market volatility.
-        </p>
+<div class="tradingview-widget-container">
 
-        <div
-            style="
-            margin-top:25px;
-            border:1px solid var(--border);
-            border-radius:14px;
-            overflow:hidden;
-            background:#070b08;
-            min-height:500px;
-            ">
+<div class="tradingview-widget-container__widget"></div>
 
-            <div class="tradingview-widget-container"
-                 style="height:500px;width:100%;">
+<script
+type="text/javascript"
+src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
+async>
+{
+"colorTheme":"dark",
+"isTransparent":true,
+"locale":"en",
+"countryFilter":"us,gb,eu,jp,cn,ca,au,de,fr",
+"importanceFilter":"-1,0,1",
+"width":"100%",
+"height":"100%"
+}
+</script>
 
-                <div
-                    class="tradingview-widget-container__widget"
-                    style="height:100%;width:100%;">
-                </div>
+</div>
 
-                <script
-                    type="text/javascript"
-                    src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
-                    async>
-                {
-                  "colorTheme": "dark",
-                  "isTransparent": true,
-                  "width": "100%",
-                  "height": "100%",
-                  "locale": "en",
-                  "importanceFilter": "-1,0,1"
-                }
-                </script>
+</div>
 
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </section>
 
@@ -1085,15 +1140,312 @@ footer{
 
 <section id="demo">
 
-    <div class="container">
+<div class="container">
 
-        <div class="eyebrow">SYSTEM DEMO</div>
+<div class="section-title">
+<span>DEMO</span>
+<h2>Study the market before purchasing.</h2>
+<p>
+Use the chart to observe XAUUSD.
+</p>
+</div>
 
-        <h2>From purchase to MT5.</h2>
+<div class="chart">
 
-        <div class="grid cards-4" style="margin-top:30px;">
+<div class="tradingview-widget-container">
 
-            <div class="card">
-                <div class="step-number">01</div>
-                <h3>Create Account</h3>
-   
+<div class="tradingview-widget-container__widget"></div>
+
+<script
+type="text/javascript"
+src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
+async>
+{
+"autosize":true,
+"symbol":"OANDA:XAUUSD",
+"interval":"15",
+"timezone":"Etc/UTC",
+"theme":"dark",
+"style":"1",
+"locale":"en",
+"allow_symbol_change":false,
+"calendar":false,
+"support_host":"https://www.tradingview.com"
+}
+</script>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PURCHASE -->
+
+<section id="purchase">
+
+<div class="container">
+
+<div class="section-title">
+
+<span>AFTER PAYMENT</span>
+
+<h2>How to get your bot.</h2>
+
+<p>
+Follow these four steps after purchasing.
+</p>
+
+</div>
+
+
+<div class="purchase-flow">
+
+<div class="flow">
+<div class="flow-number">01</div>
+<h3>Buy</h3>
+<p>
+Choose BOT ACCESS or VIP ACCESS and complete payment.
+</p>
+</div>
+
+<div class="flow">
+<div class="flow-number">02</div>
+<h3>Save receipt</h3>
+<p>
+Keep your payment confirmation or transaction reference.
+</p>
+</div>
+
+<div class="flow">
+<div class="flow-number">03</div>
+<h3>WhatsApp</h3>
+<p>
+Send your receipt, package and account email to WhatsApp.
+</p>
+</div>
+
+<div class="flow">
+<div class="flow-number">04</div>
+<h3>Activation</h3>
+<p>
+After payment verification, your bot access is activated.
+</p>
+</div>
+
+</div>
+
+
+<br>
+
+<div class="card">
+
+<h3>What should you send?</h3>
+
+<p style="margin-top:10px">
+
+<strong>1.</strong> Payment screenshot or receipt<br>
+<strong>2.</strong> Transaction/reference number<br>
+<strong>3.</strong> Package purchased — $50 or $150<br>
+<strong>4.</strong> Email used for your IAN XAU AI account
+
+</p>
+
+<br>
+
+<a
+href="https://wa.me/254718835596?text=Hello%20IAN%20XAU%20AI%2C%20I%20have%20completed%20my%20purchase.%20I%20want%20to%20activate%20my%20bot."
+target="_blank"
+class="btn btn-green">
+
+ACTIVATE MY BOT ON WHATSAPP
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PRICING -->
+
+<section id="pricing">
+
+<div class="container">
+
+<div class="section-title">
+
+<span>PRICING</span>
+
+<h2>Choose your access.</h2>
+
+<p>
+Complete payment, then follow the activation process.
+</p>
+
+</div>
+
+
+<div class="pricing">
+
+
+<div class="price-card">
+
+<div class="price-label">
+BOT ACCESS
+</div>
+
+<div class="price">
+$50
+</div>
+
+<div class="price-description">
+Core IAN XAU AI access.
+</div>
+
+<div class="features">
+
+<div><span>✓</span>XAUUSD-focused system</div>
+<div><span>✓</span>Rule-based strategy</div>
+<div><span>✓</span>Strategy information</div>
+<div><span>✓</span>Member account</div>
+<div><span>✓</span>WhatsApp activation</div>
+
+</div>
+
+<a
+href="https://store.pesapal.com/ianxauai"
+target="_blank"
+rel="noopener"
+class="btn btn-green">
+
+BUY BOT ACCESS
+
+</a>
+
+</div>
+
+
+<div class="price-card vip">
+
+<div class="price-label">
+VIP ACCESS
+</div>
+
+<div class="price">
+$150
+</div>
+
+<div class="price-description">
+Premium IAN XAU AI access.
+</div>
+
+<div class="features">
+
+<div><span>✓</span>XAUUSD-focused system</div>
+<div><span>✓</span>Core strategy structure</div>
+<div><span>✓</span>VIP package access</div>
+<div><span>✓</span>Member account</div>
+<div><span>✓</span>WhatsApp activation</div>
+
+</div>
+
+<a
+href="https://store.pesapal.com/ianxauai"
+target="_blank"
+rel="noopener"
+class="btn btn-green">
+
+BUY VIP ACCESS
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FAQ -->
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<span>FAQ</span>
+
+<h2>Common questions.</h2>
+
+</div>
+
+<div class="faq">
+
+<details>
+<summary>What happens after I buy?</summary>
+<p>
+Save your payment confirmation and contact WhatsApp. Send the
+payment reference, package purchased and the email used for
+your account. Your payment will be verified before access is issued.
+</p>
+</details>
+
+<details>
+<summary>Is profit guaranteed?</summary>
+<p>
+No. Trading involves risk and no profit guarantee is made.
+</p>
+</details>
+
+<details>
+<summary>What market does the system focus on?</summary>
+<p>
+The system focuses on XAUUSD (gold).
+</p>
+</details>
+
+<details>
+<summary>How do I contact support?</summary>
+<p>
+WhatsApp: 0718835596 (+254 718 835 596).
+</p>
+</details>
+
+<details>
+<summary>What if I have not received my access?</summary>
+<p>
+Contact WhatsApp with your payment confirmation and transaction
+reference so the purchase can be checked.
+</p>
+</details>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- LOGIN -->
+
+<section id="login">
+
+<div class="container">
+
+<div class="section-title">
+
+<span>MEMBER AREA</span>
+
+<h2>Login or create your account.</h2>
+
+<p>
+Existing customers can log in. New customers 
