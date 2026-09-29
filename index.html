@@ -4,837 +4,541 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>IAN XAU AI — XAUUSD Trading System</title>
-
-<meta name="description"
-content="IAN XAU AI — Rule-based XAUUSD trading system.">
+<title>IAN XAU AI — Rule-Based XAUUSD Trading System</title>
+<meta name="description" content="IAN XAU AI — Rule-based XAUUSD trading system with automated trading filters and VIP access.">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 html{
-scroll-behavior:smooth;
+  scroll-behavior:smooth;
 }
 
 body{
-background:#050806;
-color:#f3f6f4;
-font-family:Arial,Helvetica,sans-serif;
-line-height:1.6;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#050807;
+  color:#f4f7f5;
+  line-height:1.6;
 }
 
 a{
-text-decoration:none;
-color:inherit;
+  color:inherit;
+  text-decoration:none;
 }
 
-button,input{
-font:inherit;
+button{
+  font-family:inherit;
 }
-
-.container{
-width:92%;
-max-width:1150px;
-margin:auto;
-}
-
-/* NAV */
 
 header{
-position:sticky;
-top:0;
-z-index:9999;
-background:rgba(5,8,6,.98);
-border-bottom:1px solid #1b2b20;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(5,8,7,.96);
+  border-bottom:1px solid #1b2a22;
+  backdrop-filter:blur(10px);
 }
 
-nav{
-min-height:68px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
+.nav{
+  max-width:1200px;
+  margin:auto;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
 .logo{
-font-size:19px;
-font-weight:900;
-white-space:nowrap;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:1px;
 }
 
 .logo span{
-color:#38e879;
+  color:#19e68c;
 }
 
-.navlinks{
-display:flex;
-gap:18px;
+.desktop-nav{
+  display:flex;
+  gap:20px;
+  align-items:center;
 }
 
-.navlinks a{
-font-size:11px;
-font-weight:700;
-color:#aab5ad;
+.desktop-nav a{
+  color:#b9c5bf;
+  font-size:14px;
 }
 
-.navlinks a:hover{
-color:#38e879;
+.desktop-nav a:hover{
+  color:#19e68c;
 }
 
-.nav-actions{
-display:flex;
-align-items:center;
-gap:7px;
-}
-
-.login-button{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-border:1px solid #2c633c;
-color:#38e879;
-padding:9px 12px;
-border-radius:8px;
-font-size:10px;
-font-weight:900;
+.login-nav{
+  background:#19e68c;
+  color:#031008 !important;
+  padding:9px 15px;
+  border-radius:8px;
+  font-weight:800;
 }
 
 .menu-button{
-display:none;
-width:40px;
-height:38px;
-border:1px solid #294332;
-border-radius:8px;
-background:#09100b;
-color:#38e879;
-font-size:21px;
-cursor:pointer;
+  display:none;
+  border:0;
+  background:none;
+  color:white;
+  font-size:27px;
+  cursor:pointer;
 }
 
 .mobile-menu{
-display:none;
-background:#080e09;
-border-top:1px solid #1b2b20;
-padding:10px 0 18px;
+  display:none;
+  background:#080d0a;
+  border-top:1px solid #1b2a22;
+  padding:10px 20px 18px;
 }
 
 .mobile-menu.open{
-display:block;
+  display:block;
 }
 
 .mobile-menu a{
-display:block;
-padding:12px 5px;
-color:#b5c0b8;
-font-size:13px;
-font-weight:700;
-border-bottom:1px solid #111c15;
+  display:block;
+  padding:13px 5px;
+  border-bottom:1px solid #18231d;
+  color:#dce6e1;
 }
 
 .mobile-menu a:hover{
-color:#38e879;
+  color:#19e68c;
 }
 
-/* BUTTONS */
-
-.btn{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-padding:12px 18px;
-border-radius:8px;
-border:1px solid transparent;
-font-size:11px;
-font-weight:900;
-cursor:pointer;
+section{
+  max-width:1200px;
+  margin:auto;
+  padding:80px 20px;
 }
-
-.btn-green{
-background:#38e879;
-color:#041007;
-}
-
-.btn-dark{
-background:#09100b;
-border-color:#294332;
-color:white;
-}
-
-/* HERO */
 
 .hero{
-padding:85px 0;
-}
-
-.hero-grid{
-display:grid;
-grid-template-columns:1.15fr .85fr;
-gap:50px;
-align-items:center;
+  max-width:none;
+  padding:100px 20px;
+  text-align:center;
+  background:
+    radial-gradient(circle at top,#0c2b1c 0,#050807 48%);
 }
 
 .badge{
-display:inline-block;
-color:#38e879;
-border:1px solid #245c36;
-padding:7px 11px;
-border-radius:30px;
-font-size:9px;
-font-weight:900;
-letter-spacing:1px;
-margin-bottom:20px;
+  display:inline-block;
+  padding:7px 12px;
+  border:1px solid #1a9b61;
+  border-radius:30px;
+  color:#19e68c;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:20px;
 }
 
 .hero h1{
-font-size:clamp(42px,7vw,72px);
-line-height:1;
-letter-spacing:-3px;
-margin-bottom:22px;
+  max-width:850px;
+  margin:auto;
+  font-size:clamp(38px,7vw,72px);
+  line-height:1.05;
 }
 
 .hero h1 span{
-color:#38e879;
+  color:#19e68c;
 }
 
 .hero p{
-color:#9ca8a0;
-max-width:620px;
-font-size:15px;
-margin-bottom:26px;
+  max-width:720px;
+  margin:25px auto;
+  color:#aebbb4;
+  font-size:18px;
 }
 
-.hero-buttons{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:25px;
 }
 
-.hero-note{
-color:#66736b;
-font-size:10px;
-margin-top:17px;
+.btn{
+  display:inline-block;
+  border:0;
+  cursor:pointer;
+  padding:13px 20px;
+  border-radius:9px;
+  font-weight:900;
+  background:#19e68c;
+  color:#031008;
 }
 
-.hero-card{
-background:#0b130d;
-border:1px solid #1b2b20;
-border-radius:16px;
-padding:25px;
+.btn:hover{
+  opacity:.9;
 }
 
-.hero-card-title{
-color:#aab5ad;
-font-size:10px;
-font-weight:900;
-margin-bottom:20px;
-}
-
-.market{
-border-top:1px solid #1b2b20;
-border-bottom:1px solid #1b2b20;
-padding:22px 0;
-margin-bottom:14px;
-}
-
-.market small{
-color:#7c8880;
-font-size:9px;
-}
-
-.market strong{
-display:block;
-font-size:38px;
-}
-
-.info-row{
-display:flex;
-justify-content:space-between;
-background:#071009;
-border:1px solid #1b2b20;
-padding:10px;
-margin-top:8px;
-border-radius:7px;
-font-size:10px;
-}
-
-.green{
-color:#38e879;
-}
-
-/* SECTIONS */
-
-section{
-padding:75px 0;
-border-top:1px solid #132018;
+.btn.secondary{
+  background:#101813;
+  color:#19e68c;
+  border:1px solid #1d4a35;
 }
 
 .section-title{
-max-width:700px;
-margin-bottom:35px;
-}
-
-.section-title span{
-color:#38e879;
-font-size:9px;
-font-weight:900;
-letter-spacing:2px;
+  text-align:center;
+  margin-bottom:40px;
 }
 
 .section-title h2{
-font-size:clamp(30px,5vw,47px);
-line-height:1.05;
-margin:9px 0 13px;
+  font-size:35px;
+  margin-bottom:8px;
 }
 
 .section-title p{
-color:#9ca8a0;
-font-size:13px;
+  color:#93a39a;
 }
 
-/* CARDS */
-
 .grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:13px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
 }
 
 .card{
-background:#0a120c;
-border:1px solid #1b2b20;
-border-radius:13px;
-padding:22px;
-}
-
-.card-number{
-color:#38e879;
-font-weight:900;
-font-size:11px;
-margin-bottom:15px;
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:15px;
+  padding:25px;
 }
 
 .card h3{
-font-size:15px;
-margin-bottom:7px;
+  color:#19e68c;
+  margin-bottom:10px;
 }
 
 .card p{
-color:#9ca8a0;
-font-size:11px;
+  color:#aab6b0;
 }
 
-/* STRATEGY */
-
-.strategy-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:14px;
-}
-
-.strategy{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:13px;
-padding:25px;
-}
-
-.strategy h3{
-margin-bottom:9px;
-}
-
-.strategy p{
-color:#9ca8a0;
-font-size:12px;
-}
-
-.strategy ul{
-margin-top:15px;
-list-style:none;
-}
-
-.strategy li{
-color:#c5cec8;
-font-size:11px;
-margin:8px 0;
-}
-
-.strategy li::before{
-content:"✓";
-color:#38e879;
-margin-right:8px;
-}
-
-/* FILTERS */
-
-.filter-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:12px;
+.filters{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
 }
 
 .filter{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:12px;
-padding:20px;
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:13px;
+  padding:20px;
 }
 
-.filter-icon{
-color:#38e879;
-font-size:19px;
-font-weight:900;
-margin-bottom:8px;
+.filter strong{
+  color:#19e68c;
 }
 
-.filter h3{
-font-size:14px;
-margin-bottom:6px;
+.chart-box{
+  width:100%;
+  height:520px;
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:15px;
+  overflow:hidden;
 }
 
-.filter p{
-color:#9ca8a0;
-font-size:11px;
+.tradingview-widget-container{
+  width:100%;
+  height:100%;
 }
 
-/* CHART */
-
-.chart{
-height:540px;
-border:1px solid #1b2b20;
-border-radius:13px;
-overflow:hidden;
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
 }
 
-.tradingview-widget-container,
-.tradingview-widget-container__widget{
-width:100%;
-height:100%;
+.step{
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:14px;
+  padding:22px;
 }
 
-/* PURCHASE */
-
-.purchase-flow{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:12px;
+.step-number{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#19e68c;
+  color:#031008;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  margin-bottom:15px;
 }
-
-.flow{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:12px;
-padding:20px;
-}
-
-.flow-number{
-color:#38e879;
-font-size:10px;
-font-weight:900;
-}
-
-.flow h3{
-font-size:14px;
-margin:7px 0;
-}
-
-.flow p{
-color:#9ca8a0;
-font-size:11px;
-}
-
-/* PRICING */
 
 .pricing{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:16px;
-max-width:850px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:22px;
+  max-width:900px;
+  margin:auto;
 }
 
 .price-card{
-background:#0a120c;
-border:1px solid #1b2b20;
-border-radius:15px;
-padding:28px;
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:18px;
+  padding:30px;
+  position:relative;
 }
 
 .price-card.vip{
-border-color:#326340;
+  border-color:#19e68c;
 }
 
-.price-label{
-color:#38e879;
-font-size:10px;
-font-weight:900;
+.price-card h3{
+  font-size:23px;
 }
 
 .price{
-font-size:47px;
-font-weight:900;
-margin:8px 0;
+  font-size:45px;
+  font-weight:900;
+  margin:10px 0;
+  color:#19e68c;
 }
 
-.price-description{
-color:#9ca8a0;
-font-size:12px;
+.price-card ul{
+  list-style:none;
+  margin:20px 0;
 }
 
-.features{
-border-top:1px solid #1b2b20;
-margin:20px 0;
-padding-top:18px;
+.price-card li{
+  padding:8px 0;
+  color:#c2cdc7;
+  border-bottom:1px solid #16221c;
 }
 
-.features div{
-color:#c5cec8;
-font-size:11px;
-margin:10px 0;
+.price-card li::before{
+  content:"✓ ";
+  color:#19e68c;
+  font-weight:900;
 }
 
-.features span{
-color:#38e879;
-margin-right:7px;
+.payment-btn{
+  display:block;
+  text-align:center;
+  width:100%;
+  background:#19e68c;
+  color:#031008;
+  padding:14px;
+  border-radius:9px;
+  font-weight:900;
 }
 
-.price-card .btn{
-width:100%;
+.payment-btn:hover{
+  opacity:.9;
 }
 
-/* FAQ */
+.notice{
+  margin-top:20px;
+  padding:18px;
+  border-radius:12px;
+  background:#0c1510;
+  border:1px solid #1c392a;
+  color:#aebbb4;
+}
+
+.support{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.support-card{
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:15px;
+  padding:25px;
+}
+
+.support-card a{
+  color:#19e68c;
+  font-weight:800;
+}
 
 .faq{
-max-width:850px;
+  max-width:850px;
+  margin:auto;
 }
 
 details{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:9px;
-padding:16px;
-margin-bottom:9px;
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:10px;
+  margin-bottom:10px;
+  padding:15px 18px;
 }
 
 summary{
-cursor:pointer;
-font-size:12px;
-font-weight:800;
+  cursor:pointer;
+  font-weight:800;
 }
 
 details p{
-color:#9ca8a0;
-font-size:11px;
-margin-top:10px;
-}
-
-/* LOGIN */
-
-.auth-container{
-max-width:470px;
-margin:auto;
+  color:#aab6b0;
+  margin-top:12px;
 }
 
 .auth-box{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:15px;
-padding:27px;
+  max-width:470px;
+  margin:auto;
+  background:#0a100d;
+  border:1px solid #1a2b22;
+  border-radius:16px;
+  padding:25px;
 }
 
 .auth-tabs{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:5px;
-padding:4px;
-background:#050806;
-border:1px solid #1b2b20;
-border-radius:8px;
-margin-bottom:22px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  margin-bottom:20px;
 }
 
-.auth-tab{
-border:0;
-background:transparent;
-color:#849088;
-padding:11px;
-border-radius:6px;
-font-size:11px;
-font-weight:900;
-cursor:pointer;
+.auth-tabs button{
+  padding:13px;
+  border:1px solid #1a2b22;
+  background:#07100b;
+  color:#aab6b0;
+  cursor:pointer;
 }
 
-.auth-tab.active{
-background:#38e879;
-color:#041007;
+.auth-tabs button.active{
+  background:#19e68c;
+  color:#031008;
+  font-weight:900;
 }
 
-.auth-form{
-display:grid;
-gap:13px;
+.form{
+  display:none;
 }
 
-.auth-form label{
-color:#aeb8b1;
-font-size:11px;
-font-weight:700;
+.form.active{
+  display:block;
 }
 
-.auth-form input{
-width:100%;
-padding:13px;
-margin-top:6px;
-background:#050806;
-border:1px solid #1b2b20;
-border-radius:8px;
-color:white;
-outline:none;
+label{
+  display:block;
+  margin-bottom:7px;
+  color:#cbd6d0;
+  font-size:14px;
 }
 
-.auth-form input:focus{
-border-color:#38e879;
+input{
+  width:100%;
+  padding:13px;
+  margin-bottom:15px;
+  background:#050807;
+  border:1px solid #25362c;
+  border-radius:8px;
+  color:white;
+  outline:none;
 }
 
-.forgot{
-border:0;
-background:none;
-color:#38e879;
-cursor:pointer;
-font-size:10px;
-text-align:right;
+input:focus{
+  border-color:#19e68c;
 }
 
-.auth-message{
-display:none;
-padding:12px;
-margin-top:14px;
-border-radius:8px;
-background:#071009;
-color:#aab5ad;
-font-size:11px;
+.form button{
+  width:100%;
 }
 
-.auth-message.show{
-display:block;
-}
-
-.auth-message.error{
-color:#ff6b6b;
+.message{
+  margin-top:15px;
+  padding:12px;
+  border-radius:8px;
+  background:#101813;
+  color:#b9c5bf;
+  font-size:14px;
+  display:none;
 }
 
 .dashboard{
-display:none;
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:15px;
-padding:28px;
-max-width:700px;
-margin:auto;
+  display:none;
+  max-width:700px;
+  margin:25px auto 0;
+  padding:22px;
+  background:#0c1510;
+  border:1px solid #1a4933;
+  border-radius:14px;
 }
-
-.dashboard.show{
-display:block;
-}
-
-.dashboard p{
-color:#9ca8a0;
-font-size:12px;
-}
-
-/* SUPPORT */
-
-.support-box{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:14px;
-padding:28px;
-max-width:800px;
-}
-
-.support-box h3{
-margin-bottom:12px;
-}
-
-.support-box p{
-color:#9ca8a0;
-font-size:12px;
-}
-
-.support-list{
-margin:18px 0;
-padding-left:18px;
-}
-
-.support-list li{
-color:#c5cec8;
-font-size:12px;
-margin:7px 0;
-}
-
-/* CONTACT */
-
-.contact-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:14px;
-}
-
-.contact{
-background:#09100b;
-border:1px solid #1b2b20;
-border-radius:13px;
-padding:25px;
-}
-
-.contact h3{
-margin-bottom:7px;
-}
-
-.contact p{
-color:#9ca8a0;
-font-size:12px;
-margin-bottom:15px;
-}
-
-.contact a{
-color:#38e879;
-font-size:13px;
-font-weight:900;
-}
-
-/* FOOTER */
 
 footer{
-border-top:1px solid #1b2b20;
-padding:40px 0 25px;
+  border-top:1px solid #1b2a22;
+  padding:30px 20px;
+  text-align:center;
+  color:#78867f;
+  font-size:13px;
 }
 
-.footer-top{
-display:flex;
-justify-content:space-between;
-gap:20px;
-margin-bottom:25px;
+.warning{
+  color:#e1b56a;
 }
 
-.footer-text{
-max-width:450px;
+@media(max-width:800px){
+
+  .desktop-nav{
+    display:none;
+  }
+
+  .menu-button{
+    display:block;
+  }
+
+  section{
+    padding:60px 15px;
+  }
+
+  .hero{
+    padding:80px 15px;
+  }
+
+  .grid,
+  .pricing,
+  .support,
+  .filters{
+    grid-template-columns:1fr;
+  }
+
+  .steps{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .chart-box{
+    height:420px;
+  }
 }
 
-.footer-text p{
-color:#727e76;
-font-size:10px;
-margin-top:9px;
+@media(max-width:500px){
+
+  .steps{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:40px;
+  }
+
+  .price{
+    font-size:40px;
+  }
 }
-
-.footer-links{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-}
-
-.footer-links a{
-color:#8b968f;
-font-size:10px;
-}
-
-.risk{
-border-top:1px solid #1b2b20;
-padding-top:18px;
-color:#66716a;
-font-size:9px;
-line-height:1.7;
-}
-
-.copy{
-color:#505b54;
-font-size:9px;
-margin-top:14px;
-}
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-.navlinks{
-display:none;
-}
-
-.menu-button{
-display:block;
-}
-
-.hero-grid{
-grid-template-columns:1fr;
-}
-
-.grid{
-grid-template-columns:1fr 1fr;
-}
-
-.strategy-grid{
-grid-template-columns:1fr;
-}
-
-.purchase-flow{
-grid-template-columns:1fr 1fr;
-}
-
-.filter-grid{
-grid-template-columns:1fr 1fr;
-}
-
-}
-
-@media(max-width:600px){
-
-.container{
-width:91%;
-}
-
-.logo{
-font-size:16px;
-}
-
-.login-button{
-padding:8px 9px;
-font-size:9px;
-}
-
-.hero{
-padding:55px 0;
-}
-
-.hero h1{
-font-size:43px;
-letter-spacing:-2px;
-}
-
-section{
-padding:60px 0;
-}
-
-.grid,
-.purchase-flow,
-.pricing,
-.contact-grid,
-.filter-grid{
-grid-template-columns:1fr;
-}
-
-.chart{
-height:440px;
-}
-
-.footer-top{
-flex-direction:column;
-}
-
-}
-
 </style>
 </head>
 
@@ -842,174 +546,138 @@ flex-direction:column;
 
 <header>
 
-<div class="container">
+<div class="nav">
 
-<nav>
-
-<a href="#top" class="logo">
+<a href="#home" class="logo">
 IAN <span>XAU AI</span>
 </a>
 
-<div class="navlinks">
+<nav class="desktop-nav">
 
 <a href="#strategy">Strategy</a>
+
 <a href="#filters">Filters</a>
-<a href="#charts">Charts</a>
+
+<a href="#chart">Chart</a>
+
+<a href="#demo">Demo</a>
+
 <a href="#pricing">Pricing</a>
-<a href="#login">Login</a>
 
-</div>
-
-<div class="nav-actions">
-
-<a href="#login" class="login-button">
-LOGIN
+<a href="#login" class="login-nav">
+Login
 </a>
 
+</nav>
+
 <button
-type="button"
-class="menu-button"
 id="menuButton"
+class="menu-button"
 aria-label="Open menu"
-aria-expanded="false">
-
+aria-expanded="false"
+type="button">
 ☰
-
 </button>
 
 </div>
 
-</nav>
 
-<div class="mobile-menu" id="mobileMenu">
+<div id="mobileMenu" class="mobile-menu">
 
-<a href="#strategy">Strategy</a>
+<a href="#strategy">
+📊 Strategy
+</a>
 
-<a href="#filters">Trading Filters</a>
+<a href="#filters">
+⚙️ Trading Filters
+</a>
 
-<a href="#charts">Live XAUUSD Chart</a>
+<a href="#chart">
+📈 Live XAUUSD Chart
+</a>
 
-<a href="#calendar">Economic Calendar</a>
+<a href="#calendar">
+📅 Economic Calendar
+</a>
 
-<a href="#demo">Demo</a>
+<a href="#demo">
+▶️ Demo
+</a>
 
-<a href="#pricing">Pricing & Payment</a>
+<a href="#pricing">
+💳 Pricing & Payment
+</a>
 
-<a href="#purchase">How to Get Your Bot After Payment</a>
+<a href="#activation">
+📦 How to Get Your Bot After Payment
+</a>
 
-<a href="#support">If Something Goes Wrong</a>
+<a href="#problems">
+🆘 If Something Goes Wrong
+</a>
 
-<a href="#login">Login / Create Account</a>
+<a href="#login">
+🔐 Login / Create Account
+</a>
 
-<a href="#contact">Contact</a>
+<a href="#contact">
+📱 WhatsApp Support
+</a>
 
-</div>
+<a
+href="https://instagram.com/ianke77"
+target="_blank">
+📸 Instagram
+</a>
+
+<a href="#risk">
+⚠️ Risk Disclosure
+</a>
 
 </div>
 
 </header>
 
 
-<main id="top">
-
-<!-- HERO -->
-
-<section class="hero">
-
-<div class="container">
-
-<div class="hero-grid">
-
-<div>
+<section id="home" class="hero">
 
 <div class="badge">
-RULE-BASED XAUUSD SYSTEM
+RULE-BASED XAUUSD TRADING SYSTEM
 </div>
 
 <h1>
-READ THE MARKET.<br>
-<span>FOLLOW THE RULES.</span>
+Trade Gold With
+<span>Defined Rules.</span>
 </h1>
 
 <p>
-IAN XAU AI is a rule-based XAUUSD trading system focused on
-structured market levels, liquidity and confirmation conditions.
+IAN XAU AI is built around structured XAUUSD market conditions,
+liquidity, session behaviour and predefined trading filters.
 </p>
 
-<div class="hero-buttons">
+<div class="buttons">
 
-<a href="#pricing" class="btn btn-green">
+<a href="#pricing" class="btn">
 GET ACCESS
 </a>
 
-<a href="#login" class="btn btn-dark">
+<a href="#login" class="btn secondary">
 LOGIN / CREATE ACCOUNT
 </a>
-
-</div>
-
-<div class="hero-note">
-XAUUSD • M15 • Asia High/Low • PDH/PDL • Confirmation
-</div>
-
-</div>
-
-<div class="hero-card">
-
-<div class="hero-card-title">
-SYSTEM OVERVIEW
-</div>
-
-<div class="market">
-<small>MARKET</small>
-<strong>XAUUSD</strong>
-</div>
-
-<div class="info-row">
-<span>Timeframe</span>
-<strong class="green">M15</strong>
-</div>
-
-<div class="info-row">
-<span>Asia High / Low</span>
-<strong>LEVELS</strong>
-</div>
-
-<div class="info-row">
-<span>PDH / PDL</span>
-<strong>LEVELS</strong>
-</div>
-
-<div class="info-row">
-<span>Confirmation</span>
-<strong class="green">REQUIRED</strong>
-</div>
-
-</div>
-
-</div>
 
 </div>
 
 </section>
 
 
-<!-- FEATURES -->
-
-<section>
-
-<div class="container">
+<section id="strategy">
 
 <div class="section-title">
 
-<span>THE SYSTEM</span>
-
-<h2>
-Built around defined conditions.
-</h2>
+<h2>Trading Strategy</h2>
 
 <p>
-The system focuses on structured market information rather than random entries.
+Structured conditions before a trade is considered.
 </p>
 
 </div>
@@ -1017,36 +685,37 @@ The system focuses on structured market information rather than random entries.
 <div class="grid">
 
 <div class="card">
-<div class="card-number">01</div>
-<h3>Market Levels</h3>
+
+<h3>Asia High / Low</h3>
+
 <p>
-Asia High, Asia Low, PDH and PDL are used as important reference levels.
+The system monitors the Asian session range and watches how
+price interacts with the Asia High and Asia Low.
 </p>
+
 </div>
 
-<div class="card">
-<div class="card-number">02</div>
-<h3>Liquidity</h3>
-<p>
-Price interaction around important levels is monitored.
-</p>
-</div>
 
 <div class="card">
-<div class="card-number">03</div>
+
+<h3>PDH / PDL</h3>
+
+<p>
+Previous Day High and Previous Day Low are used as important
+reference levels for liquidity and potential reactions.
+</p>
+
+</div>
+
+
+<div class="card">
+
 <h3>Confirmation</h3>
-<p>
-The setup must meet the defined confirmation conditions.
-</p>
-</div>
 
-<div class="card">
-<div class="card-number">04</div>
-<h3>Risk Structure</h3>
 <p>
-Entry, stop-loss and take-profit conditions are defined around the setup.
+A level alone is not enough. Price reaction and confirmation
+are considered before a setup is accepted.
 </p>
-</div>
 
 </div>
 
@@ -1054,178 +723,61 @@ Entry, stop-loss and take-profit conditions are defined around the setup.
 
 </section>
 
-
-<!-- STRATEGY -->
-
-<section id="strategy">
-
-<div class="container">
-
-<div class="section-title">
-
-<span>STRATEGY</span>
-
-<h2>
-How IAN XAU AI reads XAUUSD.
-</h2>
-
-<p>
-The strategy combines market levels, liquidity and confirmation.
-</p>
-
-</div>
-
-<div class="strategy-grid">
-
-<div class="strategy">
-
-<h3>
-Asia High & Asia Low
-</h3>
-
-<p>
-The Asian session range provides reference points for later market movement.
-</p>
-
-<ul>
-<li>Mark Asia High</li>
-<li>Mark Asia Low</li>
-<li>Monitor price interaction</li>
-</ul>
-
-</div>
-
-<div class="strategy">
-
-<h3>
-PDH & PDL
-</h3>
-
-<p>
-Previous Day High and Previous Day Low provide additional reference levels.
-</p>
-
-<ul>
-<li>Previous Day High</li>
-<li>Previous Day Low</li>
-<li>Watch price reaction</li>
-</ul>
-
-</div>
-
-<div class="strategy">
-
-<h3>
-Liquidity Sweep
-</h3>
-
-<p>
-The system watches for price interaction and potential liquidity sweeps around important levels.
-</p>
-
-<ul>
-<li>Identify important level</li>
-<li>Watch liquidity interaction</li>
-<li>Wait for reaction</li>
-</ul>
-
-</div>
-
-<div class="strategy">
-
-<h3>
-Trade Confirmation
-</h3>
-
-<p>
-A setup requires defined confirmation before an entry condition is considered.
-</p>
-
-<ul>
-<li>Defined entry</li>
-<li>Defined stop-loss</li>
-<li>Defined take-profit</li>
-</ul>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- FILTERS -->
 
 <section id="filters">
 
-<div class="container">
-
 <div class="section-title">
 
-<span>TRADING FILTERS</span>
-
-<h2>
-Conditions before a setup.
-</h2>
+<h2>Trading Filters</h2>
 
 <p>
-These filters help define when a setup qualifies.
+Multiple conditions are used to filter potential setups.
 </p>
 
 </div>
 
-<div class="filter-grid">
+<div class="filters">
 
 <div class="filter">
-<div class="filter-icon">01</div>
-<h3>Asia Level Filter</h3>
+<strong>01 — Asia Range</strong>
 <p>
-Price must interact with the defined Asia High or Asia Low area.
+Asia High and Asia Low are monitored as key reference levels.
 </p>
 </div>
 
 <div class="filter">
-<div class="filter-icon">02</div>
-<h3>PDH / PDL Filter</h3>
+<strong>02 — Previous Day Levels</strong>
 <p>
-Previous Day High or Previous Day Low can provide an additional reference.
+PDH and PDL are checked for potential liquidity interaction.
 </p>
 </div>
 
 <div class="filter">
-<div class="filter-icon">03</div>
-<h3>Liquidity Filter</h3>
+<strong>03 — Liquidity</strong>
 <p>
-Potential liquidity interaction is evaluated before a setup is considered.
+The system looks for relevant liquidity behaviour around important levels.
 </p>
 </div>
 
 <div class="filter">
-<div class="filter-icon">04</div>
-<h3>Confirmation Filter</h3>
+<strong>04 — Price Reaction</strong>
 <p>
-A price reaction must satisfy the defined confirmation conditions.
+Price must show the required reaction before a setup is considered.
 </p>
 </div>
 
 <div class="filter">
-<div class="filter-icon">05</div>
-<h3>Session Filter</h3>
+<strong>05 — Session</strong>
 <p>
-The strategy can be applied around the defined trading session conditions.
+Session conditions are part of the setup evaluation.
 </p>
 </div>
 
 <div class="filter">
-<div class="filter-icon">06</div>
-<h3>Risk Filter</h3>
+<strong>06 — Risk</strong>
 <p>
-Stop-loss and take-profit conditions are defined before the trade setup.
+Defined stop-loss and take-profit parameters are part of the trade structure.
 </p>
-</div>
-
 </div>
 
 </div>
@@ -1233,27 +785,19 @@ Stop-loss and take-profit conditions are defined before the trade setup.
 </section>
 
 
-<!-- CHART -->
-
-<section id="charts">
-
-<div class="container">
+<section id="chart">
 
 <div class="section-title">
 
-<span>LIVE MARKET</span>
-
-<h2>
-XAUUSD chart.
-</h2>
+<h2>Live XAUUSD Chart</h2>
 
 <p>
-Study current XAUUSD price movement.
+OANDA:XAUUSD — 15 Minute
 </p>
 
 </div>
 
-<div class="chart">
+<div class="chart-box">
 
 <div class="tradingview-widget-container">
 
@@ -1263,7 +807,6 @@ Study current XAUUSD price movement.
 type="text/javascript"
 src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
 async>
-
 {
 "autosize":true,
 "symbol":"OANDA:XAUUSD",
@@ -1273,13 +816,13 @@ async>
 "style":"1",
 "locale":"en",
 "allow_symbol_change":true,
+"hide_top_toolbar":false,
+"hide_legend":false,
+"save_image":false,
 "calendar":false,
 "support_host":"https://www.tradingview.com"
 }
-
 </script>
-
-</div>
 
 </div>
 
@@ -1288,27 +831,19 @@ async>
 </section>
 
 
-<!-- CALENDAR -->
-
 <section id="calendar">
-
-<div class="container">
 
 <div class="section-title">
 
-<span>ECONOMIC CALENDAR</span>
-
-<h2>
-Watch important events.
-</h2>
+<h2>Economic Calendar</h2>
 
 <p>
-Economic events can affect gold volatility.
+Monitor major scheduled economic events.
 </p>
 
 </div>
 
-<div class="chart">
+<div class="chart-box">
 
 <div class="tradingview-widget-container">
 
@@ -1318,7 +853,6 @@ Economic events can affect gold volatility.
 type="text/javascript"
 src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
 async>
-
 {
 "colorTheme":"dark",
 "isTransparent":true,
@@ -1328,10 +862,7 @@ async>
 "width":"100%",
 "height":"100%"
 }
-
 </script>
-
-</div>
 
 </div>
 
@@ -1340,27 +871,21 @@ async>
 </section>
 
 
-<!-- DEMO -->
-
 <section id="demo">
-
-<div class="container">
 
 <div class="section-title">
 
-<span>DEMO</span>
-
-<h2>
-Study XAUUSD before purchasing.
-</h2>
+<h2>System Demo</h2>
 
 <p>
-Use the chart to observe price movement.
+Example XAUUSD environment.
 </p>
 
 </div>
 
-<div class="chart">
+<div class="card">
+
+<div class="chart-box">
 
 <div class="tradingview-widget-container">
 
@@ -1370,7 +895,6 @@ Use the chart to observe price movement.
 type="text/javascript"
 src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
 async>
-
 {
 "autosize":true,
 "symbol":"OANDA:XAUUSD",
@@ -1380,218 +904,174 @@ async>
 "style":"1",
 "locale":"en",
 "allow_symbol_change":false,
+"hide_top_toolbar":false,
+"hide_legend":false,
+"save_image":false,
 "calendar":false,
 "support_host":"https://www.tradingview.com"
 }
-
 </script>
 
 </div>
 
 </div>
 
+<div class="notice">
+
+<strong>SYSTEM MONITORING</strong>
+<br><br>
+
+Example setup:
+XAUUSD M15 — Asia Low + PDL area —
+liquidity interaction — price reaction — defined SL + TP.
+
 </div>
 
-</section>
+</div>
 
-
-<!-- PURCHASE -->
-
-<section id="purchase">
-
-<div class="container">
+  </section>
+  <section id="activation">
 
 <div class="section-title">
 
-<span>AFTER PAYMENT</span>
-
-<h2>
-How to get your bot after payment.
-</h2>
+<h2>How To Get Your Bot After Payment</h2>
 
 <p>
-Follow these steps after completing your Binance payment.
+Follow these steps after purchasing.
 </p>
 
 </div>
 
-<div class="purchase-flow">
 
-<div class="flow">
+<div class="steps">
 
-<div class="flow-number">01</div>
+<div class="step">
 
-<h3>
-Complete Payment
-</h3>
+<div class="step-number">1</div>
+
+<h3>Choose a Package</h3>
 
 <p>
-Choose your package and complete the Binance payment request.
+Select either the $50 Bot Access or the $120 VIP Access package.
 </p>
 
 </div>
 
-<div class="flow">
 
-<div class="flow-number">02</div>
+<div class="step">
 
-<h3>
-Save Your Confirmation
-</h3>
+<div class="step-number">2</div>
+
+<h3>Complete Payment</h3>
 
 <p>
-Keep your Binance payment confirmation and transaction details.
+Use the Binance payment button for the package you selected.
 </p>
 
 </div>
 
-<div class="flow">
 
-<div class="flow-number">03</div>
+<div class="step">
 
-<h3>
-Contact WhatsApp
-</h3>
+<div class="step-number">3</div>
+
+<h3>Save Confirmation</h3>
 
 <p>
-Send your payment confirmation, package and account email.
+Keep your Binance payment confirmation or transaction reference.
 </p>
 
 </div>
 
-<div class="flow">
 
-<div class="flow-number">04</div>
+<div class="step">
 
-<h3>
-Get Activated
-</h3>
+<div class="step-number">4</div>
+
+<h3>Contact Support</h3>
 
 <p>
-After payment verification, your bot access will be activated or provided.
+Send the payment confirmation, package purchased and account email through WhatsApp.
 </p>
 
 </div>
 
 </div>
 
-<br>
 
-<div class="support-box">
+<div class="notice">
 
-<h3>
-What should you send after payment?
-</h3>
+<strong>Important:</strong>
 
-<ul class="support-list">
+<br><br>
 
-<li>
-Payment confirmation or screenshot
-</li>
+After payment, activation is handled manually.
 
-<li>
-Binance transaction/reference details
-</li>
+Send your payment confirmation and account email to support.
 
-<li>
-Package purchased — $50 BOT ACCESS or $120 VIP ACCESS
-</li>
-
-<li>
-Email used for your IAN XAU AI account
-</li>
-
-</ul>
-
-<a
-href="https://wa.me/254718835596?text=Hello%20IAN%20XAU%20AI%2C%20I%20have%20completed%20my%20payment.%20I%20want%20to%20activate%20my%20bot."
-target="_blank"
-class="btn btn-green">
-
-SEND PAYMENT DETAILS ON WHATSAPP
-
-</a>
-
-</div>
+Your payment will be verified before access is provided.
 
 </div>
 
 </section>
 
-
-<!-- PRICING -->
 
 <section id="pricing">
 
-<div class="container">
-
 <div class="section-title">
 
-<span>PRICING</span>
-
-<h2>
-Choose your access.
-</h2>
+<h2>Choose Your Access</h2>
 
 <p>
-Pay through Binance and then follow the activation instructions.
+Pay in USD through Binance.
 </p>
 
 </div>
+
 
 <div class="pricing">
 
 
-<!-- $50 -->
+<!-- $50 BOT -->
 
 <div class="price-card">
 
-<div class="price-label">
-BOT ACCESS
-</div>
+<h3>BOT ACCESS</h3>
 
 <div class="price">
 $50
 </div>
 
-<div class="price-description">
-Core IAN XAU AI access.
-</div>
+<p>
+Standard IAN XAU AI access.
+</p>
 
-<div class="features">
+<ul>
 
-<div>
-<span>✓</span>
-XAUUSD-focused system
-</div>
+<li>XAUUSD trading system</li>
 
-<div>
-<span>✓</span>
-Rule-based strategy
-</div>
+<li>Rule-based strategy</li>
 
-<div>
-<span>✓</span>
-Trading filters
-</div>
+<li>Asia High / Low filters</li>
 
-<div>
-<span>✓</span>
-Member account
-</div>
+<li>PDH / PDL filters</li>
 
-<div>
-<span>✓</span>
-WhatsApp activation
-</div>
+<li>Liquidity conditions</li>
 
-</div>
+<li>Confirmation filters</li>
+
+<li>Defined SL / TP structure</li>
+
+<li>Activation after payment verification</li>
+
+</ul>
+
 
 <a
+class="payment-btn"
 href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457060672361889792&billType=request_a_payment"
 target="_blank"
-rel="noopener"
-class="btn btn-green">
+rel="noopener">
 
 PAY $50 WITH BINANCE
 
@@ -1600,4 +1080,995 @@ PAY $50 WITH BINANCE
 </div>
 
 
-<!--
+<!-- $120 VIP -->
+
+<div class="price-card vip">
+
+<h3>VIP ACCESS</h3>
+
+<div class="price">
+$120
+</div>
+
+<p>
+Advanced VIP access for the volatile trading session.
+</p>
+
+<ul>
+
+<li>Everything in Bot Access</li>
+
+<li>VIP trading configuration</li>
+
+<li>Asia strategy</li>
+
+<li>PDH / PDL scalping conditions</li>
+
+<li>Liquidity-based filtering</li>
+
+<li>Volatile-session trading conditions</li>
+
+<li>Automated trade management</li>
+
+<li>Designed to open and close positions rapidly when conditions are met</li>
+
+<li>Activation after payment verification</li>
+
+</ul>
+
+
+<a
+class="payment-btn"
+href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457061228438241280&billType=request_a_payment"
+target="_blank"
+rel="noopener">
+
+PAY $120 WITH BINANCE
+
+</a>
+
+</div>
+
+</div>
+
+
+<div class="notice">
+
+<strong>Payment Process</strong>
+
+<br><br>
+
+1. Click the payment button for your package.
+
+<br>
+
+2. Complete the Binance payment.
+
+<br>
+
+3. Save your payment confirmation/reference.
+
+<br>
+
+4. Contact WhatsApp support.
+
+<br>
+
+5. Send your payment confirmation + package + account email.
+
+<br>
+
+6. Payment is manually verified before activation.
+
+</div>
+
+</section>
+
+
+<section id="problems">
+
+<div class="section-title">
+
+<h2>If Something Goes Wrong</h2>
+
+<p>
+Use the support process below.
+</p>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Payment Problem</h3>
+
+<p>
+Save the Binance payment screen or transaction reference
+and send it to support.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>Login Problem</h3>
+
+<p>
+Check your email and password first. If you still cannot
+access your account, contact support.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>Bot Access Problem</h3>
+
+<p>
+Send your account email, purchased package and payment
+confirmation to WhatsApp support.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="contact">
+
+<div class="section-title">
+
+<h2>Support</h2>
+
+<p>
+Contact support if you have a payment, account or activation issue.
+</p>
+
+</div>
+
+
+<div class="support">
+
+<div class="support-card">
+
+<h3>WhatsApp</h3>
+
+<p>
+Send your payment confirmation and account information here.
+</p>
+
+<br>
+
+<a
+href="https://wa.me/254718835596"
+target="_blank"
+rel="noopener">
+
+Chat on WhatsApp →
+
+</a>
+
+</div>
+
+
+<div class="support-card">
+
+<h3>Instagram</h3>
+
+<p>
+Follow the official Instagram account for updates.
+</p>
+
+<br>
+
+<a
+href="https://instagram.com/ianke77"
+target="_blank"
+rel="noopener">
+
+@ianke77 →
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="login">
+
+<div class="section-title">
+
+<h2>Login / Create Account</h2>
+
+<p>
+Create your account before requesting bot activation.
+</p>
+
+</div>
+
+
+<div class="auth-box">
+
+
+<div class="auth-tabs">
+
+<button
+id="loginTab"
+class="active"
+type="button">
+
+LOGIN
+
+</button>
+
+
+<button
+id="signupTab"
+type="button">
+
+CREATE ACCOUNT
+
+</button>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<form
+id="loginForm"
+class="form active">
+
+<label for="loginEmail">
+Email
+</label>
+
+<input
+id="loginEmail"
+type="email"
+placeholder="Enter your email"
+required>
+
+
+<label for="loginPassword">
+Password
+</label>
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Enter your password"
+required>
+
+
+<button
+class="btn"
+type="submit">
+
+LOGIN
+
+</button>
+
+
+<br>
+
+
+<button
+id="forgotPassword"
+type="button"
+style="background:none;border:0;color:#19e68c;cursor:pointer;margin-top:10px;">
+
+Forgot password?
+
+</button>
+
+</form>
+
+
+<!-- CREATE ACCOUNT -->
+
+<form
+id="signupForm"
+class="form">
+
+<label for="signupEmail">
+Email
+</label>
+
+<input
+id="signupEmail"
+type="email"
+placeholder="Enter your email"
+required>
+
+
+<label for="signupPassword">
+Password
+</label>
+
+<input
+id="signupPassword"
+type="password"
+placeholder="Create a password"
+minlength="6"
+required>
+
+
+<button
+class="btn"
+type="submit">
+
+CREATE ACCOUNT
+
+</button>
+
+</form>
+
+
+<div
+id="authMessage"
+class="message">
+</div>
+
+
+<div
+id="dashboard"
+class="dashboard">
+
+<h3 style="color:#19e68c;">
+
+Account Active
+
+</h3>
+
+
+<p id="userEmail"></p>
+
+<br>
+
+
+<p>
+
+After purchasing your package, contact WhatsApp support
+with your payment confirmation and package details.
+
+</p>
+
+<br>
+
+
+<button
+id="logoutButton"
+class="btn"
+type="button">
+
+LOG OUT
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="faq">
+
+<div class="section-title">
+
+<h2>FAQ</h2>
+
+</div>
+
+
+<div class="faq">
+
+
+<details>
+
+<summary>
+What is IAN XAU AI?
+</summary>
+
+<p>
+It is a rule-based XAUUSD trading system built around
+predefined market conditions and trading filters.
+</p>
+
+</details>
+
+
+<details>
+
+<summary>
+How much is Bot Access?
+</summary>
+
+<p>
+Standard Bot Access is $50.
+</p>
+
+</details>
+
+
+<details>
+
+<summary>
+How much is VIP Access?
+</summary>
+
+<p>
+VIP Access is $120.
+</p>
+
+</details>
+
+
+<details>
+
+<summary>
+How do I receive access after payment?
+</summary>
+
+<p>
+Save your payment confirmation and contact WhatsApp support
+with your package and account email. Payment is manually
+verified before activation.
+</p>
+
+</details>
+
+
+<details>
+
+<summary>
+Does the bot guarantee profit?
+</summary>
+
+<p>
+No. Trading involves risk and no trading system can guarantee
+profits.
+</p>
+
+</details>
+
+</div>
+
+</section>
+
+
+<section id="risk">
+
+<div class="section-title">
+
+<h2>Risk Disclosure</h2>
+
+</div>
+
+
+<div class="card">
+
+<p class="warning">
+
+Trading XAUUSD and other financial instruments involves
+substantial risk of loss.
+
+IAN XAU AI does not guarantee
+profits, returns or successful trades.
+
+Past performance does not guarantee future results.
+
+Only trade with money you can afford to lose.
+
+</p>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<p>
+© 2026 IAN XAU AI — Rule-Based XAUUSD Trading System
+</p>
+
+<br>
+
+<p>
+Trading involves risk. No profit is guaranteed.
+</p>
+
+</footer>
+
+
+<script>
+
+/* ================================
+   SUPABASE
+================================ */
+
+const SUPABASE_URL =
+"https://elnqijtvqstzaxrydyox.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* ================================
+   THREE-DOT / MOBILE MENU
+================================ */
+
+const menuButton =
+document.getElementById("menuButton");
+
+const mobileMenu =
+document.getElementById("mobileMenu");
+
+
+menuButton.addEventListener(
+"click",
+function(){
+
+const open =
+mobileMenu.classList.toggle("open");
+
+menuButton.textContent =
+open ? "✕" : "☰";
+
+menuButton.setAttribute(
+"aria-expanded",
+String(open)
+);
+
+});
+
+
+document
+.querySelectorAll(".mobile-menu a")
+.forEach(function(link){
+
+link.addEventListener(
+"click",
+function(){
+
+mobileMenu.classList.remove("open");
+
+menuButton.textContent = "☰";
+
+menuButton.setAttribute(
+"aria-expanded",
+"false"
+);
+
+});
+
+});
+
+
+/* ================================
+   LOGIN / SIGNUP TABS
+================================ */
+
+const loginTab =
+document.getElementById("loginTab");
+
+const signupTab =
+document.getElementById("signupTab");
+
+const loginForm =
+document.getElementById("loginForm");
+
+const signupForm =
+document.getElementById("signupForm");
+
+
+loginTab.addEventListener(
+"click",
+function(){
+
+loginTab.classList.add("active");
+
+signupTab.classList.remove("active");
+
+loginForm.classList.add("active");
+
+signupForm.classList.remove("active");
+
+});
+
+
+signupTab.addEventListener(
+"click",
+function(){
+
+signupTab.classList.add("active");
+
+loginTab.classList.remove("active");
+
+signupForm.classList.add("active");
+
+loginForm.classList.remove("active");
+
+});
+
+
+/* ================================
+   MESSAGE
+================================ */
+
+const authMessage =
+document.getElementById("authMessage");
+
+
+function showMessage(message){
+
+authMessage.textContent = message;
+
+authMessage.style.display = "block";
+
+}
+
+
+/* ================================
+   CREATE ACCOUNT
+================================ */
+
+signupForm.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+
+const email =
+document
+.getElementById("signupEmail")
+.value
+.trim();
+
+
+const password =
+document
+.getElementById("signupPassword")
+.value;
+
+
+showMessage(
+"Creating your account..."
+);
+
+
+try{
+
+const redirectUrl =
+window.location.origin +
+window.location.pathname +
+"#login";
+
+
+const { data, error } =
+await supabaseClient.auth.signUp({
+
+email:email,
+
+password:password,
+
+options:{
+emailRedirectTo:redirectUrl
+}
+
+});
+
+
+if(error){
+
+showMessage(
+error.message
+);
+
+return;
+
+}
+
+
+if(data.user){
+
+if(data.session){
+
+showMessage(
+"Account created successfully. You are now logged in."
+);
+
+updateDashboard(data.user);
+
+}else{
+
+showMessage(
+"Account created. Check your email and click the verification link before logging in."
+);
+
+}
+
+}
+
+}catch(error){
+
+showMessage(
+"Unable to create account. Please check your internet connection and try again."
+);
+
+}
+
+});
+
+
+/* ================================
+   LOGIN
+================================ */
+
+loginForm.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+
+const email =
+document
+.getElementById("loginEmail")
+.value
+.trim();
+
+
+const password =
+document
+.getElementById("loginPassword")
+.value;
+
+
+showMessage(
+"Logging in..."
+);
+
+
+try{
+
+const { data, error } =
+await supabaseClient.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+showMessage(
+error.message
+);
+
+return;
+
+}
+
+
+showMessage(
+"Login successful."
+);
+
+updateDashboard(data.user);
+
+
+}catch(error){
+
+showMessage(
+"Login failed. Check your internet connection and try again."
+);
+
+}
+
+});
+
+
+/* ================================
+   FORGOT PASSWORD
+================================ */
+
+document
+.getElementById("forgotPassword")
+.addEventListener(
+"click",
+async function(){
+
+const email =
+document
+.getElementById("loginEmail")
+.value
+.trim();
+
+
+if(!email){
+
+showMessage(
+"Enter your email address first."
+);
+
+return;
+
+}
+
+
+try{
+
+const redirectUrl =
+window.location.origin +
+window.location.pathname +
+"#login";
+
+
+const { error } =
+await supabaseClient.auth
+.resetPasswordForEmail(
+email,
+{
+redirectTo:redirectUrl
+}
+);
+
+
+if(error){
+
+showMessage(
+error.message
+);
+
+return;
+
+}
+
+
+showMessage(
+"Password reset instructions have been sent to your email."
+);
+
+
+}catch(error){
+
+showMessage(
+"Unable to send password reset email."
+);
+
+}
+
+});
+
+
+/* ================================
+   DASHBOARD
+================================ */
+
+const dashboard =
+document.getElementById("dashboard");
+
+const userEmail =
+document.getElementById("userEmail");
+
+
+function updateDashboard(user){
+
+if(!user){
+
+dashboard.style.display =
+"none";
+
+return;
+
+}
+
+
+dashboard.style.display =
+"block";
+
+
+userEmail.textContent =
+"Logged in as: " + user.email;
+
+}
+
+
+/* ================================
+   LOG OUT
+================================ */
+
+document
+.getElementById("logoutButton")
+.addEventListener(
+"click",
+async function(){
+
+await supabaseClient.auth.signOut();
+
+dashboard.style.display =
+"none";
+
+showMessage(
+"You have been logged out."
+);
+
+});
+
+
+/* ================================
+   CHECK SESSION
+================================ */
+
+async function checkSession(){
+
+try{
+
+const { data } =
+await supabaseClient.auth
+.getSession();
+
+
+if(data.session){
+
+updateDashboard(
+data.session.user
+);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
+
+checkSession();
+
+
+/* ================================
+   AUTH STATE
+================================ */
+
+supabaseClient.auth
+.onAuthStateChange(
+function(event, session){
+
+if(session){
+
+updateDashboard(
+session.user
+);
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
