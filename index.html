@@ -4,547 +4,582 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>IAN XAU AI — Rule-Based XAUUSD Trading System</title>
-<meta name="description" content="IAN XAU AI — Rule-based XAUUSD trading system with automated trading filters and VIP access.">
+<title>IAN XAU AI — Trading Bot</title>
+
+<meta name="description"
+content="IAN XAU AI trading bot demo and strategy information.">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
+:root{
+  --bg:#030603;
+  --card:#081009;
+  --line:#17351d;
+  --green:#39ff78;
+  --text:#f4fff6;
+  --muted:#9aa99e
+}
+
 *{
   box-sizing:border-box;
   margin:0;
-  padding:0;
+  padding:0
 }
 
 html{
-  scroll-behavior:smooth;
+  scroll-behavior:smooth
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#050807;
-  color:#f4f7f5;
-  line-height:1.6;
+  background:
+  radial-gradient(
+    circle at 50% -10%,
+    #12351b 0,
+    #030603 38%
+  );
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif
 }
 
 a{
-  color:inherit;
   text-decoration:none;
+  color:inherit
 }
 
-button{
-  font-family:inherit;
-}
-
-header{
+nav{
   position:sticky;
   top:0;
-  z-index:1000;
-  background:rgba(5,8,7,.96);
-  border-bottom:1px solid #1b2a22;
-  backdrop-filter:blur(10px);
+  z-index:20;
+  background:#030603ef;
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px)
 }
 
 .nav{
-  max-width:1200px;
+  max-width:1150px;
   margin:auto;
   padding:15px 20px;
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:20px
 }
 
 .logo{
-  font-size:22px;
   font-weight:900;
-  letter-spacing:1px;
+  letter-spacing:1px
 }
 
 .logo span{
-  color:#19e68c;
+  color:var(--green)
 }
 
-.desktop-nav{
+.navlinks{
   display:flex;
-  gap:20px;
-  align-items:center;
+  gap:18px;
+  font-size:13px;
+  color:#c8d2cb
 }
 
-.desktop-nav a{
-  color:#b9c5bf;
-  font-size:14px;
-}
-
-.desktop-nav a:hover{
-  color:#19e68c;
-}
-
-.login-nav{
-  background:#19e68c;
-  color:#031008 !important;
-  padding:9px 15px;
-  border-radius:8px;
-  font-weight:800;
-}
-
-.menu-button{
-  display:none;
-  border:0;
-  background:none;
-  color:white;
-  font-size:27px;
-  cursor:pointer;
-}
-
-.mobile-menu{
-  display:none;
-  background:#080d0a;
-  border-top:1px solid #1b2a22;
-  padding:10px 20px 18px;
-}
-
-.mobile-menu.open{
-  display:block;
-}
-
-.mobile-menu a{
-  display:block;
-  padding:13px 5px;
-  border-bottom:1px solid #18231d;
-  color:#dce6e1;
-}
-
-.mobile-menu a:hover{
-  color:#19e68c;
-}
-
-section{
-  max-width:1200px;
-  margin:auto;
-  padding:80px 20px;
-}
-
-.hero{
-  max-width:none;
-  padding:100px 20px;
-  text-align:center;
-  background:
-    radial-gradient(circle at top,#0c2b1c 0,#050807 48%);
-}
-
-.badge{
-  display:inline-block;
-  padding:7px 12px;
-  border:1px solid #1a9b61;
-  border-radius:30px;
-  color:#19e68c;
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:20px;
-}
-
-.hero h1{
-  max-width:850px;
-  margin:auto;
-  font-size:clamp(38px,7vw,72px);
-  line-height:1.05;
-}
-
-.hero h1 span{
-  color:#19e68c;
-}
-
-.hero p{
-  max-width:720px;
-  margin:25px auto;
-  color:#aebbb4;
-  font-size:18px;
-}
-
-.buttons{
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:25px;
+.navlinks a:hover{
+  color:var(--green)
 }
 
 .btn{
   display:inline-block;
-  border:0;
-  cursor:pointer;
-  padding:13px 20px;
-  border-radius:9px;
+  padding:13px 18px;
+  border-radius:10px;
+  border:1px solid var(--green);
   font-weight:900;
-  background:#19e68c;
-  color:#031008;
+  font-size:13px;
+  cursor:pointer
 }
 
-.btn:hover{
-  opacity:.9;
+.primary{
+  background:var(--green);
+  color:#001a07
 }
 
-.btn.secondary{
-  background:#101813;
-  color:#19e68c;
-  border:1px solid #1d4a35;
+.secondary{
+  background:#071008
+}
+
+.container{
+  max-width:1150px;
+  margin:auto;
+  padding:0 20px
+}
+
+.hero{
+  min-height:78vh;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:80px 20px
+}
+
+.badge{
+  display:inline-block;
+  border:1px solid var(--line);
+  background:#071009;
+  padding:7px 11px;
+  border-radius:99px;
+  color:var(--green);
+  font-size:11px;
+  font-weight:800
+}
+
+h1{
+  font-size:clamp(42px,8vw,82px);
+  line-height:.95;
+  margin:20px 0 15px;
+  letter-spacing:-3px
+}
+
+h2{
+  font-size:32px;
+  margin:0 0 12px
+}
+
+h3{
+  margin:0 0 10px
+}
+
+.lead{
+  max-width:720px;
+  margin:0 auto;
+  color:var(--muted);
+  line-height:1.7
+}
+
+.actions{
+  margin-top:28px;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap
+}
+
+section{
+  padding:75px 0
 }
 
 .section-title{
   text-align:center;
-  margin-bottom:40px;
-}
-
-.section-title h2{
-  font-size:35px;
-  margin-bottom:8px;
+  margin-bottom:32px
 }
 
 .section-title p{
-  color:#93a39a;
+  color:var(--muted)
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px
 }
 
-.card{
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:15px;
-  padding:25px;
+.card,
+.trade-box,
+.login-box,
+.access-box{
+  background:
+  linear-gradient(
+    145deg,
+    #09120b,
+    #050905
+  );
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:22px
 }
 
-.card h3{
-  color:#19e68c;
-  margin-bottom:10px;
+.card p,
+.trade-box p{
+  color:var(--muted);
+  line-height:1.6;
+  font-size:13px
 }
 
-.card p{
-  color:#aab6b0;
-}
-
-.filters{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-}
-
-.filter{
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:13px;
-  padding:20px;
-}
-
-.filter strong{
-  color:#19e68c;
-}
-
-.chart-box{
-  width:100%;
-  height:520px;
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:15px;
-  overflow:hidden;
-}
-
-.tradingview-widget-container{
-  width:100%;
-  height:100%;
+.icon{
+  color:var(--green);
+  font-size:22px;
+  margin-bottom:12px
 }
 
 .steps{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:15px;
+  gap:14px
 }
 
-.step{
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:14px;
-  padding:22px;
+.step strong{
+  color:var(--green);
+  font-size:12px
 }
 
-.step-number{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:#19e68c;
-  color:#031008;
+.chart-wrap{
+  height:560px;
+  background:#050805;
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden
+}
+
+.chart{
+  height:100%
+}
+
+.chart-local{
+  height:100%;
+  position:relative;
+  background:#071008;
+  overflow:hidden
+}
+
+.xau-canvas{
+  width:100%;
+  height:100%;
+  display:block
+}
+
+.chart-label{
+  position:absolute;
+  left:16px;
+  top:14px;
   display:flex;
+  gap:12px;
   align-items:center;
-  justify-content:center;
+  font-size:13px
+}
+
+.chart-label b{
+  font-size:16px;
+  color:#f4fff6
+}
+
+.chart-label span{
+  color:#8fa095;
+  font-size:11px
+}
+
+.chart-fallback-note{
+  position:absolute;
+  right:14px;
+  top:14px;
+  color:#728078;
+  font-size:10px;
+  border:1px solid #1b3821;
+  border-radius:8px;
+  padding:6px 8px;
+  background:#061008dd
+}
+
+.tradingview-real{
+  display:none;
+  height:100%
+}
+
+@media(min-width:900px){
+
+  .chart-local{
+    display:none
+  }
+
+  .tradingview-real{
+    display:block
+  }
+
+}
+
+.trade-panel{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:16px
+}
+
+.trade-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px
+}
+
+.signal{
+  font-size:10px;
   font-weight:900;
-  margin-bottom:15px;
+  color:#001b08;
+  background:var(--green);
+  padding:5px 8px;
+  border-radius:99px
+}
+
+.trade-row{
+  display:flex;
+  justify-content:space-between;
+  padding:11px 0;
+  border-bottom:1px solid #14331c;
+  font-size:13px;
+  gap:15px
+}
+
+.trade-row span{
+  color:var(--muted)
+}
+
+.trade-row b{
+  text-align:right
+}
+
+.check{
+  color:var(--green);
+  font-weight:900;
+  margin-right:7px
+}
+
+.demo-box{
+  background:#050905;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px
+}
+
+.demo-box img{
+  width:100%;
+  display:block;
+  border-radius:12px;
+  border:1px solid var(--line)
+}
+
+.demo-screen{
+  display:none
+}
+
+.demo-screen.active{
+  display:block
+}
+
+.demo-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px
+}
+
+.demo-status{
+  color:var(--green);
+  font-size:12px;
+  font-weight:900
 }
 
 .pricing{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:22px;
-  max-width:900px;
-  margin:auto;
-}
-
-.price-card{
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:18px;
-  padding:30px;
-  position:relative;
-}
-
-.price-card.vip{
-  border-color:#19e68c;
-}
-
-.price-card h3{
-  font-size:23px;
+  gap:18px;
+  max-width:800px;
+  margin:auto
 }
 
 .price{
-  font-size:45px;
+  font-size:42px;
   font-weight:900;
-  margin:10px 0;
-  color:#19e68c;
+  margin:14px 0
 }
 
-.price-card ul{
-  list-style:none;
-  margin:20px 0;
+.price small{
+  font-size:13px;
+  color:var(--muted)
 }
 
-.price-card li{
-  padding:8px 0;
-  color:#c2cdc7;
-  border-bottom:1px solid #16221c;
+ul{
+  padding-left:20px;
+  color:var(--muted);
+  line-height:2
 }
 
-.price-card li::before{
-  content:"✓ ";
-  color:#19e68c;
-  font-weight:900;
+.login-box{
+  max-width:430px;
+  margin:auto
 }
 
-.payment-btn{
-  display:block;
-  text-align:center;
+.input{
   width:100%;
-  background:#19e68c;
-  color:#031008;
-  padding:14px;
+  padding:13px;
+  margin:7px 0;
+  background:#030603;
+  border:1px solid var(--line);
   border-radius:9px;
-  font-weight:900;
-}
-
-.payment-btn:hover{
-  opacity:.9;
-}
-
-.notice{
-  margin-top:20px;
-  padding:18px;
-  border-radius:12px;
-  background:#0c1510;
-  border:1px solid #1c392a;
-  color:#aebbb4;
-}
-
-.support{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
-
-.support-card{
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:15px;
-  padding:25px;
-}
-
-.support-card a{
-  color:#19e68c;
-  font-weight:800;
-}
-
-.faq{
-  max-width:850px;
-  margin:auto;
-}
-
-details{
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:10px;
-  margin-bottom:10px;
-  padding:15px 18px;
-}
-
-summary{
-  cursor:pointer;
-  font-weight:800;
-}
-
-details p{
-  color:#aab6b0;
-  margin-top:12px;
-}
-
-.auth-box{
-  max-width:470px;
-  margin:auto;
-  background:#0a100d;
-  border:1px solid #1a2b22;
-  border-radius:16px;
-  padding:25px;
-}
-
-.auth-tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  margin-bottom:20px;
-}
-
-.auth-tabs button{
-  padding:13px;
-  border:1px solid #1a2b22;
-  background:#07100b;
-  color:#aab6b0;
-  cursor:pointer;
-}
-
-.auth-tabs button.active{
-  background:#19e68c;
-  color:#031008;
-  font-weight:900;
-}
-
-.form{
-  display:none;
-}
-
-.form.active{
-  display:block;
-}
-
-label{
-  display:block;
-  margin-bottom:7px;
-  color:#cbd6d0;
-  font-size:14px;
-}
-
-input{
-  width:100%;
-  padding:13px;
-  margin-bottom:15px;
-  background:#050807;
-  border:1px solid #25362c;
-  border-radius:8px;
-  color:white;
-  outline:none;
-}
-
-input:focus{
-  border-color:#19e68c;
-}
-
-.form button{
-  width:100%;
-}
-
-.message{
-  margin-top:15px;
-  padding:12px;
-  border-radius:8px;
-  background:#101813;
-  color:#b9c5bf;
-  font-size:14px;
-  display:none;
-}
-
-.dashboard{
-  display:none;
-  max-width:700px;
-  margin:25px auto 0;
-  padding:22px;
-  background:#0c1510;
-  border:1px solid #1a4933;
-  border-radius:14px;
+  color:white
 }
 
 footer{
-  border-top:1px solid #1b2a22;
-  padding:30px 20px;
+  border-top:1px solid var(--line);
+  padding:35px 20px;
   text-align:center;
-  color:#78867f;
-  font-size:13px;
+  color:var(--muted);
+  font-size:12px
 }
 
-.warning{
-  color:#e1b56a;
+.notice{
+  margin-top:18px;
+  padding:12px;
+  border:1px solid #29482f;
+  border-radius:10px;
+  color:#b9c7bd;
+  font-size:11px
+}
+
+.auth-links{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted)
+}
+
+.auth-links a{
+  color:var(--green)
+}
+
+.auth-message{
+  margin-top:18px;
+  padding:12px;
+  border:1px solid #29482f;
+  border-radius:10px;
+  color:#d8e5db;
+  font-size:12px;
+  line-height:1.5
+}
+
+.auth-message.good{
+  border-color:#39ff78;
+  color:#39ff78
+}
+
+/* PAYMENT ACCESS */
+
+.access-box{
+  max-width:800px;
+  margin:auto
+}
+
+.access-status{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:99px;
+  font-size:11px;
+  font-weight:900;
+  margin-bottom:15px
+}
+
+.status-red{
+  background:#26100f;
+  border:1px solid #71332d;
+  color:#ff8d82
+}
+
+.status-green{
+  background:#071b0d;
+  border:1px solid var(--green);
+  color:var(--green)
+}
+
+.payment-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:22px
+}
+
+.payment-card{
+  background:#050905;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px
+}
+
+.payment-card h3{
+  color:var(--green);
+  margin-bottom:5px
+}
+
+.payment-price{
+  font-size:30px;
+  font-weight:900;
+  margin:10px 0
+}
+
+.payment-card p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6
+}
+
+.access-email{
+  padding:12px;
+  border-radius:10px;
+  background:#050905;
+  border:1px solid var(--line);
+  margin-top:15px;
+  font-size:13px
+}
+
+.access-email span{
+  color:var(--green);
+  font-weight:700
 }
 
 @media(max-width:800px){
 
-  .desktop-nav{
-    display:none;
-  }
-
-  .menu-button{
-    display:block;
-  }
-
-  section{
-    padding:60px 15px;
-  }
-
-  .hero{
-    padding:80px 15px;
+  .navlinks{
+    display:none
   }
 
   .grid,
-  .pricing,
-  .support,
-  .filters{
-    grid-template-columns:1fr;
-  }
-
   .steps{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr
   }
 
-  .chart-box{
-    height:420px;
+  .trade-panel,
+  .pricing{
+    grid-template-columns:1fr
   }
+
+  .payment-options{
+    grid-template-columns:1fr
+  }
+
+  .chart-wrap{
+    height:480px
+  }
+
 }
 
-@media(max-width:500px){
+@media(max-width:520px){
 
+  .grid,
   .steps{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr
   }
 
-  .hero h1{
-    font-size:40px;
+  h1{
+    letter-spacing:-2px
   }
 
-  .price{
-    font-size:40px;
+  .hero{
+    min-height:70vh
   }
+
 }
+
 </style>
 </head>
 
 <body>
 
-<header>
+<nav>
 
 <div class="nav">
 
@@ -552,11 +587,9 @@ footer{
 IAN <span>XAU AI</span>
 </a>
 
-<nav class="desktop-nav">
+<div class="navlinks">
 
 <a href="#strategy">Strategy</a>
-
-<a href="#filters">Filters</a>
 
 <a href="#chart">Chart</a>
 
@@ -564,106 +597,146 @@ IAN <span>XAU AI</span>
 
 <a href="#pricing">Pricing</a>
 
-<a href="#login" class="login-nav">
-Login
+<a href="#login">Login</a>
+
+</div>
+
+<a class="btn primary" href="#pricing">
+Get Access
 </a>
+
+</div>
 
 </nav>
 
-<button
-id="menuButton"
-class="menu-button"
-aria-label="Open menu"
-aria-expanded="false"
-type="button">
-☰
-</button>
+<main id="home">
 
-</div>
+<section class="hero">
 
-
-<div id="mobileMenu" class="mobile-menu">
-
-<a href="#strategy">
-📊 Strategy
-</a>
-
-<a href="#filters">
-⚙️ Trading Filters
-</a>
-
-<a href="#chart">
-📈 Live XAUUSD Chart
-</a>
-
-<a href="#calendar">
-📅 Economic Calendar
-</a>
-
-<a href="#demo">
-▶️ Demo
-</a>
-
-<a href="#pricing">
-💳 Pricing & Payment
-</a>
-
-<a href="#activation">
-📦 How to Get Your Bot After Payment
-</a>
-
-<a href="#problems">
-🆘 If Something Goes Wrong
-</a>
-
-<a href="#login">
-🔐 Login / Create Account
-</a>
-
-<a href="#contact">
-📱 WhatsApp Support
-</a>
-
-<a
-href="https://instagram.com/ianke77"
-target="_blank">
-📸 Instagram
-</a>
-
-<a href="#risk">
-⚠️ Risk Disclosure
-</a>
-
-</div>
-
-</header>
-
-
-<section id="home" class="hero">
+<div>
 
 <div class="badge">
 RULE-BASED XAUUSD TRADING SYSTEM
 </div>
 
 <h1>
-Trade Gold With
-<span>Defined Rules.</span>
+READ THE MARKET.<br>
+<span style="color:var(--green)">
+FOLLOW THE RULES.
+</span>
 </h1>
 
-<p>
-IAN XAU AI is built around structured XAUUSD market conditions,
-liquidity, session behaviour and predefined trading filters.
+<p class="lead">
+IAN XAU AI is designed around structured market levels,
+liquidity behavior and confirmation-based entries.
+Explore the demo before choosing an access plan.
 </p>
 
-<div class="buttons">
+<div class="actions">
 
-<a href="#pricing" class="btn">
-GET ACCESS
+<a
+class="btn primary"
+href="#demo"
+onclick="openDemo()">
+VIEW DEMO
 </a>
 
-<a href="#login" class="btn secondary">
-LOGIN / CREATE ACCOUNT
+<a
+class="btn secondary"
+href="#strategy">
+SEE STRATEGY
 </a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section>
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+What the system watches
+</h2>
+
+<p>
+Core concepts used in the strategy.
+</p>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+
+<div class="icon">◈</div>
+
+<h3>
+Asia High
+</h3>
+
+<p>
+Tracks the Asian-session high as a reference level
+for later price interaction.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">◈</div>
+
+<h3>
+Asia Low
+</h3>
+
+<p>
+Tracks the Asian-session low and watches how price
+reacts around that area.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">◈</div>
+
+<h3>
+PDH / PDL
+</h3>
+
+<p>
+Previous Day High and Previous Day Low are mapped
+as additional reference levels.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">◈</div>
+
+<h3>
+Confirmation
+</h3>
+
+<p>
+The example logic waits for confirmation rather than
+treating every level touch as an entry.
+</p>
+
+</div>
+
+</div>
 
 </div>
 
@@ -672,112 +745,93 @@ LOGIN / CREATE ACCOUNT
 
 <section id="strategy">
 
-<div class="section-title">
-
-<h2>Trading Strategy</h2>
-
-<p>
-Structured conditions before a trade is considered.
-</p>
-
-</div>
-
-<div class="grid">
-
-<div class="card">
-
-<h3>Asia High / Low</h3>
-
-<p>
-The system monitors the Asian session range and watches how
-price interacts with the Asia High and Asia Low.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>PDH / PDL</h3>
-
-<p>
-Previous Day High and Previous Day Low are used as important
-reference levels for liquidity and potential reactions.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>Confirmation</h3>
-
-<p>
-A level alone is not enough. Price reaction and confirmation
-are considered before a setup is accepted.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="filters">
+<div class="container">
 
 <div class="section-title">
 
-<h2>Trading Filters</h2>
+<h2>
+How the strategy works
+</h2>
 
 <p>
-Multiple conditions are used to filter potential setups.
+A simple view of the decision process.
 </p>
 
 </div>
 
-<div class="filters">
 
-<div class="filter">
-<strong>01 — Asia Range</strong>
+<div class="steps">
+
+<div class="card step">
+
+<strong>
+01 — LEVELS
+</strong>
+
+<h3>
+Map key areas
+</h3>
+
 <p>
-Asia High and Asia Low are monitored as key reference levels.
+Asia High, Asia Low, PDH and PDL are identified.
 </p>
+
 </div>
 
-<div class="filter">
-<strong>02 — Previous Day Levels</strong>
+
+<div class="card step">
+
+<strong>
+02 — LIQUIDITY
+</strong>
+
+<h3>
+Watch interaction
+</h3>
+
 <p>
-PDH and PDL are checked for potential liquidity interaction.
+The system looks for meaningful movement around
+tracked levels.
 </p>
+
 </div>
 
-<div class="filter">
-<strong>03 — Liquidity</strong>
+
+<div class="card step">
+
+<strong>
+03 — CONFIRM
+</strong>
+
+<h3>
+Wait for structure
+</h3>
+
 <p>
-The system looks for relevant liquidity behaviour around important levels.
+A qualifying reaction or structure confirmation
+is required by the example rules.
 </p>
+
 </div>
 
-<div class="filter">
-<strong>04 — Price Reaction</strong>
+
+<div class="card step">
+
+<strong>
+04 — RISK
+</strong>
+
+<h3>
+Define the trade
+</h3>
+
 <p>
-Price must show the required reaction before a setup is considered.
+Entry, stop-loss and target are planned before
+the example trade.
 </p>
+
 </div>
 
-<div class="filter">
-<strong>05 — Session</strong>
-<p>
-Session conditions are part of the setup evaluation.
-</p>
-</div>
-
-<div class="filter">
-<strong>06 — Risk</strong>
-<p>
-Defined stop-loss and take-profit parameters are part of the trade structure.
-</p>
 </div>
 
 </div>
@@ -787,40 +841,73 @@ Defined stop-loss and take-profit parameters are part of the trade structure.
 
 <section id="chart">
 
+<div class="container">
+
 <div class="section-title">
 
-<h2>Live XAUUSD Chart</h2>
+<h2>
+Real XAUUSD chart
+</h2>
 
 <p>
-OANDA:XAUUSD — 15 Minute
+Live market chart supplied by TradingView.
+Market data and execution can differ by broker.
 </p>
 
 </div>
 
-<div class="chart-box">
 
-<div class="tradingview-widget-container">
+<div class="chart-wrap">
 
-<div class="tradingview-widget-container__widget"></div>
+<div class="chart">
+
+<div class="chart-local">
+
+<canvas class="xau-canvas"></canvas>
+
+<div class="chart-label">
+
+<b>XAUUSD</b>
+
+<span>
+15m • Acode Preview
+</span>
+
+</div>
+
+<div class="chart-fallback-note">
+Local preview • illustrative data
+</div>
+
+</div>
+
+
+<div class="tradingview-real">
+
+<div
+class="tradingview-widget-container"
+style="height:100%;width:100%">
+
+<div
+class="tradingview-widget-container__widget"
+style="height:100%;width:100%">
+</div>
 
 <script
 type="text/javascript"
 src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
 async>
 {
-"autosize":true,
-"symbol":"OANDA:XAUUSD",
-"interval":"15",
-"timezone":"Etc/UTC",
-"theme":"dark",
-"style":"1",
-"locale":"en",
-"allow_symbol_change":true,
-"hide_top_toolbar":false,
-"hide_legend":false,
-"save_image":false,
-"calendar":false,
-"support_host":"https://www.tradingview.com"
+  "autosize":true,
+  "symbol":"OANDA:XAUUSD",
+  "interval":"15",
+  "timezone":"Etc/UTC",
+  "theme":"dark",
+  "style":"1",
+  "locale":"en",
+  "allow_symbol_change":true,
+  "calendar":false,
+  "support_host":"https://www.tradingview.com"
 }
 </script>
 
@@ -828,87 +915,189 @@ async>
 
 </div>
 
-</section>
+</div>
 
 
-<section id="calendar">
+<div class="trade-panel">
 
-<div class="section-title">
 
-<h2>Economic Calendar</h2>
+<div class="trade-box">
+
+<div class="trade-head">
+
+<h3>
+Why This Trade?
+</h3>
+
+<span class="signal">
+EXAMPLE BUY
+</span>
+
+</div>
+
+
+<div class="trade-row">
+<span>Market</span>
+<b>XAUUSD • M15</b>
+</div>
+
+
+<div class="trade-row">
+<span>Level interaction</span>
+<b>Asia Low + PDL area</b>
+</div>
+
+
+<div class="trade-row">
+<span>Liquidity</span>
+<b>Low swept</b>
+</div>
+
+
+<div class="trade-row">
+<span>Confirmation</span>
+<b>Price reaction confirmed</b>
+</div>
+
+
+<div class="trade-row">
+<span>Risk plan</span>
+<b>Defined SL + TP</b>
+</div>
+
+
+<div class="trade-row">
+<span>Bot action</span>
+<b>Entry considered</b>
+</div>
+
+</div>
+
+
+<div class="trade-box">
+
+<div class="trade-head">
+
+<h3>
+Decision Logic
+</h3>
+
+<span class="signal">
+RULES
+</span>
+
+</div>
 
 <p>
-Monitor major scheduled economic events.
+<span class="check">✓</span>
+Key levels were already mapped.
 </p>
-
-</div>
-
-<div class="chart-box">
-
-<div class="tradingview-widget-container">
-
-<div class="tradingview-widget-container__widget"></div>
-
-<script
-type="text/javascript"
-src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
-async>
-{
-"colorTheme":"dark",
-"isTransparent":true,
-"locale":"en",
-"countryFilter":"us,gb,eu,jp,cn,ca,au,de,fr",
-"importanceFilter":"-1,0,1",
-"width":"100%",
-"height":"100%"
-}
-</script>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="demo">
-
-<div class="section-title">
-
-<h2>System Demo</h2>
 
 <p>
-Example XAUUSD environment.
+<span class="check">✓</span>
+Price interacted with a tracked liquidity area.
 </p>
+
+<p>
+<span class="check">✓</span>
+The example waited for confirmation.
+</p>
+
+<p>
+<span class="check">✓</span>
+Stop-loss and target were defined before
+the example entry.
+</p>
+
+<div class="notice">
+Illustrative example only — not a live trading signal
+or a guarantee of results.
+</div>
 
 </div>
 
-<div class="card">
+</div>
 
-<div class="chart-box">
+</div>
 
-<div class="tradingview-widget-container">
+</section><section id="demo">
 
-<div class="tradingview-widget-container__widget"></div>
+<div class="container">
+
+<div class="demo-screen" id="demoScreen">
+
+<div class="demo-top">
+
+<div>
+
+<h2>
+IAN XAU AI — DEMO
+</h2>
+
+<div class="demo-status">
+● SYSTEM MONITORING
+</div>
+
+</div>
+
+<button
+class="btn secondary"
+onclick="closeDemo()">
+Back
+</button>
+
+</div>
+
+
+<div class="chart-wrap">
+
+<div class="chart-local">
+
+<canvas class="xau-canvas"></canvas>
+
+<div class="chart-label">
+
+<b>XAUUSD</b>
+
+<span>
+15m • Acode Preview
+</span>
+
+</div>
+
+<div class="chart-fallback-note">
+Local preview • illustrative data
+</div>
+
+</div>
+
+
+<div class="tradingview-real">
+
+<div
+class="tradingview-widget-container"
+style="height:100%;width:100%">
+
+<div
+class="tradingview-widget-container__widget"
+style="height:100%;width:100%">
+</div>
 
 <script
 type="text/javascript"
 src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
 async>
 {
-"autosize":true,
-"symbol":"OANDA:XAUUSD",
-"interval":"15",
-"timezone":"Etc/UTC",
-"theme":"dark",
-"style":"1",
-"locale":"en",
-"allow_symbol_change":false,
-"hide_top_toolbar":false,
-"hide_legend":false,
-"save_image":false,
-"calendar":false,
-"support_host":"https://www.tradingview.com"
+  "autosize":true,
+  "symbol":"OANDA:XAUUSD",
+  "interval":"15",
+  "timezone":"Etc/UTC",
+  "theme":"dark",
+  "style":"1",
+  "locale":"en",
+  "allow_symbol_change":false,
+  "calendar":false,
+  "support_host":"https://www.tradingview.com"
 }
 </script>
 
@@ -916,114 +1105,176 @@ async>
 
 </div>
 
+</div>
+
+
+<div class="trade-panel">
+
+<div class="trade-box">
+
+<div class="trade-head">
+
+<h3>
+Why This Trade?
+</h3>
+
+<span class="signal">
+DEMO LOGIC
+</span>
+
+</div>
+
+
+<div class="trade-row">
+<span>Setup</span>
+<b>Asia + Previous Day Level</b>
+</div>
+
+
+<div class="trade-row">
+<span>Liquidity</span>
+<b>Interaction detected</b>
+</div>
+
+
+<div class="trade-row">
+<span>Confirmation</span>
+<b>Required before entry</b>
+</div>
+
+
+<div class="trade-row">
+<span>Risk</span>
+<b>SL / TP defined</b>
+</div>
+
+
+<div class="trade-row">
+<span>Status</span>
+<b>Monitoring</b>
+</div>
+
+</div>
+
+
+<div class="trade-box">
+
+<div class="trade-head">
+
+<h3>
+What the bot checks
+</h3>
+
+<span class="signal">
+AI LOGIC
+</span>
+
+</div>
+
+
+<p>
+<span class="check">✓</span>
+Key level location
+</p>
+
+<p>
+<span class="check">✓</span>
+Liquidity behavior
+</p>
+
+<p>
+<span class="check">✓</span>
+Confirmation
+</p>
+
+<p>
+<span class="check">✓</span>
+Risk-defined setup
+</p>
+
+
 <div class="notice">
-
-<strong>SYSTEM MONITORING</strong>
-<br><br>
-
-Example setup:
-XAUUSD M15 — Asia Low + PDL area —
-liquidity interaction — price reaction — defined SL + TP.
+This demo explains the strategy.
+It does not promise profits or represent
+a guaranteed live signal.
+</div>
 
 </div>
 
 </div>
 
-  </section>
-  <section id="activation">
+
+<div class="actions">
+
+<a
+class="btn primary"
+href="#pricing">
+GET FULL ACCESS
+</a>
+
+</div>
+
+</div>
+
+
+<div id="demoPreview">
 
 <div class="section-title">
 
-<h2>How To Get Your Bot After Payment</h2>
+<h2>
+See the system in action
+</h2>
 
 <p>
-Follow these steps after purchasing.
+Tap the button to open the interactive demo.
 </p>
 
 </div>
 
 
-<div class="steps">
+<div class="demo-box">
 
-<div class="step">
-
-<div class="step-number">1</div>
-
-<h3>Choose a Package</h3>
-
-<p>
-Select either the $50 Bot Access or the $120 VIP Access package.
-</p>
-
-</div>
+<img
+src="demo-storyboard.png"
+alt="IAN XAU AI demo storyboard">
 
 
-<div class="step">
+<div class="actions">
 
-<div class="step-number">2</div>
-
-<h3>Complete Payment</h3>
-
-<p>
-Use the Binance payment button for the package you selected.
-</p>
-
-</div>
-
-
-<div class="step">
-
-<div class="step-number">3</div>
-
-<h3>Save Confirmation</h3>
-
-<p>
-Keep your Binance payment confirmation or transaction reference.
-</p>
-
-</div>
-
-
-<div class="step">
-
-<div class="step-number">4</div>
-
-<h3>Contact Support</h3>
-
-<p>
-Send the payment confirmation, package purchased and account email through WhatsApp.
-</p>
+<button
+class="btn primary"
+onclick="openDemo()">
+OPEN DEMO
+</button>
 
 </div>
 
 </div>
 
-
-<div class="notice">
-
-<strong>Important:</strong>
-
-<br><br>
-
-After payment, activation is handled manually.
-
-Send your payment confirmation and account email to support.
-
-Your payment will be verified before access is provided.
+</div>
 
 </div>
 
 </section>
 
+
+<!-- =========================
+     PRICING
+     ========================= -->
 
 <section id="pricing">
 
+<div class="container">
+
 <div class="section-title">
 
-<h2>Choose Your Access</h2>
+<h2>
+Choose access
+</h2>
 
 <p>
-Pay in USD through Binance.
+Pay through Binance. After payment,
+send your confirmation to WhatsApp for verification.
 </p>
 
 </div>
@@ -1032,100 +1283,336 @@ Pay in USD through Binance.
 <div class="pricing">
 
 
-<!-- $50 BOT -->
+<div class="card">
 
-<div class="price-card">
-
-<h3>BOT ACCESS</h3>
+<span class="badge">
+BOT ACCESS
+</span>
 
 <div class="price">
 $50
+<small>one-time</small>
 </div>
-
-<p>
-Standard IAN XAU AI access.
-</p>
 
 <ul>
 
-<li>XAUUSD trading system</li>
+<li>Bot access</li>
 
-<li>Rule-based strategy</li>
+<li>Core Asia strategy</li>
 
-<li>Asia High / Low filters</li>
+<li>PDH / PDL concepts</li>
 
-<li>PDH / PDL filters</li>
+<li>Liquidity concepts</li>
 
-<li>Liquidity conditions</li>
-
-<li>Confirmation filters</li>
-
-<li>Defined SL / TP structure</li>
-
-<li>Activation after payment verification</li>
+<li>Confirmation-based setup</li>
 
 </ul>
 
 
 <a
-class="payment-btn"
+class="btn primary"
+style="width:100%;text-align:center"
 href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457060672361889792&billType=request_a_payment"
 target="_blank"
 rel="noopener">
 
-PAY $50 WITH BINANCE
+BUY BOT — $50
 
 </a>
 
 </div>
 
 
-<!-- $120 VIP -->
 
-<div class="price-card vip">
+<div class="card">
 
-<h3>VIP ACCESS</h3>
+<span class="badge">
+VIP ACCESS
+</span>
 
 <div class="price">
 $120
+<small>one-time</small>
 </div>
-
-<p>
-Advanced VIP access for the volatile trading session.
-</p>
 
 <ul>
 
-<li>Everything in Bot Access</li>
+<li>VIP strategy access</li>
 
-<li>VIP trading configuration</li>
+<li>Asia + PDH / PDL framework</li>
 
-<li>Asia strategy</li>
+<li>Volatility/scalping concepts</li>
 
-<li>PDH / PDL scalping conditions</li>
+<li>Priority access</li>
 
-<li>Liquidity-based filtering</li>
-
-<li>Volatile-session trading conditions</li>
-
-<li>Automated trade management</li>
-
-<li>Designed to open and close positions rapidly when conditions are met</li>
-
-<li>Activation after payment verification</li>
+<li>Advanced access support</li>
 
 </ul>
 
 
 <a
-class="payment-btn"
+class="btn primary"
+style="width:100%;text-align:center"
 href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457061228438241280&billType=request_a_payment"
 target="_blank"
 rel="noopener">
 
-PAY $120 WITH BINANCE
+BUY VIP — $120
 
 </a>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     PAYMENT STATUS
+     ========================= -->
+
+<section id="access">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+Your Bot Access
+</h2>
+
+<p>
+Your access status is connected to your account.
+</p>
+
+</div>
+
+
+<div
+class="access-box"
+id="paymentAccessBox">
+
+<div
+id="paymentStatusBadge"
+class="access-status status-red">
+
+NOT PAID
+
+</div>
+
+
+<h3 id="paymentTitle">
+No active package
+</h3>
+
+
+<p
+id="paymentDescription"
+style="color:var(--muted);line-height:1.6;font-size:13px">
+
+Create an account or log in to view your
+payment and activation status.
+
+</p>
+
+
+<div
+class="access-email"
+id="paymentEmail"
+style="display:none">
+
+Account:
+<span id="customerEmail">
+</span>
+
+</div>
+
+
+<div
+id="paymentChoices"
+style="margin-top:20px">
+
+<p
+style="color:var(--muted);font-size:13px;line-height:1.6">
+
+Choose your package below. After payment,
+send your payment confirmation, selected package,
+and account email to WhatsApp.
+
+</p>
+
+
+<div class="payment-options">
+
+
+<div class="payment-card">
+
+<h3>
+BOT ACCESS
+</h3>
+
+<div class="payment-price">
+$50
+</div>
+
+<p>
+Core IAN XAU AI bot access and strategy framework.
+</p>
+
+
+<a
+class="btn primary"
+style="width:100%;text-align:center;margin-top:14px"
+href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457060672361889792&billType=request_a_payment"
+target="_blank"
+rel="noopener"
+onclick="notifyPaymentClick('BOT ACCESS','$50')">
+
+PAY $50
+
+</a>
+
+</div>
+
+
+<div class="payment-card">
+
+<h3>
+VIP ACCESS
+</h3>
+
+<div class="payment-price">
+$120
+</div>
+
+<p>
+VIP strategy access with advanced strategy concepts
+and priority access.
+</p>
+
+
+<a
+class="btn primary"
+style="width:100%;text-align:center;margin-top:14px"
+href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457061228438241280&billType=request_a_payment"
+target="_blank"
+rel="noopener"
+onclick="notifyPaymentClick('VIP ACCESS','$120')">
+
+PAY $120
+
+</a>
+
+</div>
+
+</div>
+
+
+<div
+class="notice"
+style="margin-top:20px">
+
+<strong>After payment:</strong><br><br>
+
+1. Complete the Binance payment.<br>
+
+2. Save your payment confirmation/reference.<br>
+
+3. Contact us on WhatsApp.<br>
+
+4. Send your payment confirmation,
+package and account email.<br>
+
+5. Payment is manually verified before access
+is activated.
+
+</div>
+
+
+<div class="actions">
+
+<a
+class="btn secondary"
+href="https://wa.me/254718835596"
+target="_blank"
+rel="noopener">
+
+CONTACT WHATSAPP
+
+</a>
+
+</div>
+
+</div>
+
+
+<div
+id="activeAccess"
+style="display:none;margin-top:20px">
+
+<div
+class="notice"
+style="border-color:var(--green)">
+
+<strong
+style="color:var(--green)">
+
+ACCESS ACTIVE
+
+</strong>
+
+<br><br>
+
+Your payment has been verified and your package
+is active.
+
+</div>
+
+
+<div
+class="trade-box"
+style="margin-top:15px">
+
+<div class="trade-row">
+
+<span>
+Package
+</span>
+
+<b id="activePackage">
+</b>
+
+</div>
+
+
+<div class="trade-row">
+
+<span>
+Payment status
+</span>
+
+<b
+style="color:var(--green)">
+
+ACTIVE
+
+</b>
+
+</div>
+
+
+<div class="trade-row">
+
+<span>
+Account email
+</span>
+
+<b id="activeEmail">
+</b>
 
 </div>
 
@@ -1134,147 +1621,38 @@ PAY $120 WITH BINANCE
 
 <div class="notice">
 
-<strong>Payment Process</strong>
-
-<br><br>
-
-1. Click the payment button for your package.
-
-<br>
-
-2. Complete the Binance payment.
-
-<br>
-
-3. Save your payment confirmation/reference.
-
-<br>
-
-4. Contact WhatsApp support.
-
-<br>
-
-5. Send your payment confirmation + package + account email.
-
-<br>
-
-6. Payment is manually verified before activation.
-
-</div>
-
-</section>
-
-
-<section id="problems">
-
-<div class="section-title">
-
-<h2>If Something Goes Wrong</h2>
-
-<p>
-Use the support process below.
-</p>
+Bot delivery and account setup are handled after
+payment verification.
 
 </div>
 
 
-<div class="grid">
-
-<div class="card">
-
-<h3>Payment Problem</h3>
-
-<p>
-Save the Binance payment screen or transaction reference
-and send it to support.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>Login Problem</h3>
-
-<p>
-Check your email and password first. If you still cannot
-access your account, contact support.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h3>Bot Access Problem</h3>
-
-<p>
-Send your account email, purchased package and payment
-confirmation to WhatsApp support.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="contact">
-
-<div class="section-title">
-
-<h2>Support</h2>
-
-<p>
-Contact support if you have a payment, account or activation issue.
-</p>
-
-</div>
-
-
-<div class="support">
-
-<div class="support-card">
-
-<h3>WhatsApp</h3>
-
-<p>
-Send your payment confirmation and account information here.
-</p>
-
-<br>
+<div class="actions">
 
 <a
+class="btn primary"
 href="https://wa.me/254718835596"
 target="_blank"
 rel="noopener">
 
-Chat on WhatsApp →
+CONTACT SUPPORT
 
 </a>
 
 </div>
 
+</div>
 
-<div class="support-card">
 
-<h3>Instagram</h3>
+<div
+id="paymentLoginNotice"
+class="notice"
+style="display:none">
 
-<p>
-Follow the official Instagram account for updates.
-</p>
+Please log in to your IAN XAU AI account to view
+your payment status.
 
-<br>
-
-<a
-href="https://instagram.com/ianke77"
-target="_blank"
-rel="noopener">
-
-@ianke77 →
-
-</a>
+</div>
 
 </div>
 
@@ -1283,59 +1661,42 @@ rel="noopener">
 </section>
 
 
+<!-- =========================
+     LOGIN
+     ========================= -->
+
 <section id="login">
+
+<div class="container">
 
 <div class="section-title">
 
-<h2>Login / Create Account</h2>
+<h2 id="authTitle">
+Client Login
+</h2>
 
-<p>
-Create your account before requesting bot activation.
+<p id="authSubtitle">
+Sign in to your IAN XAU AI member area.
 </p>
 
 </div>
 
 
-<div class="auth-box">
+<div class="login-box">
 
 
-<div class="auth-tabs">
-
-<button
-id="loginTab"
-class="active"
-type="button">
-
-LOGIN
-
-</button>
-
-
-<button
-id="signupTab"
-type="button">
-
-CREATE ACCOUNT
-
-</button>
-
-</div>
-
-
-<!-- LOGIN -->
-
-<form
-id="loginForm"
-class="form active">
+<form id="loginForm">
 
 <label for="loginEmail">
 Email
 </label>
 
 <input
+class="input"
 id="loginEmail"
 type="email"
-placeholder="Enter your email"
+autocomplete="email"
+placeholder="you@example.com"
 required>
 
 
@@ -1344,50 +1705,76 @@ Password
 </label>
 
 <input
+class="input"
 id="loginPassword"
 type="password"
-placeholder="Enter your password"
+autocomplete="current-password"
+placeholder="Password"
 required>
 
 
+<div class="actions">
+
 <button
-class="btn"
+class="btn primary"
 type="submit">
 
-LOGIN
+LOG IN
 
 </button>
 
+</div>
 
-<br>
 
+<p class="auth-links">
 
-<button
-id="forgotPassword"
-type="button"
-style="background:none;border:0;color:#19e68c;cursor:pointer;margin-top:10px;">
+<a
+href="#"
+onclick="showAuth('forgot');return false">
 
 Forgot password?
 
-</button>
+</a>
+
+&nbsp; | &nbsp;
+
+<a
+href="#"
+onclick="showAuth('create');return false">
+
+Create account
+
+</a>
+
+</p>
 
 </form>
 
 
-<!-- CREATE ACCOUNT -->
+<form id="createForm" style="display:none">
 
-<form
-id="signupForm"
-class="form">
+<label for="signupName">
+Name
+</label>
+
+<input
+class="input"
+id="signupName"
+autocomplete="name"
+placeholder="Your name"
+required>
+
 
 <label for="signupEmail">
 Email
 </label>
 
 <input
+class="input"
 id="signupEmail"
 type="email"
-placeholder="Enter your email"
+autocomplete="email"
+placeholder="you@example.com"
 required>
 
 
@@ -1396,677 +1783,1156 @@ Password
 </label>
 
 <input
+class="input"
 id="signupPassword"
 type="password"
-placeholder="Create a password"
-minlength="6"
+autocomplete="new-password"
+minlength="8"
+placeholder="At least 8 characters"
 required>
 
 
+<div class="actions">
+
 <button
-class="btn"
+class="btn primary"
 type="submit">
 
 CREATE ACCOUNT
 
 </button>
 
-</form>
-
-
-<div
-id="authMessage"
-class="message">
 </div>
 
 
-<div
-id="dashboard"
-class="dashboard">
+<p class="auth-links">
 
-<h3 style="color:#19e68c;">
+Already have an account?
 
-Account Active
+<a
+href="#"
+onclick="showAuth('login');return false">
 
-</h3>
+Log in
 
-
-<p id="userEmail"></p>
-
-<br>
-
-
-<p>
-
-After purchasing your package, contact WhatsApp support
-with your payment confirmation and package details.
+</a>
 
 </p>
 
-<br>
+</form>
 
+
+<form id="forgotForm" style="display:none">
+
+<label for="forgotEmail">
+Account email
+</label>
+
+<input
+class="input"
+id="forgotEmail"
+type="email"
+autocomplete="email"
+placeholder="you@example.com"
+required>
+
+
+<div class="actions">
 
 <button
-id="logoutButton"
-class="btn"
-type="button">
+class="btn primary"
+type="submit">
 
-LOG OUT
+SEND RESET LINK
 
 </button>
 
 </div>
 
+
+<p class="auth-links">
+
+Remembered your password?
+
+<a
+href="#"
+onclick="showAuth('login');return false">
+
+Log in
+
+</a>
+
+</p>
+
+</form>
+
+
+<form
+id="updatePasswordForm"
+style="display:none">
+
+<label for="newPassword">
+New password
+</label>
+
+<input
+class="input"
+id="newPassword"
+type="password"
+autocomplete="new-password"
+minlength="8"
+placeholder="At least 8 characters"
+required>
+
+
+<label for="confirmPassword">
+Confirm new password
+</label>
+
+<input
+class="input"
+id="confirmPassword"
+type="password"
+autocomplete="new-password"
+minlength="8"
+placeholder="Repeat your password"
+required>
+
+
+<div class="actions">
+
+<button
+class="btn primary"
+type="submit">
+
+UPDATE PASSWORD
+
+</button>
+
+</div>
+
+</form>
+
+
+<div
+id="authMessage"
+class="auth-message"
+style="display:none">
+</div>
+
+
+<div class="notice">
+
+<strong>
+Secure authentication:
+</strong>
+
+Supabase handles passwords and sessions.
+This website never stores customer passwords
+in HTML or browser storage.
+
+</div>
+
+
+</div>
+
 </div>
 
 </section>
 
 
-<section id="faq">
-
-<div class="section-title">
-
-<h2>FAQ</h2>
-
-</div>
-
-
-<div class="faq">
-
-
-<details>
-
-<summary>
-What is IAN XAU AI?
-</summary>
-
-<p>
-It is a rule-based XAUUSD trading system built around
-predefined market conditions and trading filters.
-</p>
-
-</details>
-
-
-<details>
-
-<summary>
-How much is Bot Access?
-</summary>
-
-<p>
-Standard Bot Access is $50.
-</p>
-
-</details>
-
-
-<details>
-
-<summary>
-How much is VIP Access?
-</summary>
-
-<p>
-VIP Access is $120.
-</p>
-
-</details>
-
-
-<details>
-
-<summary>
-How do I receive access after payment?
-</summary>
-
-<p>
-Save your payment confirmation and contact WhatsApp support
-with your package and account email. Payment is manually
-verified before activation.
-</p>
-
-</details>
-
-
-<details>
-
-<summary>
-Does the bot guarantee profit?
-</summary>
-
-<p>
-No. Trading involves risk and no trading system can guarantee
-profits.
-</p>
-
-</details>
-
-</div>
-
-</section>
-
-
-<section id="risk">
-
-<div class="section-title">
-
-<h2>Risk Disclosure</h2>
-
-</div>
-
-
-<div class="card">
-
-<p class="warning">
-
-Trading XAUUSD and other financial instruments involves
-substantial risk of loss.
-
-IAN XAU AI does not guarantee
-profits, returns or successful trades.
-
-Past performance does not guarantee future results.
-
-Only trade with money you can afford to lose.
-
-</p>
-
-</div>
-
-</section>
+</main>
 
 
 <footer>
 
-<p>
-© 2026 IAN XAU AI — Rule-Based XAUUSD Trading System
-</p>
+IAN XAU AI • Trading involves substantial risk.
+Past performance does not guarantee future results.
 
-<br>
+  </footer><script>
 
-<p>
-Trading involves risk. No profit is guaranteed.
-</p>
-
-</footer>
-
-
-<script>
-
-/* ================================
-   SUPABASE
-================================ */
+/* =========================
+   SUPABASE CONFIGURATION
+   ========================= */
 
 const SUPABASE_URL =
-"https://elnqijtvqstzaxrydyox.supabase.co";
+  "https://elnqijtvqstzaxrydyox.supabase.co";
 
-const SUPABASE_KEY =
-"sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
 
 const supabaseClient =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
 
 
-/* ================================
-   THREE-DOT / MOBILE MENU
-================================ */
+/* =========================
+   DEMO CONTROLS
+   ========================= */
 
-const menuButton =
-document.getElementById("menuButton");
+function openDemo(){
 
-const mobileMenu =
-document.getElementById("mobileMenu");
+  const screen =
+    document.getElementById("demoScreen");
 
+  const preview =
+    document.getElementById("demoPreview");
 
-menuButton.addEventListener(
-"click",
-function(){
+  if(screen){
+    screen.classList.add("active");
+  }
 
-const open =
-mobileMenu.classList.toggle("open");
+  if(preview){
+    preview.style.display = "none";
+  }
 
-menuButton.textContent =
-open ? "✕" : "☰";
+  const demo =
+    document.getElementById("demo");
 
-menuButton.setAttribute(
-"aria-expanded",
-String(open)
-);
-
-});
-
-
-document
-.querySelectorAll(".mobile-menu a")
-.forEach(function(link){
-
-link.addEventListener(
-"click",
-function(){
-
-mobileMenu.classList.remove("open");
-
-menuButton.textContent = "☰";
-
-menuButton.setAttribute(
-"aria-expanded",
-"false"
-);
-
-});
-
-});
-
-
-/* ================================
-   LOGIN / SIGNUP TABS
-================================ */
-
-const loginTab =
-document.getElementById("loginTab");
-
-const signupTab =
-document.getElementById("signupTab");
-
-const loginForm =
-document.getElementById("loginForm");
-
-const signupForm =
-document.getElementById("signupForm");
-
-
-loginTab.addEventListener(
-"click",
-function(){
-
-loginTab.classList.add("active");
-
-signupTab.classList.remove("active");
-
-loginForm.classList.add("active");
-
-signupForm.classList.remove("active");
-
-});
-
-
-signupTab.addEventListener(
-"click",
-function(){
-
-signupTab.classList.add("active");
-
-loginTab.classList.remove("active");
-
-signupForm.classList.add("active");
-
-loginForm.classList.remove("active");
-
-});
-
-
-/* ================================
-   MESSAGE
-================================ */
-
-const authMessage =
-document.getElementById("authMessage");
-
-
-function showMessage(message){
-
-authMessage.textContent = message;
-
-authMessage.style.display = "block";
+  if(demo){
+    demo.scrollIntoView({
+      behavior:"smooth"
+    });
+  }
 
 }
 
 
-/* ================================
+function closeDemo(){
+
+  const screen =
+    document.getElementById("demoScreen");
+
+  const preview =
+    document.getElementById("demoPreview");
+
+  if(screen){
+    screen.classList.remove("active");
+  }
+
+  if(preview){
+    preview.style.display = "block";
+  }
+
+}
+
+
+/* =========================
+   AUTHENTICATION MESSAGE
+   ========================= */
+
+function authMessage(text, good=false){
+
+  const el =
+    document.getElementById("authMessage");
+
+  if(!el) return;
+
+  el.textContent = text;
+
+  el.className =
+    "auth-message" +
+    (good ? " good" : "");
+
+  el.style.display =
+    text ? "block" : "none";
+
+}
+
+
+/* =========================
+   SWITCH AUTH FORMS
+   ========================= */
+
+function showAuth(mode){
+
+  const forms = {
+
+    login:
+      document.getElementById("loginForm"),
+
+    create:
+      document.getElementById("createForm"),
+
+    forgot:
+      document.getElementById("forgotForm"),
+
+    update:
+      document.getElementById(
+        "updatePasswordForm"
+      )
+
+  };
+
+
+  Object.values(forms).forEach(form => {
+
+    if(form){
+      form.style.display = "none";
+    }
+
+  });
+
+
+  const title =
+    document.getElementById("authTitle");
+
+  const subtitle =
+    document.getElementById("authSubtitle");
+
+
+  if(mode === "create"){
+
+    forms.create.style.display = "block";
+
+    title.textContent =
+      "CREATE ACCOUNT";
+
+    subtitle.textContent =
+      "Create your IAN XAU AI account.";
+
+  }
+
+  else if(mode === "forgot"){
+
+    forms.forgot.style.display = "block";
+
+    title.textContent =
+      "RESET PASSWORD";
+
+    subtitle.textContent =
+      "Enter your email to receive a reset link.";
+
+  }
+
+  else if(mode === "update"){
+
+    forms.update.style.display = "block";
+
+    title.textContent =
+      "SET NEW PASSWORD";
+
+    subtitle.textContent =
+      "Choose a new password for your account.";
+
+  }
+
+  else{
+
+    forms.login.style.display = "block";
+
+    title.textContent =
+      "CLIENT LOGIN";
+
+    subtitle.textContent =
+      "Access your IAN XAU AI account.";
+
+  }
+
+
+  authMessage("");
+
+}
+
+
+/* =========================
+   PAYMENT STATUS UI
+   ========================= */
+
+function showLoggedOutPayment(){
+
+  const choices =
+    document.getElementById(
+      "paymentChoices"
+    );
+
+  const active =
+    document.getElementById(
+      "activeAccess"
+    );
+
+  const emailBox =
+    document.getElementById(
+      "paymentEmail"
+    );
+
+  const loginNotice =
+    document.getElementById(
+      "paymentLoginNotice"
+    );
+
+  const badge =
+    document.getElementById(
+      "paymentStatusBadge"
+    );
+
+  const title =
+    document.getElementById(
+      "paymentTitle"
+    );
+
+  const description =
+    document.getElementById(
+      "paymentDescription"
+    );
+
+
+  if(choices){
+    choices.style.display = "none";
+  }
+
+  if(active){
+    active.style.display = "none";
+  }
+
+  if(emailBox){
+    emailBox.style.display = "none";
+  }
+
+  if(loginNotice){
+    loginNotice.style.display = "block";
+  }
+
+  if(badge){
+
+    badge.textContent =
+      "NOT LOGGED IN";
+
+    badge.className =
+      "access-status status-red";
+
+  }
+
+  if(title){
+    title.textContent =
+      "Log in to view your access";
+  }
+
+  if(description){
+
+    description.textContent =
+      "Your payment status and package will appear here after you log in.";
+
+  }
+
+}
+
+
+/* =========================
+   LOAD CUSTOMER PAYMENT
+   ========================= */
+
+async function loadCustomerPaymentStatus(){
+
+  try{
+
+    const {
+      data: sessionData
+    } =
+      await supabaseClient.auth.getSession();
+
+
+    const session =
+      sessionData
+      ? sessionData.session
+      : null;
+
+
+    if(!session){
+
+      showLoggedOutPayment();
+
+      return;
+
+    }
+
+
+    const user =
+      session.user;
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("Costomer")
+        .select(
+          "email, package, payment_status"
+        )
+        .eq(
+          "user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if(error){
+
+      console.error(
+        "Payment status error:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    const choices =
+      document.getElementById(
+        "paymentChoices"
+      );
+
+    const active =
+      document.getElementById(
+        "activeAccess"
+      );
+
+    const emailBox =
+      document.getElementById(
+        "paymentEmail"
+      );
+
+    const loginNotice =
+      document.getElementById(
+        "paymentLoginNotice"
+      );
+
+    const badge =
+      document.getElementById(
+        "paymentStatusBadge"
+      );
+
+    const title =
+      document.getElementById(
+        "paymentTitle"
+      );
+
+    const description =
+      document.getElementById(
+        "paymentDescription"
+      );
+
+    const customerEmail =
+      document.getElementById(
+        "customerEmail"
+      );
+
+    const activePackage =
+      document.getElementById(
+        "activePackage"
+      );
+
+    const activeEmail =
+      document.getElementById(
+        "activeEmail"
+      );
+
+
+    if(loginNotice){
+      loginNotice.style.display = "none";
+    }
+
+
+    if(emailBox){
+      emailBox.style.display = "block";
+    }
+
+
+    if(customerEmail){
+
+      customerEmail.textContent =
+        data?.email ||
+        user.email ||
+        "";
+
+    }
+
+
+    const status =
+      String(
+        data?.payment_status ||
+        "not_paid"
+      ).toLowerCase();
+
+
+    const packageName =
+      data?.package ||
+      "";
+
+
+    /* =========================
+       ACTIVE CUSTOMER
+       ========================= */
+
+    if(status === "active"){
+
+      if(choices){
+        choices.style.display = "none";
+      }
+
+      if(active){
+        active.style.display = "block";
+      }
+
+      if(badge){
+
+        badge.textContent =
+          "ACTIVE";
+
+        badge.className =
+          "access-status status-green";
+
+      }
+
+      if(title){
+
+        title.textContent =
+          packageName ||
+          "Active Package";
+
+      }
+
+      if(description){
+
+        description.textContent =
+          "Your payment has been verified and your access is active.";
+
+      }
+
+      if(activePackage){
+
+        activePackage.textContent =
+          packageName ||
+          "Active";
+
+      }
+
+      if(activeEmail){
+
+        activeEmail.textContent =
+          data?.email ||
+          user.email ||
+          "";
+
+      }
+
+    }
+
+
+    /* =========================
+       NOT PAID / PENDING
+       ========================= */
+
+    else{
+
+      if(choices){
+        choices.style.display = "block";
+      }
+
+      if(active){
+        active.style.display = "none";
+      }
+
+      if(badge){
+
+        badge.textContent =
+          status === "pending"
+          ? "PAYMENT PENDING"
+          : "NOT PAID";
+
+        badge.className =
+          "access-status status-red";
+
+      }
+
+      if(title){
+
+        title.textContent =
+          status === "pending"
+          ? "Payment verification pending"
+          : "No active package";
+
+      }
+
+      if(description){
+
+        description.textContent =
+          status === "pending"
+          ? "Your payment is awaiting manual verification."
+          : "Choose a package below and complete your payment.";
+
+      }
+
+    }
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Could not load payment status:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   PAYMENT BUTTON CLICK
+   ========================= */
+
+/*
+  This does NOT activate a customer.
+
+  It only records the click in the browser console.
+  Actual activation is done manually in Supabase
+  after payment has been verified.
+*/
+
+function notifyPaymentClick(
+  packageName,
+  price
+){
+
+  console.log(
+    "Payment button clicked:",
+    packageName,
+    price,
+    new Date().toLocaleString()
+  );
+
+}
+
+
+/* =========================
    CREATE ACCOUNT
-================================ */
+   ========================= */
 
-signupForm.addEventListener(
-"submit",
-async function(e){
-
-e.preventDefault();
-
-
-const email =
 document
-.getElementById("signupEmail")
-.value
-.trim();
+  .getElementById("createForm")
+  .addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
 
 
-const password =
-document
-.getElementById("signupPassword")
-.value;
+      const name =
+        document
+          .getElementById("signupName")
+          .value
+          .trim();
 
 
-showMessage(
-"Creating your account..."
-);
+      const email =
+        document
+          .getElementById("signupEmail")
+          .value
+          .trim();
 
 
-try{
-
-const redirectUrl =
-window.location.origin +
-window.location.pathname +
-"#login";
+      const password =
+        document
+          .getElementById("signupPassword")
+          .value;
 
 
-const { data, error } =
-await supabaseClient.auth.signUp({
+      if(password.length < 8){
 
-email:email,
+        authMessage(
+          "Password must be at least 8 characters."
+        );
 
-password:password,
+        return;
 
-options:{
-emailRedirectTo:redirectUrl
-}
-
-});
+      }
 
 
-if(error){
-
-showMessage(
-error.message
-);
-
-return;
-
-}
+      authMessage(
+        "Creating your account..."
+      );
 
 
-if(data.user){
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signUp({
 
-if(data.session){
+          email,
 
-showMessage(
-"Account created successfully. You are now logged in."
-);
+          password,
 
-updateDashboard(data.user);
+          options:{
 
-}else{
+            data:{
+              full_name:name
+            }
 
-showMessage(
-"Account created. Check your email and click the verification link before logging in."
-);
+          }
 
-}
-
-}
-
-}catch(error){
-
-showMessage(
-"Unable to create account. Please check your internet connection and try again."
-);
-
-}
-
-});
+        });
 
 
-/* ================================
+      if(error){
+
+        authMessage(
+          error.message
+        );
+
+        return;
+
+      }
+
+
+      if(data.session){
+
+        authMessage(
+          "Account created successfully. You are logged in.",
+          true
+        );
+
+        await loadCustomerPaymentStatus();
+
+      }
+
+      else{
+
+        authMessage(
+          "Account created. Check your email and confirm your account.",
+          true
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================
    LOGIN
-================================ */
+   ========================= */
 
-loginForm.addEventListener(
-"submit",
-async function(e){
-
-e.preventDefault();
-
-
-const email =
 document
-.getElementById("loginEmail")
-.value
-.trim();
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
 
 
-const password =
-document
-.getElementById("loginPassword")
-.value;
+      const email =
+        document
+          .getElementById("loginEmail")
+          .value
+          .trim();
 
 
-showMessage(
-"Logging in..."
-);
+      const password =
+        document
+          .getElementById("loginPassword")
+          .value;
 
 
-try{
-
-const { data, error } =
-await supabaseClient.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
-});
+      authMessage(
+        "Logging in..."
+      );
 
 
-if(error){
+      const {
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
 
-showMessage(
-error.message
-);
+          email,
 
-return;
+          password
 
-}
-
-
-showMessage(
-"Login successful."
-);
-
-updateDashboard(data.user);
+        });
 
 
-}catch(error){
+      if(error){
 
-showMessage(
-"Login failed. Check your internet connection and try again."
-);
+        authMessage(
+          error.message
+        );
 
-}
+        return;
 
-});
+      }
 
 
-/* ================================
+      authMessage(
+        "Login successful.",
+        true
+      );
+
+
+      await loadCustomerPaymentStatus();
+
+    }
+  );
+
+
+/* =========================
    FORGOT PASSWORD
-================================ */
+   ========================= */
 
 document
-.getElementById("forgotPassword")
-.addEventListener(
-"click",
-async function(){
+  .getElementById("forgotForm")
+  .addEventListener(
+    "submit",
+    async (event) => {
 
-const email =
-document
-.getElementById("loginEmail")
-.value
-.trim();
+      event.preventDefault();
 
 
-if(!email){
-
-showMessage(
-"Enter your email address first."
-);
-
-return;
-
-}
+      const email =
+        document
+          .getElementById("forgotEmail")
+          .value
+          .trim();
 
 
-try{
-
-const redirectUrl =
-window.location.origin +
-window.location.pathname +
-"#login";
+      const redirectTo =
+        window.location.origin +
+        window.location.pathname +
+        "#login";
 
 
-const { error } =
-await supabaseClient.auth
-.resetPasswordForEmail(
-email,
-{
-redirectTo:redirectUrl
-}
-);
+      authMessage(
+        "Sending reset email..."
+      );
 
 
-if(error){
-
-showMessage(
-error.message
-);
-
-return;
-
-}
-
-
-showMessage(
-"Password reset instructions have been sent to your email."
-);
+      const {
+        error
+      } =
+        await supabaseClient
+          .auth
+          .resetPasswordForEmail(
+            email,
+            {
+              redirectTo
+            }
+          );
 
 
-}catch(error){
+      if(error){
 
-showMessage(
-"Unable to send password reset email."
-);
+        authMessage(
+          error.message
+        );
 
-}
+        return;
 
-});
-
-
-/* ================================
-   DASHBOARD
-================================ */
-
-const dashboard =
-document.getElementById("dashboard");
-
-const userEmail =
-document.getElementById("userEmail");
+      }
 
 
-function updateDashboard(user){
+      authMessage(
+        "Reset link sent. Check your email.",
+        true
+      );
 
-if(!user){
-
-dashboard.style.display =
-"none";
-
-return;
-
-}
+    }
+  );
 
 
-dashboard.style.display =
-"block";
-
-
-userEmail.textContent =
-"Logged in as: " + user.email;
-
-}
-
-
-/* ================================
-   LOG OUT
-================================ */
+/* =========================
+   SET NEW PASSWORD
+   ========================= */
 
 document
-.getElementById("logoutButton")
-.addEventListener(
-"click",
-async function(){
+  .getElementById("updatePasswordForm")
+  .addEventListener(
+    "submit",
+    async (event) => {
 
-await supabaseClient.auth.signOut();
-
-dashboard.style.display =
-"none";
-
-showMessage(
-"You have been logged out."
-);
-
-});
+      event.preventDefault();
 
 
-/* ================================
-   CHECK SESSION
-================================ */
-
-async function checkSession(){
-
-try{
-
-const { data } =
-await supabaseClient.auth
-.getSession();
+      const password =
+        document
+          .getElementById("newPassword")
+          .value;
 
 
-if(data.session){
-
-updateDashboard(
-data.session.user
-);
-
-}
-
-}catch(error){
-
-console.log(error);
-
-}
-
-}
+      const confirm =
+        document
+          .getElementById("confirmPassword")
+          .value;
 
 
-checkSession();
+      if(password.length < 8){
+
+        authMessage(
+          "Password must be at least 8 characters."
+        );
+
+        return;
+
+      }
 
 
-/* ================================
+      if(password !== confirm){
+
+        authMessage(
+          "The passwords do not match."
+        );
+
+        return;
+
+      }
+
+
+      authMessage(
+        "Updating password..."
+      );
+
+
+      const {
+        error
+      } =
+        await supabaseClient.auth.updateUser({
+
+          password
+
+        });
+
+
+      if(error){
+
+        authMessage(
+          error.message
+        );
+
+        return;
+
+      }
+
+
+      authMessage(
+        "Password updated successfully. You can now log in.",
+        true
+      );
+
+
+      document
+        .getElementById(
+          "updatePasswordForm"
+        )
+        .reset();
+
+
+      setTimeout(
+        () => showAuth("login"),
+        1200
+      );
+
+    }
+  );
+
+
+/* =========================
    AUTH STATE
-================================ */
+   ========================= */
 
-supabaseClient.auth
-.onAuthStateChange(
-function(event, session){
+supabaseClient.auth.onAuthStateChange(
+  async (event, session) => {
 
-if(session){
+    if(event === "PASSWORD_RECOVERY"){
 
-updateDashboard(
-session.user
+      showAuth("update");
+
+      authMessage(
+        "Password reset verified. Choose a new password.",
+        true
+      );
+
+      return;
+
+    }
+
+
+    if(session){
+
+      await loadCustomerPaymentStatus();
+
+    }
+
+    else{
+
+      showLoggedOutPayment();
+
+    }
+
+  }
 );
 
-}
 
-});
+/* =========================
+   INITIAL AUTH CHECK
+   ========================= */
+
+(async function initAuth(){
+
+  const {
+    data
+  } =
+    await supabaseClient.auth.getSession();
+
+
+  if(data && data.session){
+
+    authMessage(
+      "You are already signed in.",
+      true
+    );
+
+    await loadCustomerPaymentStatus();
+
+  }
+
+  else{
+
+    showLoggedOutPayment();
+
+  }
+
+
+  if(
+    window.location.hash.includes(
+      "access_token="
+    ) ||
+    window.location.hash.includes(
+      "type=recovery"
+    )
+  ){
+
+    setTimeout(
+      () => {
+
+        showAuth("update");
+
+        authMessage(
+          "Password reset verified. Choose a new password.",
+          true
+        );
+
+      },
+      300
+    );
+
+  }
+
+})();
 
 </script>
 
