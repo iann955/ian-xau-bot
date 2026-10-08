@@ -22,12 +22,22 @@ const supabase = createClient(
   SUPABASE_SERVICE_ROLE_KEY
 );
 
+
+// --------------------------------------------------
+// SERVER STATUS
+// --------------------------------------------------
+
 app.get("/", (req, res) => {
   res.json({
     status: "online",
     service: "IAN XAU AI MT5 License Server"
   });
 });
+
+
+// --------------------------------------------------
+// MT5 LICENSE CHECK
+// --------------------------------------------------
 
 app.post("/api/mt5/check", async (req, res) => {
   try {
@@ -46,7 +56,7 @@ app.post("/api/mt5/check", async (req, res) => {
     const { data, error } = await supabase
       .from("Costomer")
       .select(
-        "id,email,package,payment_status,mt5_login,broker_server"
+        "id,email,package,payment_status,bot_command,mt5_login,broker_server"
       )
       .eq("mt5_login", mt5_login)
       .eq("broker_server", broker_server)
@@ -72,15 +82,24 @@ app.post("/api/mt5/check", async (req, res) => {
       });
     }
 
-    const active = data.payment_status === "active";
+    /*
+      Trading is allowed ONLY when:
+
+      1. payment_status = active
+      2. bot_command = START
+    */
+
+    const active =
+      data.payment_status === "active" &&
+      data.bot_command === "START";
 
     return res.json({
-      active,
+      active: active,
       package: active ? data.package : null,
       command: active ? "START" : "STOP",
       message: active
-        ? "Account is active."
-        : "Account is not active."
+        ? "Account is active and bot is authorized."
+        : "Account is not authorized to trade."
     });
 
   } catch (error) {
@@ -95,6 +114,11 @@ app.post("/api/mt5/check", async (req, res) => {
   }
 });
 
+
+// --------------------------------------------------
+// SAVE MT5 ACTIVATION DETAILS
+// --------------------------------------------------
+
 app.post("/api/activation/save", async (req, res) => {
   try {
     const email = String(req.body.email || "").trim();
@@ -104,19 +128,20 @@ app.post("/api/activation/save", async (req, res) => {
     if (!email || !mt5_login || !broker_server) {
       return res.status(400).json({
         success: false,
-        message: "Email, MT5 login and broker server are required."
+        message:
+          "Email, MT5 login and broker server are required."
       });
     }
 
     const { data, error } = await supabase
       .from("Costomer")
       .update({
-        mt5_login,
-        broker_server
+        mt5_login: mt5_login,
+        broker_server: broker_server
       })
       .eq("email", email)
       .select(
-        "id,email,package,payment_status,mt5_login,broker_server"
+        "id,email,package,payment_status,bot_command,mt5_login,broker_server"
       )
       .maybeSingle();
 
@@ -143,6 +168,7 @@ app.post("/api/activation/save", async (req, res) => {
         email: data.email,
         package: data.package,
         payment_status: data.payment_status,
+        bot_command: data.bot_command,
         mt5_login: data.mt5_login,
         broker_server: data.broker_server
       }
@@ -157,6 +183,11 @@ app.post("/api/activation/save", async (req, res) => {
     });
   }
 });
+
+
+// --------------------------------------------------
+// START SERVER
+// --------------------------------------------------
 
 app.listen(PORT, () => {
   console.log(
