@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "start-mt5": "node server-mt5.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
     "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "express-session": "^1.18.2"
   }
