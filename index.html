@@ -4,875 +4,1534 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IAN XAU AI | XAUUSD Trading System</title>
-<meta name="description" content="Explore the IAN XAU AI XAUUSD trading system, strategy, charts, packages and account activation.">
 <meta name="theme-color" content="#030603">
+<title>IAN XAU AI | Pro Plus</title>
+<meta name="description" content="IAN XAU AI — XAUUSD trading strategy, market analysis, configurable risk controls and VIP Tick Scalper.">
 
 <style>
 :root {
-  --bg:#030603;
-  --panel:#09120b;
-  --line:#1c3923;
-  --green:#39ff78;
-  --text:#f4fff6;
-  --muted:#a2b1a5;
-  --danger:#ff7777;
+  --bg: #030603;
+  --panel: #0a110c;
+  --panel2: #101b13;
+  --line: #203b29;
+  --green: #39ff78;
+  --text: #effff3;
+  --muted: #9eafa3;
+  --red: #ff6262;
+  --blue: #55aaff;
+  --purple: #bd83ff;
+  --gold: #e8c477;
 }
-* { box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  line-height:1.6;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.55 Arial, sans-serif;
 }
-a { color:inherit; text-decoration:none; }
-button,input,select { font:inherit; }
-nav {
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:#030603f2;
-  border-bottom:1px solid var(--line);
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+[hidden] { display: none !important; }
+
+.auth-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background:
+    radial-gradient(ellipse at top, #12351d 0%, transparent 55%),
+    var(--bg);
 }
-.nav {
-  max-width:1150px;
-  margin:auto;
-  padding:14px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 27px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #09110c;
+  box-shadow: 0 20px 70px #0009;
 }
-.logo { font-size:19px; font-weight:900; letter-spacing:1px; }
-.logo span,.green { color:var(--green); }
-.navlinks {
-  display:flex;
-  gap:16px;
-  align-items:center;
-  flex-wrap:wrap;
-  font-size:12px;
-  color:#d0dbd2;
+.brand {
+  text-align: center;
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 1px;
 }
-.navlinks a:hover { color:var(--green); }
-.container { max-width:1150px; margin:auto; padding:0 20px; }
-section { padding:70px 0; scroll-margin-top:75px; }
-.hero {
-  min-height:75vh;
-  display:grid;
-  place-items:center;
-  text-align:center;
-  padding:75px 20px;
-  background:radial-gradient(ellipse at top,#12351c 0%,#030603 65%);
+.brand span { color: var(--green); }
+.tagline {
+  margin: 9px 0 24px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 2px;
 }
-.badge {
-  display:inline-block;
-  padding:6px 11px;
-  border:1px solid var(--line);
-  border-radius:30px;
-  color:var(--green);
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:1px;
+.auth-tabs { display: flex; gap: 8px; }
+.auth-tabs button {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
 }
-h1 {
-  max-width:900px;
-  margin:22px auto;
-  font-size:clamp(40px,8vw,78px);
-  line-height:1.02;
-  letter-spacing:-2px;
+.auth-tabs button.active {
+  background: var(--green);
+  color: #031007;
+  font-weight: 900;
 }
-h2 { font-size:clamp(26px,4vw,36px); line-height:1.2; }
-h3 { line-height:1.3; }
-.lead {
-  max-width:720px;
-  margin:auto;
-  color:var(--muted);
+label {
+  display: block;
+  margin: 14px 0 6px;
+  color: #d5e2d8;
+  font-size: 12px;
+  font-weight: 800;
 }
-.actions {
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-top:26px;
+input, select {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #294632;
+  border-radius: 8px;
+  background: #050907;
+  color: white;
+}
+input:focus, select:focus {
+  outline: 1px solid var(--green);
+  border-color: var(--green);
 }
 .btn {
-  display:inline-block;
-  padding:12px 17px;
-  border:1px solid var(--green);
-  border-radius:9px;
-  font-size:12px;
-  font-weight:900;
-  cursor:pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
 }
-.primary { background:var(--green); color:#001b07; }
-.secondary { background:#09120b; color:var(--text); }
-.section-title { text-align:center; margin-bottom:30px; }
-.section-title p,.muted { color:var(--muted); }
-.grid {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:15px;
+.btn-green {
+  background: var(--green);
+  border-color: var(--green);
+  color: #031007;
 }
-.card,.panel {
-  padding:22px;
-  background:linear-gradient(145deg,#0a150c,#050805);
-  border:1px solid var(--line);
-  border-radius:15px;
-  min-width:0;
+.btn-red {
+  background: #381416;
+  border-color: var(--red);
+  color: white;
 }
-.card p { color:var(--muted); font-size:14px; }
-.icon { color:var(--green); font-size:23px; }
-.steps {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:15px;
+.btn-blue {
+  background: #10243a;
+  border-color: var(--blue);
+  color: white;
 }
-.price { font-size:42px; font-weight:900; margin:12px 0; }
-.price small { font-size:12px; color:var(--muted); }
-ul.features { padding-left:20px; color:#d3ded5; font-size:14px; }
-ul.features li { margin:9px 0; }
-input,select {
-  width:100%;
-  padding:13px;
-  margin:7px 0 16px;
-  color:white;
-  background:#030703;
-  border:1px solid #28432d;
-  border-radius:8px;
+.btn-purple {
+  background: #251634;
+  border-color: var(--purple);
+  color: white;
 }
-label { font-size:13px; font-weight:bold; }
-footer {
-  padding:28px 20px;
-  border-top:1px solid var(--line);
-  color:var(--muted);
-  font-size:12px;
-  text-align:center;
+.btn-block { width: 100%; }
+.text-button {
+  display: block;
+  margin: 12px auto 0;
+  padding: 6px;
+  border: 0;
+  background: none;
+  color: var(--green);
 }
-@media(max-width:800px) {
-  .grid,.steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .nav { align-items:flex-start; flex-direction:column; }
-  .navlinks { gap:12px; }
+.message {
+  display: none;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
 }
-@media(max-width:480px) {
-  .grid,.steps { grid-template-columns:1fr; }
-  section { padding:50px 0; }
-  .hero { min-height:65vh; }
+.disclaimer {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav">
-    <a class="logo" href="#home">IAN <span>XAU AI</span></a>
-    <div class="navlinks">
-      <a href="#strategy">STRATEGY</a>
-      <a href="#chart">CHART</a>
-      <a href="#pricing">PRICING</a>
-      <a href="#activation">ACTIVATION</a>
-      <a href="#login">LOGIN</a>
-    </div>
-  </div>
-</nav>
-
-<main id="home">
-<section class="hero">
-  <div>
-    <span class="badge">RULE-BASED XAUUSD TRADING SYSTEM</span>
-    <h1>READ THE MARKET.<br><span class="green">FOLLOW THE RULES.</span></h1>
-    <p class="lead">
-      Explore a structured gold-trading system built around key market
-      levels, liquidity behaviour, confirmation and planned risk.
-    </p>
-    <div class="actions">
-      <a class="btn primary" href="#chart">VIEW MARKET CHART</a>
-      <a class="btn secondary" href="#pricing">EXPLORE ACCESS</a>
-    </div>
-  </div>
-</section>
-
-<section id="strategy">
-<div class="container">
-  <div class="section-title">
-    <h2>What the system watches</h2>
-    <p>Key market references used in the strategy.</p>
-  </div>
-  <div class="grid">
-    <article class="card">
-      <div class="icon">◈</div>
-      <h3>Asia High</h3>
-      <p>Tracks the Asian-session high as a reference level for later price action.</p>
-    </article>
-    <article class="card">
-      <div class="icon">◈</div>
-      <h3>Asia Low</h3>
-      <p>Tracks the Asian-session low and watches how price reacts around it.</p>
-    </article>
-    <article class="card">
-      <div class="icon">◈</div>
-      <h3>PDH / PDL</h3>
-      <p>Uses the previous day's high and low as additional reference levels.</p>
-    </article>
-    <article class="card">
-      <div class="icon">◈</div>
-      <h3>Confirmation</h3>
-      <p>Looks for qualifying confirmation instead of treating every level touch as an entry.</p>
-    </article>
-  </div>
-</div>
-</section>
-<section id="chart">
-<div class="container">
-  <div class="section-title">
-    <h2>Live XAUUSD Market Chart</h2>
-    <p>View gold price movement and analyse market levels.</p>
-  </div>
-
-  <div class="panel">
-    <div class="tradingview-widget-container" style="height:500px;width:100%">
-      <div id="xau-live-chart" style="height:100%;width:100%"></div>
-    </div>
-  </div>
-</div>
-</section>
-
-<section id="demo">
-<div class="container">
-  <div class="section-title">
-    <h2>Strategy Demo</h2>
-    <p>Example decision process. This is not a live trading signal.</p>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <span class="badge">STEP 01</span>
-      <h3>Identify a level</h3>
-      <p>Mark Asia High, Asia Low, PDH and PDL on the chart.</p>
-    </div>
-
-    <div class="card">
-      <span class="badge">STEP 02</span>
-      <h3>Observe liquidity</h3>
-      <p>Watch how price behaves around the selected level.</p>
-    </div>
-
-    <div class="card">
-      <span class="badge">STEP 03</span>
-      <h3>Wait for confirmation</h3>
-      <p>Do not assume that every sweep or level touch creates a trade.</p>
-    </div>
-
-    <div class="card">
-      <span class="badge">STEP 04</span>
-      <h3>Plan risk</h3>
-      <p>Define stop-loss and target before entering any trade.</p>
-    </div>
-  </div>
-
-  <p class="muted" style="text-align:center;margin-top:24px">
-    Trading involves risk. The chart and examples do not guarantee results.
-  </p>
-</div>
-</section>
-
-<section id="calendar">
-<div class="container">
-  <div class="section-title">
-    <h2>Economic Calendar</h2>
-    <p>Review scheduled economic events that may affect gold.</p>
-  </div>
-
-  <div class="panel">
-    <div class="tradingview-widget-container" style="height:450px;width:100%">
-      <div class="tradingview-widget-container__widget"></div>
-      <script
-        type="text/javascript"
-        src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
-        async>
-      {
-        "colorTheme":"dark",
-        "isTransparent":true,
-        "locale":"en",
-        "countryFilter":"us,gb,eu,jp,cn,ca,au",
-        "importanceFilter":"-1,0,1",
-        "width":"100%",
-        "height":"450"
-      }
-      </script>
-    </div>
-  </div>
-</div>
-</section>
-
-<script src="https://s3.tradingview.com/tv.js"></script>
-<script>
-(function () {
-  function loadGoldChart() {
-    const target = document.getElementById("xau-live-chart");
-    if (!target || !window.TradingView) return;
-
-    target.innerHTML = "";
-
-    new TradingView.widget({
-      autosize: true,
-      symbol: "OANDA:XAUUSD",
-      interval: "15",
-      timezone: "Etc/UTC",
-      theme: "dark",
-      style: "1",
-      locale: "en",
-      enable_publishing: false,
-      allow_symbol_change: true,
-      hide_top_toolbar: false,
-      hide_legend: false,
-      save_image: false,
-      container_id: "xau-live-chart"
-    });
-  }
-
-  if (window.TradingView) {
-    loadGoldChart();
-  } else {
-    window.addEventListener("load", loadGoldChart);
-  }
-})();
-  </script>
-  
-</main>
-</body>
-</html>
-<section id="pricing">
-<div class="container">
-  <div class="section-title">
-    <h2>Choose Your Access</h2>
-    <p>One-time prices in USD. Access is activated after payment verification.</p>
-  </div>
-
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-
-    <article class="card">
-      <span class="badge">BOT ACCESS</span>
-      <div class="price">$50 <small>one-time</small></div>
-      <ul class="features">
-        <li>XAUUSD trading system</li>
-        <li>Asia High / Asia Low concepts</li>
-        <li>PDH / PDL filters</li>
-        <li>Liquidity and confirmation rules</li>
-        <li>Defined stop-loss / take-profit structure</li>
-        <li>Activation after payment verification</li>
-      </ul>
-      <a class="btn primary"
-         style="display:block;text-align:center"
-         href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457060672361889792&amp;billType=request_a_payment"
-         target="_blank" rel="noopener">
-        PAY $50 — BOT ACCESS
-      </a>
-    </article>
-
-    <article class="card" style="border-color:var(--green)">
-      <span class="badge">VIP ACCESS</span>
-      <div class="price">$120 <small>one-time</small></div>
-      <ul class="features">
-        <li>Everything in Bot Access</li>
-        <li>VIP trading configuration</li>
-        <li>Asia strategy and PDH / PDL concepts</li>
-        <li>Liquidity-based filters</li>
-        <li>Volatile-session trading concepts</li>
-        <li>Automated trade-management features, where supported</li>
-        <li>Activation after payment verification</li>
-      </ul>
-      <a class="btn primary"
-         style="display:block;text-align:center"
-         href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457061228438241280&amp;billType=request_a_payment"
-         target="_blank" rel="noopener">
-        PAY $120 — VIP ACCESS
-      </a>
-    </article>
-
-  </div>
-
-  <p class="muted" style="text-align:center;margin-top:20px">
-    Save your payment confirmation or reference. Payment is not verified
-    automatically by this page.
-  </p>
-</div>
-</section>
-
-<section id="activation">
-<div class="container">
-  <div class="section-title">
-    <h2>Bot Activation</h2>
-    <p>Submit your account details after purchasing your package.</p>
-  </div>
-
-  <div class="panel" style="max-width:650px;margin:auto">
-    <p class="muted">
-      Use the same email address as your IAN XAU AI account.
-      Never enter your MT5 password here.
-    </p>
-
-    <form id="activationForm">
-      <label for="activationName">Full name</label>
-      <input id="activationName" name="name"
-             autocomplete="name" required
-             placeholder="Your full name">
-
-      <label for="activationEmail">Account email</label>
-      <input id="activationEmail" name="email"
-             type="email" autocomplete="email" required
-             placeholder="you@example.com">
-
-      <label for="activationPackage">Purchased package</label>
-      <select id="activationPackage" name="package" required>
-        <option value="">Choose your package</option>
-        <option value="BOT ACCESS">$50 — BOT ACCESS</option>
-        <option value="VIP ACCESS">$120 — VIP ACCESS</option>
-      </select>
-
-      <label for="mt5Login">MT5 Login ID</label>
-      <input id="mt5Login" name="mt5_login"
-             inputmode="numeric" required
-             placeholder="Your MT5 account number">
-
-      <label for="brokerServer">Broker server</label>
-      <input id="brokerServer" name="broker_server"
-             required placeholder="Exact server name shown in MT5">
-
-      <label for="paymentReference">Payment reference</label>
-      <input id="paymentReference" name="payment_reference"
-             required placeholder="Reference from your payment confirmation">
-
-      <button class="btn primary" type="submit">
-        PREPARE ACTIVATION REQUEST
-      </button>
-    </form>
-
-    <p id="activationMessage" role="status"
-       class="muted" style="margin-top:18px"></p>
-
-    <div id="activationNextSteps" hidden>
-      <h3>Next steps</h3>
-      <p class="muted">
-        Your request has been prepared on this device. Send it to support
-        so your payment and account details can be checked manually.
-        This form does not activate your license by itself.
-      </p>
-      <a id="sendActivationWhatsApp"
-         class="btn primary"
-         href="https://wa.me/254718835596"
-         target="_blank" rel="noopener">
-        SEND REQUEST TO WHATSAPP
-      </a>
-    </div>
-  </div>
-</div>
-</section>
-
-<script>
-(function () {
-  const form = document.getElementById("activationForm");
-  if (!form) return;
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const name = document.getElementById("activationName").value.trim();
-    const email = document.getElementById("activationEmail").value.trim();
-    const packageName = document.getElementById("activationPackage").value;
-    const mt5Login = document.getElementById("mt5Login").value.trim();
-    const brokerServer = document.getElementById("brokerServer").value.trim();
-    const paymentReference = document.getElementById("paymentReference").value.trim();
-
-    const message =
-      "IAN XAU AI ACTIVATION REQUEST\n" +
-      "Name: " + name + "\n" +
-      "Account email: " + email + "\n" +
-      "Package: " + packageName + "\n" +
-      "MT5 Login ID: " + mt5Login + "\n" +
-      "Broker server: " + brokerServer + "\n" +
-      "Payment reference: " + paymentReference;
-
-    document.getElementById("activationMessage").textContent =
-      "Request prepared. Your license is not activated until support verifies payment.";
-
-    document.getElementById("sendActivationWhatsApp").href =
-      "https://wa.me/254718835596?text=" + encodeURIComponent(message);
-
-    document.getElementById("activationNextSteps").hidden = false;
-  });
-})();
-</script>
-
-<!-- PART 4: LOGIN, ACCOUNT STATUS AND SUPPORT -->
-
-<section id="login" class="section">
-  <div class="section-title">
-    <p class="eyebrow">CLIENT AREA</p>
-    <h2>Client Login</h2>
-    <p>Sign in to check your account and bot activation status.</p>
-  </div>
-
+<!-- SECTION 1: FIRST SCREEN / AUTHENTICATION -->
+<section id="authScreen" class="auth-screen">
   <div class="auth-card">
+    <div class="brand">IAN <span>XAU AI</span></div>
+    <div class="tagline">RULE-BASED XAUUSD TRADING SYSTEM</div>
+
     <div class="auth-tabs">
-      <button type="button" id="loginTab" class="auth-tab active">Sign In</button>
-      <button type="button" id="signupTab" class="auth-tab">Create Account</button>
+      <button id="loginTab" class="active" type="button">
+        Sign In
+      </button>
+      <button id="signupTab" type="button">
+        Create Account
+      </button>
     </div>
 
     <form id="loginForm">
-      <label for="loginEmail">Email address</label>
-      <input id="loginEmail" type="email" required autocomplete="email"
+      <label for="loginEmail">Email Address</label>
+      <input id="loginEmail" type="email"
+        autocomplete="email" required
         placeholder="you@example.com">
 
       <label for="loginPassword">Password</label>
-      <input id="loginPassword" type="password" required
-        autocomplete="current-password" placeholder="Your password">
+      <input id="loginPassword" type="password"
+        autocomplete="current-password" required
+        placeholder="Your password">
 
-      <button class="btn btn-primary auth-submit" type="submit">Sign In</button>
-      <button class="text-button" id="forgotPassword" type="button">
+      <button class="btn btn-green btn-block"
+        type="submit" style="margin-top:18px">
+        Sign In
+      </button>
+
+      <button class="text-button" id="forgotPassword"
+        type="button">
         Forgot password?
       </button>
     </form>
 
     <form id="createForm" hidden>
-      <label for="signupName">Full name</label>
-      <input id="signupName" type="text" required autocomplete="name"
+      <label for="signupName">Full Name</label>
+      <input id="signupName" type="text"
+        autocomplete="name" required
         placeholder="Your full name">
 
-      <label for="signupEmail">Email address</label>
-      <input id="signupEmail" type="email" required autocomplete="email"
+      <label for="signupEmail">Email Address</label>
+      <input id="signupEmail" type="email"
+        autocomplete="email" required
         placeholder="you@example.com">
 
-      <label for="signupPassword">Create password</label>
-      <input id="signupPassword" type="password" required minlength="8"
-        autocomplete="new-password" placeholder="At least 8 characters">
+      <label for="signupPassword">Create Password</label>
+      <input id="signupPassword" type="password"
+        autocomplete="new-password" minlength="8"
+        required placeholder="Minimum 8 characters">
 
-      <button class="btn btn-primary auth-submit" type="submit">
+      <button class="btn btn-green btn-block"
+        type="submit" style="margin-top:18px">
         Create Account
       </button>
     </form>
 
-    <div id="authMessage" class="auth-message" role="status"
-      aria-live="polite"></div>
+    <button id="googleLogin" class="btn btn-block"
+      type="button" style="margin-top:10px">
+      Continue with Google
+    </button>
 
-    <div id="accountPanel" hidden>
-      <div class="account-heading">
-        <h3>Your Account</h3>
-        <span id="accountEmail"></span>
-      </div>
+    <div id="authMessage" class="message"
+      role="status" aria-live="polite"></div>
 
-      <div class="account-detail">
-        <span>Package</span>
-        <strong id="accountPackage">Not assigned</strong>
-      </div>
-
-      <div class="account-detail">
-        <span>Payment status</span>
-        <strong id="accountPayment">Not confirmed</strong>
-      </div>
-
-      <div class="account-detail">
-        <span>Bot status</span>
-        <strong id="accountBotStatus">Not activated</strong>
-      </div>
-
-      <p class="account-note">
-        Activation is confirmed by the administrator after payment
-        and account details are verified.
-      </p>
-
-      <button type="button" id="refreshAccount" class="btn btn-secondary">
-        Refresh Account Status
-      </button>
-
-      <button type="button" id="logoutButton" class="text-button">
-        Sign Out
-      </button>
+    <div class="disclaimer">
+      Trading involves risk. No strategy or bot can guarantee profits.
     </div>
   </div>
 </section>
 
-<section id="support" class="section">
-  <div class="section-title">
-    <p class="eyebrow">CUSTOMER SUPPORT</p>
-    <h2>Need Help?</h2>
-    <p>Contact us about payments, login problems or bot activation.</p>
+<!-- SECTION 2 WILL BE INSERTED HERE -->
+<!-- SECTION 2: PRO PLUS DASHBOARD -->
+
+<style>
+#dashboard {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top right, #102516 0%, transparent 42%),
+    var(--bg);
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #050907ed;
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+.topbar .brand { font-size: 19px; }
+.topbar-actions { display: flex; gap: 7px; align-items: center; }
+.topbar-actions .btn { padding: 9px; }
+.dash-wrap { max-width: 1200px; margin: auto; padding: 22px; }
+.eyebrow {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.hero-title {
+  margin: 8px 0;
+  font-size: clamp(28px, 6vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -1px;
+}
+.hero-title span { color: var(--green); }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.panel {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: linear-gradient(145deg, #0d160f, #070b08);
+  min-width: 0;
+}
+.section-heading {
+  margin: 0 0 13px;
+  font-size: 17px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+.stat-card {
+  width: 100%;
+  text-align: left;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+}
+.stat-card:hover { border-color: var(--green); }
+.stat-name { color: var(--muted); font-size: 11px; }
+.stat-value { margin: 9px 0; font-size: 23px; font-weight: 900; }
+.stat-note { color: var(--green); font-size: 10px; }
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 15px 0;
+}
+.feature-list { display: grid; gap: 10px; }
+.feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 11px;
+  border: 1px solid #1b2d20;
+  border-radius: 9px;
+  background: #0a110c;
+}
+.feature-icon { color: var(--green); font-size: 18px; }
+.feature strong { display: block; margin-bottom: 3px; }
+.feature p { margin: 0; color: var(--muted); font-size: 12px; }
+.status-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.status-pill {
+  padding: 5px 9px;
+  border: 1px solid #4a572b;
+  border-radius: 20px;
+  color: var(--gold);
+  background: #1a1b0c;
+  font-size: 10px;
+  font-weight: 800;
+}
+.bot-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.bot-controls .btn { min-height: 47px; }
+.plan-price { font-size: 34px; font-weight: 900; color: var(--green); }
+.plan-card { display: flex; flex-direction: column; gap: 12px; }
+.plan-card ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.plan-card li { margin: 7px 0; }
+.vip-card { border-color: #70528b; }
+.vip-label {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: #291a38;
+  color: var(--purple);
+  font-size: 10px;
+  font-weight: 900;
+}
+.detail-box {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #050907;
+}
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.level-item {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+}
+.level-item strong { display: block; color: var(--green); }
+#dashboard a.btn { text-align: center; }
+.dash-footer {
+  margin-top: 30px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+@media (max-width: 760px) {
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .two-col { grid-template-columns: 1fr; }
+  .dash-wrap { padding: 15px; }
+}
+@media (max-width: 380px) {
+  .topbar { padding: 10px; }
+  .topbar .brand { font-size: 16px; }
+  .topbar-actions .btn { font-size: 10px; padding: 8px; }
+  .stat-value { font-size: 19px; }
+}
+</style>
+
+<section id="dashboard" hidden>
+  <header class="topbar">
+    <div class="brand">IAN <span>XAU AI</span></div>
+    <div class="topbar-actions">
+      <span id="clientEmail" class="muted small"></span>
+      <button id="logoutButton" class="btn" type="button">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <main class="dash-wrap">
+    <div class="eyebrow">PRO PLUS TRADING ENVIRONMENT</div>
+    <h1 class="hero-title">READ THE MARKET.<br><span>FOLLOW THE RULES.</span></h1>
+    <p class="muted">
+      XAUUSD strategy analysis, customizable filters and account tools
+      in one control panel.
+    </p>
+
+    <div class="status-line" style="margin-top:18px">
+      <div>
+        <strong>MT5 CONNECTION</strong>
+        <div class="muted small">
+          Live data requires a connected MT5 EA or backend bridge.
+        </div>
+      </div>
+      <span id="mt5Status" class="status-pill">MT5 NOT CONNECTED</span>
+    </div>
+
+    <!-- CLICKABLE ACCOUNT STATISTICS -->
+    <div class="stats-grid">
+      <button class="stat-card" type="button"
+        data-detail="balance">
+        <div class="stat-name">ACCOUNT BALANCE</div>
+        <div class="stat-value" id="balanceValue">—</div>
+        <div class="stat-note">Tap for account details ↗</div>
+      </button>
+
+      <button class="stat-card" type="button"
+        data-detail="pnl">
+        <div class="stat-name">DAILY P/L</div>
+        <div class="stat-value" id="pnlValue">—</div>
+        <div class="stat-note">Tap for performance details ↗</div>
+      </button>
+
+      <button class="stat-card" type="button"
+        data-detail="trades">
+        <div class="stat-name">OPEN TRADES</div>
+        <div class="stat-value" id="tradesValue">—</div>
+        <div class="stat-note">Tap for open positions ↗</div>
+      </button>
+
+      <button class="stat-card" type="button"
+        data-detail="winrate">
+        <div class="stat-name">WIN RATE</div>
+        <div class="stat-value" id="winRateValue">—</div>
+        <div class="stat-note">Tap for trade statistics ↗</div>
+      </button>
+    </div>
+
+    <div id="statDetail" class="detail-box" hidden>
+      <div class="status-line">
+        <h3 id="detailTitle" class="section-heading">Account details</h3>
+        <button id="closeDetail" class="btn" type="button">
+          Close
+        </button>
+      </div>
+      <div id="detailContent" class="muted small">
+        MT5 is not connected.
+      </div>
+    </div>
+
+    <!-- REMOTE BOT CONTROLS -->
+    <section class="panel" style="margin-top:15px">
+      <div class="eyebrow">BOT REQUEST</div>
+      <h2 class="section-heading" style="margin-top:7px">
+        Remote Bot Control
+      </h2>
+      <p class="muted small">
+        These controls require a secure cloud command service and a running
+        MT5 EA. A button click alone cannot start a bot on your phone.
+      </p>
+
+      <div class="bot-controls">
+        <button id="startBotButton" class="btn btn-green" type="button">
+          ▶ START BOT
+        </button>
+        <button id="stopBotButton" class="btn btn-red" type="button">
+          ■ STOP BOT
+        </button>
+        <button id="connectMt5Button" class="btn btn-blue" type="button">
+          CONNECT ACCOUNT
+        </button>
+        <button id="licenseButton" class="btn btn-purple" type="button">
+          CHECK LICENSE
+        </button>
+      </div>
+
+      <div id="botMessage" class="message" role="status"
+        aria-live="polite" style="display:block">
+        Bot status unavailable — MT5 bridge not connected.
+      </div>
+    </section>
+
+    <!-- STRATEGY OVERVIEW -->
+    <section id="strategy" class="panel" style="margin-top:20px">
+      <div class="eyebrow">STRATEGY INTELLIGENCE</div>
+      <h2 class="section-heading" style="margin-top:7px">
+        Five-Layer Market Analysis
+      </h2>
+
+      <div class="feature-list">
+        <div class="feature">
+          <div class="feature-icon">01</div>
+          <div>
+            <strong>Liquidity Intelligence</strong>
+            <p>Maps Asia High, Asia Low, PDH and PDL as key market levels.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">02</div>
+          <div>
+            <strong>Sweep Detection</strong>
+            <p>Evaluates moves beyond a level and potential rejection or reclaim.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">03</div>
+          <div>
+            <strong>Market Structure</strong>
+            <p>Evaluates trend, swing highs and lows, and confirmation signals.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">04</div>
+          <div>
+            <strong>Entry and Exit Validation</strong>
+            <p>Applies configured entry triggers, stop-loss, take-profit and exit rules.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">05</div>
+          <div>
+            <strong>Risk and Execution Control</strong>
+            <p>Checks spread, session, position limits and account risk rules.</p>
+          </div>
+        </div>
+      </div>
+      <p class="muted small" style="margin-bottom:0">
+        A level touch is not automatically a signal. The EA must implement
+        and validate these rules before they can guide live orders.
+      </p>
+    </section>
+
+    <!-- CHART -->
+    <section id="chart" class="panel" style="margin-top:15px">
+      <div class="eyebrow">MARKET VIEW</div>
+      <h2 class="section-heading" style="margin-top:7px">
+        XAUUSD Live Chart
+      </h2>
+      <div class="muted small" style="margin-bottom:12px">
+        TradingView market chart. This is a chart embed, not your MT5 account feed.
+      </div>
+      <div style="height:460px;overflow:hidden;border-radius:9px">
+        <iframe
+          title="XAUUSD TradingView chart"
+          src="https://s.tradingview.com/widgetembed/?frameElementId=ian-xau-chart&symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=030603&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1"
+          style="width:100%;height:100%;border:0"
+          loading="lazy"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <!-- TRADING TOOLS -->
+    <section class="panel" style="margin-top:15px">
+      <div class="eyebrow">TRADING TOOLS</div>
+      <h2 class="section-heading" style="margin-top:7px">
+        Calendar & Market Research
+      </h2>
+      <div class="two-col">
+        <a class="btn btn-blue" href="https://www.forexfactory.com/calendar"
+          target="_blank" rel="noopener noreferrer">
+          Open Forex Factory Calendar ↗
+        </a>
+        <a class="btn" href="https://www.tradingview.com/"
+          target="_blank" rel="noopener noreferrer">
+          Open TradingView ↗
+        </a>
+      </div>
+      <p class="muted small">
+        News restrictions affect trading only when a configured news feed
+        is connected to the EA.
+      </p>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" style="margin-top:25px">
+      <div class="eyebrow">ACCESS PLANS</div>
+      <h2 class="hero-title" style="font-size:30px">
+        CHOOSE YOUR <span>ACCESS</span>
+      </h2>
+      <div class="two-col">
+        <article class="panel plan-card">
+          <div class="eyebrow">BOT ACCESS</div>
+          <div class="plan-price">$50</div>
+          <div class="muted small">One-time payment</div>
+          <ul>
+            <li>Core XAUUSD strategy</li>
+            <li>Asia High / Asia Low / PDH / PDL</li>
+            <li>Market sweep and confirmation framework</li>
+            <li>Risk-control features as implemented</li>
+          </ul>
+          <a class="btn btn-green btn-block"
+            href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457060672361889792&billType=request_a_payment"
+            target="_blank" rel="noopener noreferrer">
+            PAY $50 — BOT ACCESS
+          </a>
+        </article>
+
+        <article class="panel plan-card vip-card">
+          <div><span class="vip-label">VIP EXCLUSIVE</span></div>
+          <div class="eyebrow">VIP ACCESS</div>
+          <div class="plan-price">$120</div>
+          <div class="muted small">One-time payment</div>
+          <ul>
+            <li>Everything in Bot Access</li>
+            <li><strong>VIP Tick Scalper strategy</strong></li>
+            <li>Configurable tick-entry and exit rules</li>
+            <li>Advanced trade management settings</li>
+            <li>Full Control strategy filters</li>
+          </ul>
+          <a class="btn btn-purple btn-block"
+            href="https://app.binance.com/uni-qr/request-to-pay?billOrderId=457061228438241280&billType=request_a_payment"
+            target="_blank" rel="noopener noreferrer">
+            PAY $120 — VIP ACCESS
+          </a>
+        </article>
+      </div>
+      <p class="muted small">
+        Payment links do not automatically verify a transaction or activate
+        an account. Secure payment verification must be connected separately.
+      </p>
+    </section>
+
+    <section class="panel" style="margin-top:15px">
+      <div class="eyebrow">CLIENT SUPPORT</div>
+      <h2 class="section-heading" style="margin-top:7px">Need Help?</h2>
+      <div class="two-col">
+        <a class="btn btn-green"
+          href="https://wa.me/254718835596"
+          target="_blank" rel="noopener noreferrer">
+          WhatsApp Support
+        </a>
+        <a class="btn"
+          href="https://instagram.com/ianke77"
+          target="_blank" rel="noopener noreferrer">
+          Instagram
+        </a>
+      </div>
+    </section>
+
+    <footer class="dash-footer">
+      <strong>IAN XAU AI PRO PLUS</strong>
+      <p>Trading involves substantial risk. Losses are possible.
+        No profit or performance outcome is guaranteed.</p>
+      <a href="https://www.forexfactory.com/calendar"
+        target="_blank" rel="noopener noreferrer">Forex Factory</a>
+    </footer>
+  </main>
+                                            
+<style>
+/* SECTION 3 — FULL CONTROL */
+.control-panel {
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px solid #24352a;
+  border-radius: 16px;
+  background: #080d09;
+}
+.control-panel h2 {
+  color: #39ff78;
+  margin-bottom: 8px;
+}
+.control-panel h3 {
+  color: #e5f5e9;
+  margin: 20px 0 12px;
+}
+.control-note {
+  color: #9bac9f;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+.control-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #dce9df;
+  font-size: 13px;
+}
+.control-field input,
+.control-field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  color: #fff;
+  background: #101812;
+  border: 1px solid #304437;
+  border-radius: 9px;
+}
+.control-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.control-checks label {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: #dce9df;
+  font-size: 13px;
+}
+.control-checks input {
+  accent-color: #39ff78;
+  width: 17px;
+  height: 17px;
+}
+.control-action {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  color: #031007;
+  background: #39ff78;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.control-status {
+  margin-top: 12px;
+  color: #b7c8bc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.vip-panel {
+  border-color: #8d6bd1;
+}
+.vip-panel h2 {
+  color: #c3a4ff;
+}
+.vip-tag {
+  display: inline-block;
+  padding: 5px 9px;
+  color: #e1d4ff;
+  background: #24183b;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 800;
+}
+</style>
+
+<section id="fullControl" class="control-panel">
+  <h2>FULL CONTROL CENTER</h2>
+  <p class="control-note">
+    Configure your preferred XAUUSD strategy rules. These settings are saved
+    in this browser for now; they will not control a live MT5 EA until the
+    secure backend connection is implemented.
+  </p>
+
+  <h3>1. Market Levels</h3>
+  <div class="control-checks">
+    <label><input type="checkbox" id="useAsiaHigh" checked> Asia High</label>
+    <label><input type="checkbox" id="useAsiaLow" checked> Asia Low</label>
+    <label><input type="checkbox" id="usePDH" checked> Previous Day High (PDH)</label>
+    <label><input type="checkbox" id="usePDL" checked> Previous Day Low (PDL)</label>
   </div>
 
-  <div class="support-card">
-    <h3>IAN XAU AI Support</h3>
-    <p>Have your registered email and payment reference ready.</p>
-    <a class="btn btn-primary" href="https://wa.me/254718835596"
-      target="_blank" rel="noopener noreferrer">
-      Contact Support on WhatsApp
-    </a>
-    <a class="support-link" href="https://instagram.com/ianke77"
-      target="_blank" rel="noopener noreferrer">
-      Follow us on Instagram
-    </a>
-  </div>
-</section>
+  <h3>2. Entry Rules</h3>
+  <div class="control-grid">
+    <label class="control-field">
+      Entry direction
+      <select id="entryDirection">
+        <option value="both">Buy and Sell</option>
+        <option value="buy">Buy only</option>
+        <option value="sell">Sell only</option>
+      </select>
+    </label>
 
-<section class="risk-notice">
-  <h3>Trading Risk Notice</h3>
-  <p>
-    Gold and forex trading involve significant risk. Losses are possible.
-    No bot guarantees profits. Test on a demo account before considering
-    live trading, and never risk money you cannot afford to lose.
+    <label class="control-field">
+      Entry timeframe
+      <select id="entryTimeframe">
+        <option value="M1">M1 — 1 minute</option>
+        <option value="M5">M5 — 5 minutes</option>
+        <option value="M15" selected>M15 — 15 minutes</option>
+      </select>
+    </label>
+
+    <label class="control-field">
+      Required confirmation
+      <select id="entryConfirmation">
+        <option value="sweep_reclaim_structure">
+          Sweep + reclaim + structure
+        </option>
+        <option value="sweep_reclaim">Sweep + reclaim</option>
+        <option value="structure">Market structure only</option>
+      </select>
+    </label>
+
+    <label class="control-field">
+      Confirmation candles
+      <input id="confirmationCandles" type="number"
+        min="1" max="5" step="1" value="1">
+    </label>
+  </div>
+
+  <div class="control-checks">
+    <label><input type="checkbox" id="requireSweep" checked>
+      Require liquidity sweep</label>
+    <label><input type="checkbox" id="requireReclaim" checked>
+      Require level reclaim</label>
+    <label><input type="checkbox" id="requireStructure" checked>
+      Require market structure confirmation</label>
+  </div>
+
+  <h3>3. Exit Rules</h3>
+  <div class="control-grid">
+    <label class="control-field">
+      Stop loss (points)
+      <input id="stopLossPoints" type="number"
+        min="1" max="100000" value="300">
+    </label>
+
+    <label class="control-field">
+      Take profit (points)
+      <input id="takeProfitPoints" type="number"
+        min="1" max="200000" value="600">
+    </label>
+
+    <label class="control-field">
+      Break-even trigger (points)
+      <input id="breakEvenPoints" type="number"
+        min="0" max="100000" value="200">
+    </label>
+
+    <label class="control-field">
+      Trailing stop distance (points)
+      <input id="trailingStopPoints" type="number"
+        min="0" max="100000" value="150">
+    </label>
+
+    <label class="control-field">
+      Net-profit close target (account currency)
+      <input id="netProfitTarget" type="number"
+        min="0" max="100000" step="0.01" value="1.00">
+    </label>
+  </div>
+
+  <div class="control-checks">
+    <label><input type="checkbox" id="useStopLoss" checked>
+      Stop loss required</label>
+    <label><input type="checkbox" id="useTakeProfit" checked>
+      Use take profit</label>
+    <label><input type="checkbox" id="useBreakEven">
+      Enable break-even</label>
+    <label><input type="checkbox" id="useTrailingStop">
+      Enable trailing stop</label>
+    <label><input type="checkbox" id="useNetProfitExit" checked>
+      Close at net-profit target</label>
+  </div>
+  <p class="control-note">
+    Net profit must be calculated after applicable commission, swap and
+    estimated execution costs. Actual costs can differ from estimates.
+  </p>
+
+  <h3>4. Risk and Execution Controls</h3>
+  <div class="control-grid">
+    <label class="control-field">
+      Maximum open positions
+      <input id="maxOpenPositions" type="number"
+        min="1" max="5" step="1" value="1">
+    </label>
+
+    <label class="control-field">
+      Risk per trade (%)
+      <input id="riskPerTrade" type="number"
+        min="0.1" max="1" step="0.1" value="0.5">
+    </label>
+
+    <label class="control-field">
+      Daily loss limit (%)
+      <input id="dailyLossLimit" type="number"
+        min="0.5" max="5" step="0.5" value="3">
+    </label>
+
+    <label class="control-field">
+      Maximum spread (points)
+      <input id="maxSpreadPoints" type="number"
+        min="1" max="1000" value="50">
+    </label>
+
+    <label class="control-field">
+      Cooldown after a trade (seconds)
+      <input id="cooldownSeconds" type="number"
+        min="0" max="3600" value="30">
+    </label>
+
+    <label class="control-field">
+      Trading session
+      <select id="tradingSession">
+        <option value="all">All sessions</option>
+        <option value="london">London</option>
+        <option value="new_york">New York</option>
+        <option value="london_new_york">London + New York</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="control-checks">
+    <label><input type="checkbox" id="stopAfterDailyLoss" checked>
+      Stop entries after daily loss limit</label>
+    <label><input type="checkbox" id="blockHighSpread" checked>
+      Block entries when spread is too high</label>
+    <label><input type="checkbox" id="newsFilter">
+      Enable high-impact news filter</label>
+  </div>
+
+  <button class="control-action" id="saveControlSettings" type="button">
+    SAVE STRATEGY SETTINGS
+  </button>
+  <p class="control-status" id="controlSettingsStatus" aria-live="polite">
+    Settings not yet saved.
   </p>
 </section>
 
-<style>
-.auth-card,.support-card{
-  width:min(100%,540px);margin:24px auto;padding:24px;
-  background:#0b120d;border:1px solid #24432e;border-radius:16px
-}
-.auth-tabs{display:flex;gap:10px;margin-bottom:22px}
-.auth-tab{
-  flex:1;padding:12px;color:#d8e4da;background:#111b14;
-  border:1px solid #28442f;border-radius:9px;cursor:pointer
-}
-.auth-tab.active{color:#031006;background:#39ff78;font-weight:700}
-#loginForm label,#createForm label{
-  display:block;margin:14px 0 7px;color:#d8e4da;font-size:14px
-}
-#loginForm input,#createForm input{
-  width:100%;padding:13px;color:#fff;background:#050906;
-  border:1px solid #31533a;border-radius:9px;font:inherit
-}
-.auth-submit{width:100%;margin-top:20px}
-.text-button,.support-link{
-  display:block;margin-top:16px;color:#39ff78;background:none;
-  border:0;text-decoration:underline;cursor:pointer;font:inherit
-}
-.auth-message{
-  display:none;margin-top:18px;padding:12px;border-radius:8px;
-  overflow-wrap:anywhere;background:#142018;color:#fff
-}
-.auth-message.good{border:1px solid #39ff78}
-.account-heading{margin-top:24px;margin-bottom:16px}
-#accountEmail{
-  display:block;margin-top:6px;color:#a9b9ad;overflow-wrap:anywhere
-}
-.account-detail{
-  display:flex;justify-content:space-between;gap:14px;padding:13px 0;
-  border-bottom:1px solid #24432e
-}
-.account-detail span{color:#a9b9ad}
-.account-detail strong{text-align:right;overflow-wrap:anywhere}
-.account-note,.support-card p{
-  margin:16px 0;color:#b8c8bc;line-height:1.6
-}
-.risk-notice{
-  margin:24px auto;padding:18px;max-width:900px;
-  border:1px solid #55452a;border-radius:12px;color:#d9cfb8;
-  background:#17130b;line-height:1.6
-}
-.risk-notice h3{margin-bottom:8px;color:#f0c779}
-[hidden]{display:none!important}
-</style>
+<section id="tickScalper" class="control-panel vip-panel">
+  <span class="vip-tag">VIP — $120 PLAN</span>
+  <h2>IAN XAU TICK SCALPER</h2>
+  <p class="control-note">
+    Configurable fast-entry scalping design for XAUUSD. It is not verified
+    as profitable and must be tested on a demo account before live use.
+    VIP entitlement and an MT5 execution connection must be verified.
+  </p>
 
+  <div class="control-checks">
+    <label><input type="checkbox" id="tickScalperEnabled">
+      Request Tick Scalper mode</label>
+    <label><input type="checkbox" id="tickRequireNetProfit" checked>
+      Require net-profit exit after estimated costs</label>
+  </div>
+
+  <div class="control-grid">
+    <label class="control-field">
+      Tick entry mode
+      <select id="tickEntryMode">
+        <option value="momentum">Short-term momentum</option>
+        <option value="breakout">Micro-breakout</option>
+        <option value="pullback">Micro-pullback</option>
+      </select>
+    </label>
+
+    <label class="control-field">
+      Minimum momentum (points)
+      <input id="tickMomentumPoints" type="number"
+        min="1" max="1000" value="10">
+    </label>
+
+    <label class="control-field">
+      Net-profit target (account currency)
+      <input id="tickNetProfitTarget" type="number"
+        min="0.01" max="100000" step="0.01" value="0.50">
+    </label>
+
+    <label class="control-field">
+      Maximum holding time (seconds)
+      <input id="tickMaxHoldingSeconds" type="number"
+        min="1" max="3600" value="30">
+    </label>
+
+    <label class="control-field">
+      Maximum spread (points)
+      <input id="tickMaxSpreadPoints" type="number"
+        min="1" max="1000" value="30">
+    </label>
+
+    <label class="control-field">
+      Maximum positions
+      <input id="tickMaxPositions" type="number"
+        min="1" max="1" value="1" readonly>
+    </label>
+  </div>
+
+  <button class="control-action" id="saveTickSettings" type="button">
+    SAVE TICK SCALPER SETTINGS
+  </button>
+  <p class="control-status" id="tickSettingsStatus" aria-live="polite">
+    Tick Scalper is not connected to MT5.
+  </p>
+  </section>
+    </section>
+  
+<!-- SECTION 4: JAVASCRIPT + SUPABASE AUTH -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
+  "use strict";
+
+  // Supabase project configuration
   const SUPABASE_URL = "https://elnqijtvqstzaxrydyox.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY =
+  const SUPABASE_KEY =
     "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
 
-  const client = window.supabase.createClient(
+  const supabase = window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
+    SUPABASE_KEY
   );
 
-  const el = id => document.getElementById(id);
+  const $ = id => document.getElementById(id);
+  const show = (el, visible) => {
+    if (el) el.hidden = !visible;
+  };
 
-  function message(text, good = false) {
-    const box = el("authMessage");
-    box.textContent = text;
-    box.className = "auth-message" + (good ? " good" : "");
-    box.style.display = text ? "block" : "none";
+  function status(message, targetId) {
+    const el = $(targetId);
+    if (el) el.textContent = message;
   }
 
-  function showMode(mode) {
-    const signup = mode === "signup";
-    el("loginForm").hidden = signup;
-    el("createForm").hidden = !signup;
-    el("loginTab").classList.toggle("active", !signup);
-    el("signupTab").classList.toggle("active", signup);
-    message("");
+  function getUserMessage(error) {
+    return error?.message || "Something went wrong. Please try again.";
   }
 
-  async function loadAccount() {
-    const { data: sessionData, error: sessionError } =
-      await client.auth.getSession();
+  // AUTH SCREEN AND DASHBOARD
+  const authScreen = $("authScreen") ||
+                    $("auth-screen") ||
+                    $("authSection");
+  const dashboard = $("dashboard");
 
-    if (sessionError) {
-      message(sessionError.message);
-      return;
-    }
+  function displayAuth() {
+    show(authScreen, true);
+    show(dashboard, false);
+  }
 
-    const user = sessionData.session?.user;
+  function displayDashboard() {
+    show(authScreen, false);
+    show(dashboard, true);
+  }
 
-    if (!user) {
-      el("accountPanel").hidden = true;
-      return;
-    }
+  // SIGN IN
+  const loginForm = $("loginForm") || $("signInForm");
 
-    el("accountPanel").hidden = false;
-    el("accountEmail").textContent = user.email || "";
-    el("accountPackage").textContent = "Not assigned";
-    el("accountPayment").textContent = "Not confirmed";
-    el("accountBotStatus").textContent = "Not activated";
+  if (loginForm) {
+    loginForm.addEventListener("submit", async event => {
+      event.preventDefault();
 
-    const { data, error } = await client
+      const email = (
+        $("loginEmail") || $("signInEmail") ||
+        loginForm.querySelector('[type="email"]')
+      )?.value.trim();
+
+      const password = (
+        $("loginPassword") || $("signInPassword") ||
+        loginForm.querySelector('[type="password"]')
+      )?.value;
+
+      if (!email || !password) {
+        alert("Enter your email and password.");
+        return;
+      }
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        alert(getUserMessage(error));
+        return;
+      }
+
+      await refreshSession();
+    });
+  }
+
+  // CREATE ACCOUNT
+  const signupForm = $("signupForm") ||
+                     $("createAccountForm") ||
+                     $("registerForm");
+
+  if (signupForm) {
+    signupForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const email = (
+        $("signupEmail") || $("registerEmail") ||
+        signupForm.querySelector('[type="email"]')
+      )?.value.trim();
+
+      const password = (
+        $("signupPassword") || $("registerPassword") ||
+        signupForm.querySelector('[type="password"]')
+      )?.value;
+
+      const name = (
+        $("signupName") || $("registerName") ||
+        signupForm.querySelector('[name="name"]')
+      )?.value.trim() || "";
+
+      if (!email || !password) {
+        alert("Enter your email and password.");
+        return;
+      }
+
+      if (password.length < 8) {
+        alert("Your password must contain at least 8 characters.");
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: name },
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        alert(getUserMessage(error));
+        return;
+      }
+
+      if (data.session) {
+        await refreshSession();
+      } else {
+        alert(
+          "Account created. Check your email to confirm your account, " +
+          "then return here and sign in."
+        );
+      }
+    });
+  }
+
+  // FORGOT PASSWORD
+  const forgotButton = $("forgotPasswordBtn") ||
+                       $("forgotPassword") ||
+                       $("resetPasswordBtn");
+
+  if (forgotButton) {
+    forgotButton.addEventListener("click", async event => {
+      event.preventDefault();
+
+      const emailInput =
+        $("loginEmail") || $("signInEmail") ||
+        document.querySelector('input[type="email"]');
+
+      const email = emailInput?.value.trim();
+
+      if (!email) {
+        alert("Enter your email address first.");
+        emailInput?.focus();
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        email,
+        { redirectTo: window.location.origin }
+      );
+
+      if (error) {
+        alert(getUserMessage(error));
+      } else {
+        alert("If the account exists, a password reset email will be sent.");
+      }
+    });
+  }
+
+  // GOOGLE SIGN-IN — enable Google provider in Supabase first.
+  const googleButton = $("googleLoginBtn") ||
+                       $("googleSignInBtn") ||
+                       $("googleLogin");
+
+  if (googleButton) {
+    googleButton.addEventListener("click", async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+
+      if (error) alert(getUserMessage(error));
+    });
+  }
+
+  // LOG OUT
+  const logoutButton = $("logoutBtn") ||
+                       $("logoutButton") ||
+                       $("signOutBtn");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", async () => {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        alert(getUserMessage(error));
+        return;
+      }
+
+      displayAuth();
+    });
+  }
+
+  // ACCOUNT ACCESS STATUS
+  // This reads the existing "Costomer" table.
+  // It does not verify a Binance payment.
+  async function loadAccountStatus(user) {
+    const { data, error } = await supabase
       .from("Costomer")
       .select("package,payment_status,bot_command")
       .eq("user_id", user.id)
       .maybeSingle();
 
     if (error) {
-      message(
-        "Signed in, but status could not be loaded. Check the Costomer table permissions."
+      console.error("Account status lookup failed:", error.message);
+      status(
+        "Account status could not be loaded. Contact support.",
+        "licenseStatus"
       );
-      return;
+      return null;
     }
 
     if (!data) {
-      message(
-        "Signed in. Your account status is not available yet.",
-        true
+      status(
+        "No access record found. Purchase access and contact support for verification.",
+        "licenseStatus"
       );
-      return;
+      return null;
     }
 
-    el("accountPackage").textContent = data.package || "Not assigned";
-    el("accountPayment").textContent =
-      data.payment_status || "Not confirmed";
+    const paymentStatus = String(data.payment_status || "").toLowerCase();
+    const packageName = String(data.package || "No package");
 
-    const active =
-      data.payment_status === "active" &&
-      data.bot_command === "START";
+    const isActive = [
+      "paid", "active", "approved", "completed"
+    ].includes(paymentStatus);
 
-    el("accountBotStatus").textContent =
-      active ? "ACTIVE" : "NOT ACTIVATED";
+    status(
+      isActive
+        ? "Account record: " + packageName + " — " + paymentStatus
+        : "Access pending verification — " + packageName,
+      "licenseStatus"
+    );
 
-    message("Account status refreshed.", true);
+    return data;
   }
 
-  el("loginTab").addEventListener("click", () => showMode("login"));
-  el("signupTab").addEventListener("click", () => showMode("signup"));
+  async function refreshSession() {
+    const { data, error } = await supabase.auth.getSession();
 
-  el("loginForm").addEventListener("submit", async event => {
-    event.preventDefault();
-    message("Signing in...");
-
-    const { error } = await client.auth.signInWithPassword({
-      email: el("loginEmail").value.trim(),
-      password: el("loginPassword").value
-    });
-
-    if (error) {
-      message(error.message);
+    if (error || !data.session) {
+      displayAuth();
       return;
     }
 
-    message("Signed in successfully.", true);
-    await loadAccount();
+    displayDashboard();
+    await loadAccountStatus(data.session.user);
+  }
+
+  // Keep dashboard protected by Supabase authentication.
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      displayDashboard();
+    } else {
+      displayAuth();
+    }
   });
 
-  el("createForm").addEventListener("submit", async event => {
-    event.preventDefault();
+  // DASHBOARD STAT DETAILS
+  const statDetails = {
+    balance:
+      "MT5 account balance, equity, free margin and used margin will appear " +
+      "when a verified MT5 data connection is available.",
+    daily:
+      "Daily realized P/L, floating P/L, commissions and net P/L require " +
+      "actual MT5 account data.",
+    trades:
+      "Open positions will show symbol, direction, lot size, entry price, " +
+      "current price, stop loss, take profit and floating P/L after MT5 connects.",
+    winrate:
+      "Win rate = profitable closed trades divided by all closed trades " +
+      "in the selected period. Actual trade history is required."
+  };
 
-    const name = el("signupName").value.trim();
-    const email = el("signupEmail").value.trim();
-    const password = el("signupPassword").value;
+  const detailsBox = $("statDetails") ||
+                     $("statDetailPanel") ||
+                     $("accountStatDetails");
 
-    if (password.length < 8) {
-      message("Password must be at least 8 characters.");
-      return;
-    }
-
-    message("Creating account...");
-
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name },
-        emailRedirectTo: window.location.origin
+  document.querySelectorAll("[data-stat]").forEach(card => {
+    card.addEventListener("click", () => {
+      const key = card.getAttribute("data-stat");
+      if (detailsBox) {
+        detailsBox.textContent =
+          statDetails[key] || "MT5 data is not connected.";
+        show(detailsBox, true);
       }
     });
-
-    if (error) {
-      message(error.message);
-      return;
-    }
-
-    if (data.session) {
-      message("Account created successfully.", true);
-      await loadAccount();
-    } else {
-      message(
-        "Account created. Check your email to confirm your account.",
-        true
-      );
-    }
   });
 
-  el("forgotPassword").addEventListener("click", async () => {
-    const email = el("loginEmail").value.trim();
+  // SAFE REMOTE BOT CONTROL
+  // A real authenticated server endpoint must be configured before this works.
+  async function sendBotCommand(command) {
+    const { data } = await supabase.auth.getSession();
 
-    if (!email) {
-      message("Enter your email address first.");
+    if (!data.session) {
+      alert("Please sign in first.");
+      displayAuth();
       return;
     }
 
-    message("Sending password reset email...");
+    status(
+      "MT5 command service is not configured. No command was sent.",
+      "botCommandStatus"
+    );
 
-    const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin
+    alert(
+      "Cannot " + command.toUpperCase() +
+      " the bot yet: the secure MT5 command backend is not connected."
+    );
+
+    // Intentionally no fake success and no direct database command write.
+  }
+
+  const startButton = $("startBotBtn") || $("startBot");
+  const stopButton = $("stopBotBtn") || $("stopBot");
+
+  if (startButton) {
+    startButton.addEventListener("click", () => sendBotCommand("start"));
+  }
+
+  if (stopButton) {
+    stopButton.addEventListener("click", () => sendBotCommand("stop"));
+  }
+
+  const connectButton = $("connectAccountBtn") ||
+                        $("connectAccount");
+
+  if (connectButton) {
+    connectButton.addEventListener("click", () => {
+      alert(
+        "MT5 connection requires a supported bridge or a running EA " +
+        "connected to a secure backend. This button does not connect MT5 by itself."
+      );
+    });
+  }
+
+  const licenseButton = $("checkLicenseBtn") ||
+                        $("checkLicense");
+
+  if (licenseButton) {
+    licenseButton.addEventListener("click", async () => {
+      const { data } = await supabase.auth.getSession();
+
+      if (!data.session) {
+        alert("Please sign in first.");
+        displayAuth();
+        return;
+      }
+
+      await loadAccountStatus(data.session.user);
+    });
+  }
+
+  // STRATEGY SETTINGS
+  const strategyIds = [
+    "useAsiaHigh", "useAsiaLow", "usePDH", "usePDL",
+    "entryDirection", "entryTimeframe", "entryConfirmation",
+    "confirmationCandles", "requireSweep", "requireReclaim",
+    "requireStructure", "stopLossPoints", "takeProfitPoints",
+    "breakEvenPoints", "trailingStopPoints", "netProfitTarget",
+    "useStopLoss", "useTakeProfit", "useBreakEven",
+    "useTrailingStop", "useNetProfitExit", "maxOpenPositions",
+    "riskPerTrade", "dailyLossLimit", "maxSpreadPoints",
+    "cooldownSeconds", "tradingSession", "stopAfterDailyLoss",
+    "blockHighSpread", "newsFilter"
+  ];
+
+  const tickIds = [
+    "tickScalperEnabled", "tickRequireNetProfit", "tickEntryMode",
+    "tickMomentumPoints", "tickNetProfitTarget",
+    "tickMaxHoldingSeconds", "tickMaxSpreadPoints",
+    "tickMaxPositions"
+  ];
+
+  function readSettings(ids) {
+    const settings = {};
+
+    ids.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+
+      settings[id] = el.type === "checkbox"
+        ? el.checked
+        : el.value;
     });
 
-    if (error) {
-      message(error.message);
-      return;
+    return settings;
+  }
+
+  function validateSettings() {
+    const checks = [
+      ["riskPerTrade", 0.1, 1],
+      ["dailyLossLimit", 0.5, 5],
+      ["maxOpenPositions", 1, 5],
+      ["stopLossPoints", 1, 100000],
+      ["takeProfitPoints", 1, 200000],
+      ["maxSpreadPoints", 1, 1000],
+      ["confirmationCandles", 1, 5],
+      ["cooldownSeconds", 0, 3600],
+      ["tickMomentumPoints", 1, 1000],
+      ["tickNetProfitTarget", 0.01, 100000],
+      ["tickMaxHoldingSeconds", 1, 3600],
+      ["tickMaxSpreadPoints", 1, 1000]
+    ];
+
+    for (const [id, min, max] of checks) {
+      const el = $(id);
+      if (!el) continue;
+
+      const value = Number(el.value);
+      if (!Number.isFinite(value) || value < min || value > max) {
+        alert(
+          id + " must be between " + min + " and " + max + "."
+        );
+        el.focus();
+        return false;
+      }
     }
 
-    message(
-      "If the account exists, a password reset email has been sent.",
-      true
-    );
-  });
-
-  el("refreshAccount").addEventListener("click", loadAccount);
-
-  el("logoutButton").addEventListener("click", async () => {
-    const { error } = await client.auth.signOut();
-
-    if (error) {
-      message(error.message);
-      return;
+    if ($("useStopLoss") && !$("useStopLoss").checked) {
+      alert("Stop loss is required by this safe settings interface.");
+      $("useStopLoss").checked = true;
+      return false;
     }
 
-    el("accountPanel").hidden = true;
-    message("You have signed out.", true);
-    showMode("login");
-  });
+    return true;
+  }
 
-  client.auth.onAuthStateChange((_event, session) => {
-    if (session) {
-      loadAccount();
-    } else {
-      el("accountPanel").hidden = true;
+  function saveLocalSettings(ids, targetId, label) {
+    if (!validateSettings()) return;
+
+    try {
+      const settings = readSettings(ids);
+      localStorage.setItem(
+        "ianXau_" + label,
+        JSON.stringify(settings)
+      );
+
+      status(
+        "Saved in this browser only. Not yet sent to MT5.",
+        targetId
+      );
+    } catch (error) {
+      status(
+        "Could not save settings in this browser.",
+        targetId
+      );
     }
-  });
+  }
 
-  loadAccount();
+  function restoreLocalSettings(ids, label) {
+    try {
+      const raw = localStorage.getItem("ianXau_" + label);
+      if (!raw) return;
+
+      const settings = JSON.parse(raw);
+
+      ids.forEach(id => {
+        const el = $(id);
+        if (!el || !(id in settings)) return;
+
+        if (el.type === "checkbox") {
+          el.checked = Boolean(settings[id]);
+        } else {
+          el.value = settings[id];
+        }
+      });
+    } catch (error) {
+      console.warn("Could not restore settings:", error);
+    }
+  }
+
+  const saveControlButton = $("saveControlSettings");
+  if (saveControlButton) {
+    saveControlButton.addEventListener("click", () => {
+      saveLocalSettings(
+        strategyIds,
+        "controlSettingsStatus",
+        "strategy"
+      );
+    });
+  }
+
+  const saveTickButton = $("saveTickSettings");
+  if (saveTickButton) {
+    saveTickButton.addEventListener("click", () => {
+      saveLocalSettings(
+        tickIds,
+        "tickSettingsStatus",
+        "tick"
+      );
+    });
+  }
+
+  restoreLocalSettings(strategyIds, "strategy");
+  restoreLocalSettings(tickIds, "tick");
+
+  // Initial page state
+  refreshSession();
+
 })();
 </script>
-
-</main>
+  
 </body>
-  </html>
-
+</html>
