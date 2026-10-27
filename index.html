@@ -1,1095 +1,1003 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#030603">
-
-<title>IAN XAU AI | Pro Plus Login</title>
-
-<meta name="description" content="Sign in or create your IAN XAU AI Pro Plus account.">
-
-<style>
-:root {
-  color-scheme: dark;
-  --bg: #030603;
-  --card: #080d09;
-  --green: #39ff78;
-  --border: #1d3824;
-  --text: #e9f5eb;
-  --muted: #94ad99;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 18px 12px;
-  display: grid;
-  place-items: center;
-  background:
-    radial-gradient(circle at 50% 0%, #102116, transparent 48%),
-    var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-}
-
-#ian-auth-section {
-  width: 100%;
-  max-width: 460px;
-  margin: auto;
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.brand {
-  color: var(--green);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-}
-
-.tagline {
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 5px;
-  letter-spacing: 1px;
-}
-
-.badge {
-  border: 1px solid #285536;
-  border-radius: 20px;
-  padding: 7px 10px;
-  color: var(--green);
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.heading {
-  font-size: clamp(27px, 6vw, 35px);
-  line-height: 1.2;
-  margin: 0 0 10px;
-  color: #f1fff4;
-}
-
-.description {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
-  margin: 0 0 20px;
-}
-
-.auth-card {
-  padding: 20px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.3);
-}
-
-.tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-
-button, input {
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .65;
-  cursor: wait;
-}
-
-.tab {
-  padding: 12px 8px;
-  border: 1px solid #285536;
-  border-radius: 8px;
-  background: #0b160e;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.tab.active {
-  color: var(--green);
-  border-color: var(--green);
-  background: #102116;
-}
-
-.field {
-  margin-bottom: 15px;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 7px;
-  color: #c7d8ca;
-  font-size: 12px;
-}
-
-.field input {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  padding: 13px 12px;
-  border: 1px solid #285536;
-  border-radius: 8px;
-  outline: none;
-  background: var(--bg);
-  color: #f1fff4;
-  font-size: 14px;
-}
-
-.field input:focus {
-  border-color: var(--green);
-}
-
-.password-row {
-  display: flex;
-  gap: 8px;
-}
-
-.password-row input {
-  flex: 1;
-  min-width: 0;
-}
-
-.show-password {
-  padding: 0 11px;
-  background: #102116;
-  color: var(--green);
-  border: 1px solid #285536;
-  border-radius: 8px;
-  font-size: 11px;
-}
-
-.forgot-row {
-  display: flex;
-  justify-content: flex-end;
-  margin: -3px 0 12px;
-}
-
-.link {
-  background: transparent;
-  border: 0;
-  color: var(--green);
-  padding: 5px 0;
-  font-size: 12px;
-}
-
-.primary, .google {
-  width: 100%;
-  padding: 13px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.primary {
-  margin-top: 6px;
-  background: var(--green);
-  border: 1px solid var(--green);
-  color: var(--bg);
-}
-
-.google {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: #fff;
-  border: 1px solid #dadce0;
-  color: #202124;
-}
-
-.google-mark {
-  font-size: 19px;
-  font-weight: 800;
-  color: #4285f4;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 18px 0;
-  color: #718775;
-  font-size: 10px;
-}
-
-.divider::before, .divider::after {
-  content: "";
-  height: 1px;
-  flex: 1;
-  background: var(--border);
-}
-
-.notice {
-  display: none;
-  padding: 11px;
-  margin-bottom: 13px;
-  border: 1px solid #285536;
-  border-radius: 8px;
-  color: #c7d8ca;
-  font-size: 12px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-
-.notice.visible {
-  display: block;
-}
-
-.terms {
-  color: #819786;
-  font-size: 11px;
-  line-height: 1.6;
-  text-align: center;
-  margin: 17px 0 0;
-}
-
-.footer {
-  margin: 17px 0 0;
-  color: #718775;
-  text-align: center;
-  font-size: 10px;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-@media (max-width: 480px) {
-  .auth-card {
-    padding: 15px;
-  }
-}
-</style>
-</head>
-
-<body>
-
+<!-- SECTION 1: IAN XAU AI PRO PLUS AUTH -->
 <section id="ian-auth-section">
+  <style>
+    #ian-auth-section {
+      --ian-green: #39ff78;
+      --ian-bg: #030603;
+      --ian-panel: #0b100c;
+      --ian-border: #26362a;
+      background: var(--ian-bg);
+      color: #f3f7f3;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+      box-sizing: border-box;
+    }
 
-  <header class="topbar">
-    <div>
-      <div class="brand">IAN XAU AI</div>
-      <div class="tagline">RULE-BASED XAUUSD TRADING SYSTEM</div>
-    </div>
-    <div class="badge">PRO PLUS</div>
-  </header>
+    #ian-auth-section * {
+      box-sizing: border-box;
+    }
 
-  <h1 class="heading" id="ianAuthHeading">Welcome back.</h1>
+    #ian-auth-section .ian-shell {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+    }
 
-  <p class="description" id="ianAuthDescription">
-    Sign in to access your IAN XAU AI trading dashboard.
-  </p>
+    #ian-auth-section .ian-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 50px;
+    }
 
-  <div class="auth-card">
+    #ian-auth-section .ian-brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
 
-    <div class="tabs">
-      <button type="button" class="tab active" id="ianLoginTab">
-        LOGIN
-      </button>
-      <button type="button" class="tab" id="ianSignupTab">
-        CREATE ACCOUNT
-      </button>
-    </div>
+    #ian-auth-section .ian-logo {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ian-green);
+      border-radius: 12px;
+      color: var(--ian-green);
+      font-size: 19px;
+      box-shadow: 0 0 18px #39ff781c;
+    }
 
-    <div id="ianAuthNotice"
-         class="notice"
-         role="status"
-         aria-live="polite"></div>
+    #ian-auth-section .ian-status {
+      color: #b2c3b4;
+      font-size: 11px;
+      border: 1px solid var(--ian-border);
+      border-radius: 30px;
+      padding: 9px 12px;
+      white-space: nowrap;
+    }
 
-    <form id="ianAuthForm">
+    #ian-auth-section .ian-status span {
+      color: var(--ian-green);
+      margin-right: 5px;
+    }
 
-      <div class="field" id="ianNameField" hidden>
-        <label for="ianFullName">Full name</label>
-        <input id="ianFullName"
-               name="fullName"
-               type="text"
-               autocomplete="name"
-               placeholder="Enter your full name">
+    #ian-auth-section .ian-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      align-items: center;
+      gap: 55px;
+    }
+
+    #ian-auth-section .ian-intro {
+      padding: 12px 0;
+    }
+
+    #ian-auth-section .ian-eyebrow {
+      display: inline-block;
+      color: var(--ian-green);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      border: 1px solid #39ff783b;
+      background: #39ff780b;
+      border-radius: 5px;
+      padding: 9px 11px;
+      margin-bottom: 23px;
+    }
+
+    #ian-auth-section .ian-intro h1 {
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.04;
+      letter-spacing: -2px;
+      margin: 0 0 20px;
+    }
+
+    #ian-auth-section .ian-intro h1 span {
+      color: var(--ian-green);
+    }
+
+    #ian-auth-section .ian-description {
+      color: #a4b2a6;
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 480px;
+    }
+
+    #ian-auth-section .ian-features {
+      display: grid;
+      gap: 15px;
+      margin-top: 32px;
+    }
+
+    #ian-auth-section .ian-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #d6e1d7;
+      font-size: 13px;
+    }
+
+    #ian-auth-section .ian-check {
+      color: var(--ian-green);
+      border: 1px solid #39ff7840;
+      border-radius: 8px;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    #ian-auth-section .ian-card {
+      background: linear-gradient(145deg, #101710, #080b08);
+      border: 1px solid var(--ian-border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 70px #0008;
+      width: 100%;
+    }
+
+    #ian-auth-section .ian-card h2 {
+      font-size: 25px;
+      margin: 0 0 9px;
+    }
+
+    #ian-auth-section .ian-card-subtitle {
+      color: #9ca99e;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    #ian-auth-section .ian-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      background: #050805;
+      padding: 5px;
+      border: 1px solid #202b22;
+      border-radius: 10px;
+      margin-bottom: 22px;
+    }
+
+    #ian-auth-section .ian-tabs button {
+      padding: 12px 8px;
+      border: 0;
+      border-radius: 7px;
+      color: #a9b5aa;
+      background: transparent;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #ian-auth-section .ian-tabs button.active {
+      background: #17351e;
+      color: var(--ian-green);
+    }
+
+    #ian-auth-section .ian-field {
+      margin-bottom: 17px;
+    }
+
+    #ian-auth-section .ian-field label {
+      display: block;
+      font-size: 12px;
+      color: #d5ded6;
+      margin-bottom: 9px;
+    }
+
+    #ian-auth-section .ian-field input {
+      display: block;
+      width: 100%;
+      min-height: 47px;
+      background: #050805;
+      color: #fff;
+      border: 1px solid #2b392e;
+      border-radius: 9px;
+      padding: 13px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #ian-auth-section .ian-field input:focus {
+      border-color: var(--ian-green);
+      box-shadow: 0 0 0 3px #39ff7814;
+    }
+
+    #ian-auth-section .ian-password-wrap {
+      position: relative;
+    }
+
+    #ian-auth-section .ian-password-wrap input {
+      padding-right: 72px;
+    }
+
+    #ian-auth-section .ian-eye {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 0;
+      color: var(--ian-green);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    #ian-auth-section .ian-forgot {
+      display: block;
+      text-align: right;
+      color: var(--ian-green);
+      font-size: 12px;
+      text-decoration: none;
+      margin: -3px 0 19px;
+    }
+
+    #ian-auth-section .ian-primary {
+      display: block;
+      width: 100%;
+      min-height: 49px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--ian-green);
+      color: #061008;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+
+    #ian-auth-section .ian-primary:hover {
+      opacity: .88;
+    }
+
+    #ian-auth-section .ian-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #718073;
+      font-size: 11px;
+      margin: 22px 0;
+    }
+
+    #ian-auth-section .ian-divider::before,
+    #ian-auth-section .ian-divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: #273229;
+    }
+
+    #ian-auth-section .ian-google {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #344237;
+      border-radius: 9px;
+      background: #0a0e0a;
+      color: #e5ece6;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #ian-auth-section .ian-google span {
+      margin-right: 9px;
+      font-size: 17px;
+      color: #fff;
+    }
+
+    #ian-auth-section .ian-terms {
+      color: #849186;
+      font-size: 11px;
+      line-height: 1.7;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #ian-auth-section .ian-terms a {
+      color: var(--ian-green);
+      text-decoration: none;
+    }
+
+    #ian-auth-section .ian-footer {
+      text-align: center;
+      color: #68766a;
+      font-size: 11px;
+      margin-top: 48px;
+    }
+
+    @media (max-width: 800px) {
+      #ian-auth-section .ian-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        max-width: 480px;
+        margin: auto;
+      }
+
+      #ian-auth-section .ian-topbar {
+        margin-bottom: 32px;
+      }
+
+      #ian-auth-section .ian-intro h1 {
+        font-size: 43px;
+      }
+
+      #ian-auth-section .ian-intro {
+        padding: 0;
+      }
+
+      #ian-auth-section .ian-features {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      #ian-auth-section .ian-card {
+        padding: 22px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #ian-auth-section .ian-status {
+        font-size: 9px;
+        padding: 8px;
+      }
+
+      #ian-auth-section .ian-brand {
+        font-size: 13px;
+      }
+    }
+  </style>
+
+  <div class="ian-shell">
+    <header class="ian-topbar">
+      <div class="ian-brand">
+        <div class="ian-logo">IX</div>
+        <div>IAN XAU AI</div>
       </div>
 
-      <div class="field">
-        <label for="ianEmail">Email address</label>
-        <input id="ianEmail"
-               name="email"
-               type="email"
-               autocomplete="email"
-               required
-               placeholder="Enter your email address">
+      <div class="ian-status">
+        <span>●</span> RULE-BASED SYSTEM
       </div>
+    </header>
 
-      <div class="field">
-        <label for="ianPassword">Password</label>
+    <div class="ian-layout">
+      <div class="ian-intro">
+        <div class="ian-eyebrow">XAUUSD TRADING SYSTEM</div>
 
-        <div class="password-row">
-          <input id="ianPassword"
-                 name="password"
-                 type="password"
-                 autocomplete="current-password"
-                 minlength="8"
-                 required
-                 placeholder="Enter your password">
+        <h1>
+          READ THE MARKET.<br>
+          <span>FOLLOW THE RULES.</span>
+        </h1>
 
-          <button type="button"
-                  class="show-password"
-                  id="ianTogglePassword">
-            SHOW
-          </button>
+        <p class="ian-description">
+          Access your IAN XAU AI client area to review your account,
+          explore the strategy, and manage your membership.
+          Trading involves risk. No profits are guaranteed.
+        </p>
+
+        <div class="ian-features">
+          <div class="ian-feature">
+            <div class="ian-check">✓</div>
+            Asia High and Asia Low levels
+          </div>
+
+          <div class="ian-feature">
+            <div class="ian-check">✓</div>
+            Previous Day High and Low analysis
+          </div>
+
+          <div class="ian-feature">
+            <div class="ian-check">✓</div>
+            Confirmation-based strategy framework
+          </div>
         </div>
       </div>
 
-      <div class="forgot-row" id="ianForgotRow">
-        <button type="button"
-                class="link"
-                id="ianForgotPassword">
-          Forgot password?
+      <div class="ian-card">
+        <h2 id="ianAuthTitle">Welcome back</h2>
+
+        <div class="ian-card-subtitle" id="ianAuthSubtitle">
+          Sign in to access your client account.
+        </div>
+
+        <div class="ian-tabs">
+          <button
+            type="button"
+            id="loginTab"
+            class="active"
+            onclick="showAuthMode('login')">
+            Login
+          </button>
+
+          <button
+            type="button"
+            id="signupTab"
+            onclick="showAuthMode('signup')">
+            Create Account
+          </button>
+        </div>
+
+        <form id="authForm">
+          <div class="ian-field" id="ianNameField" style="display:none">
+            <label for="fullName">Full name</label>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              autocomplete="name"
+              placeholder="Enter your full name">
+          </div>
+
+          <div class="ian-field">
+            <label for="email">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required>
+          </div>
+
+          <div class="ian-field">
+            <label for="password">Password</label>
+
+            <div class="ian-password-wrap">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required>
+
+              <button
+                type="button"
+                class="ian-eye"
+                id="ianTogglePassword">
+                SHOW
+              </button>
+            </div>
+          </div>
+
+          <a
+            href="#"
+            class="ian-forgot"
+            id="ianForgotPassword">
+            Forgot password?
+          </a>
+
+          <button
+            type="submit"
+            class="ian-primary"
+            id="ianSubmitButton">
+            Login Securely
+          </button>
+        </form>
+
+        <div class="ian-divider">OR CONTINUE WITH</div>
+
+        <button
+          type="button"
+          class="ian-google"
+          id="ianGoogleButton">
+          <span>G</span> Continue with Google
         </button>
+
+        <div class="ian-terms">
+          By continuing, you agree to use this service responsibly.
+          Trading involves financial risk and losses are possible.
+        </div>
       </div>
+    </div>
 
-      <button type="submit"
-              class="primary"
-              id="ianSubmitButton">
-        LOGIN TO DASHBOARD
-      </button>
-
-    </form>
-
-    <div class="divider">OR CONTINUE WITH</div>
-
-    <button type="button"
-            class="google"
-            id="ianGoogleButton">
-      <span class="google-mark" aria-hidden="true">G</span>
-      Continue with Google
-    </button>
-
-    <p class="terms">
-      Trading involves risk. No profits are guaranteed.
-    </p>
-
+    <footer class="ian-footer">
+      IAN XAU AI · XAUUSD Trading Tools · Trading risk applies
+    </footer>
   </div>
 
-  <p class="footer">IAN XAU AI · TRADING SYSTEM ACCESS</p>
+  <script>
+    (() => {
+      const root = document.getElementById("ian-auth-section");
+      if (!root) return;
 
-</section>
+      const nameField = root.querySelector("#fullName");
+      const nameWrap = root.querySelector("#ianNameField");
+      const loginTab = root.querySelector("#loginTab");
+      const signupTab = root.querySelector("#signupTab");
+      const title = root.querySelector("#ianAuthTitle");
+      const subtitle = root.querySelector("#ianAuthSubtitle");
+      const submit = root.querySelector("#ianSubmitButton");
+      const password = root.querySelector("#password");
+      const eye = root.querySelector("#ianTogglePassword");
 
-<script>
-(function () {
-  const root = document.getElementById("ian-auth-section");
+      let mode = "login";
 
-  if (!root || root.dataset.initialized === "true") return;
-  root.dataset.initialized = "true";
+      window.showAuthMode = function(nextMode) {
+        mode = nextMode === "signup" ? "signup" : "login";
 
-  const $ = id => root.querySelector("#" + id);
+        loginTab.classList.toggle("active", mode === "login");
+        signupTab.classList.toggle("active", mode === "signup");
 
-  let mode = "login";
-  let busy = false;
+        nameWrap.style.display = mode === "signup" ? "block" : "none";
+        nameField.required = mode === "signup";
 
-  function showNotice(message, error = false) {
-    const notice = $("ianAuthNotice");
+        password.autocomplete =
+          mode === "signup" ? "new-password" : "current-password";
 
-    notice.textContent = message;
-    notice.style.borderColor = error ? "#8e4545" : "#285536";
-    notice.style.color = error ? "#ffb6b6" : "#c7d8ca";
-    notice.classList.add("visible");
-  }
+        title.textContent =
+          mode === "signup" ? "Create your account" : "Welcome back";
 
-  function clearNotice() {
-    const notice = $("ianAuthNotice");
-    notice.textContent = "";
-    notice.classList.remove("visible");
-  }
-
-  function getSupabase() {
-    const client = window.ianSupabase;
-
-    if (!client || !client.auth) {
-      throw new Error(
-        "Supabase is not connected. Connect your existing Supabase client first."
-      );
-    }
-
-    return client;
-  }
-
-  function setBusy(value) {
-    busy = value;
-
-    $("ianSubmitButton").disabled = value;
-    $("ianGoogleButton").disabled = value;
-    $("ianForgotPassword").disabled = value;
-
-    if (value) {
-      $("ianSubmitButton").textContent = "PLEASE WAIT...";
-    } else {
-      $("ianSubmitButton").textContent =
-        mode === "signup" ? "CREATE ACCOUNT" : "LOGIN TO DASHBOARD";
-    }
-  }
-
-  window.showAuthMode = function (nextMode) {
-    if (busy) return;
-
-    mode = nextMode === "signup" ? "signup" : "login";
-
-    const signup = mode === "signup";
-
-    $("ianLoginTab").classList.toggle("active", !signup);
-    $("ianSignupTab").classList.toggle("active", signup);
-
-    $("ianNameField").hidden = !signup;
-    $("ianFullName").required = signup;
-    $("ianForgotRow").hidden = signup;
-
-    $("ianPassword").autocomplete =
-      signup ? "new-password" : "current-password";
-
-    $("ianAuthHeading").textContent =
-      signup ? "Create your account." : "Welcome back.";
-
-    $("ianAuthDescription").textContent = signup
-      ? "Create an account to access your IAN XAU AI dashboard."
-      : "Sign in to access your IAN XAU AI trading dashboard.";
-
-    clearNotice();
-    setBusy(false);
-  };
-
-  $("ianLoginTab").addEventListener("click", function () {
-    window.showAuthMode("login");
-  });
-
-  $("ianSignupTab").addEventListener("click", function () {
-    window.showAuthMode("signup");
-  });
-
-  $("ianTogglePassword").addEventListener("click", function () {
-    const input = $("ianPassword");
-    const show = input.type === "password";
-
-    input.type = show ? "text" : "password";
-    this.textContent = show ? "HIDE" : "SHOW";
-  });
-
-  $("ianAuthForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    if (busy) return;
-
-    clearNotice();
-
-    const email = $("ianEmail").value.trim();
-    const password = $("ianPassword").value;
-    const fullName = $("ianFullName").value.trim();
-
-    if (password.length < 8) {
-      showNotice("Your password must contain at least 8 characters.", true);
-      return;
-    }
-
-    setBusy(true);
-
-    try {
-      /*
-       * Preserve the existing authentication handler if your website
-       * already provides one.
-       */
-      if (typeof window.ianHandleAuthSubmit === "function") {
-        await window.ianHandleAuthSubmit({
-          mode,
-          fullName,
-          email,
-          password
-        });
-
-        return;
-      }
-
-      /*
-       * Fallback to the existing Supabase client.
-       */
-      const supabase = getSupabase();
-      let result;
-
-      if (mode === "signup") {
-        result = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName
-            },
-            emailRedirectTo: window.location.origin
-          }
-        });
-      } else {
-        result = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-      }
-
-      if (result.error) throw result.error;
-
-      if (mode === "signup" && !result.data.session) {
-        showNotice(
-          "Account created. Check your email to confirm your account."
-        );
-      } else {
-        showNotice(
+        subtitle.textContent =
           mode === "signup"
-            ? "Account created successfully."
-            : "Login successful."
-        );
-      }
+            ? "Register to access your client area."
+            : "Sign in to access your client account.";
 
-    } catch (error) {
-      showNotice(error.message || "Authentication failed.", true);
-    } finally {
-      setBusy(false);
-    }
-  });
+        submit.textContent =
+          mode === "signup" ? "Create Account" : "Login Securely";
+      };
 
-  $("ianGoogleButton").addEventListener("click", async function () {
-    if (busy) return;
-
-    clearNotice();
-    setBusy(true);
-
-    try {
-      const supabase = getSupabase();
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin
-        }
+      eye.addEventListener("click", () => {
+        const show = password.type === "password";
+        password.type = show ? "text" : "password";
+        eye.textContent = show ? "HIDE" : "SHOW";
       });
 
-      if (error) throw error;
+      root.querySelector("#ianForgotPassword").addEventListener(
+        "click",
+        (event) => {
+          event.preventDefault();
 
-      showNotice("Connecting to Google...");
-
-    } catch (error) {
-      showNotice(error.message || "Google sign-in failed.", true);
-      setBusy(false);
-    }
-  });
-
-  $("ianForgotPassword").addEventListener("click", async function () {
-    if (busy) return;
-
-    clearNotice();
-
-    const email = $("ianEmail").value.trim();
-
-    if (!email) {
-      showNotice("Enter your email address first.", true);
-      $("ianEmail").focus();
-      return;
-    }
-
-    setBusy(true);
-
-    try {
-      if (typeof window.ianPasswordReset === "function") {
-        await window.ianPasswordReset(email);
-      } else {
-        const supabase = getSupabase();
-
-        const { error } = await supabase.auth.resetPasswordForEmail(
-          email,
-          {
-            redirectTo: window.location.origin
+          if (typeof window.ianPasswordReset === "function") {
+            window.ianPasswordReset();
+          } else {
+            alert("Password reset will be available when Section 4 is connected.");
           }
-        );
+        }
+      );
 
-        if (error) throw error;
-      }
+      root.querySelector("#ianGoogleButton").addEventListener(
+        "click",
+        async () => {
+          if (!window.ianSupabase) {
+            alert("Google login is not connected yet.");
+            return;
+          }
 
-      showNotice("If the account exists, a password reset email will be sent.");
+          try {
+            const { error } = await window.ianSupabase.auth.signInWithOAuth({
+              provider: "google",
+              options: {
+                redirectTo: window.location.origin
+              }
+            });
 
-    } catch (error) {
-      showNotice(error.message || "Password reset failed.", true);
-    } finally {
-      setBusy(false);
+            if (error) throw error;
+          } catch (error) {
+            alert(error.message || "Google sign-in failed.");
+          }
+        }
+      );
+
+      // Keep the name field hidden in login mode.
+      window.showAuthMode("login");
+    })();
+  </script>
+</section>
+<!-- ================= SECTION 2: TRADING DASHBOARD ================= -->
+<section id="dashboard" class="ian-dashboard">
+  <style>
+    .ian-dashboard {
+      background: #030603;
+      color: #eaffef;
+      padding: 28px 16px 40px;
+      font-family: Arial, sans-serif;
     }
-  });
 
-  window.showAuthMode("login");
-})();
-</script><!-- SECTION 2: IAN XAU AI PRO PLUS DASHBOARD -->
-<style>
-#ian-dashboard {
-  background: #030603;
-  color: #e9f5eb;
-  font-family: Arial, sans-serif;
-  width: 100%;
-  padding: 14px;
-  margin: 0 auto;
-  border: 1px solid #1d3824;
-  border-radius: 14px;
-  box-sizing: border-box;
-}
+    .ian-dashboard * { box-sizing: border-box; }
 
-#ian-dashboard *,
-#ian-dashboard *::before,
-#ian-dashboard *::after {
-  box-sizing: border-box;
-}
-
-#ian-dashboard .dash-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-#ian-dashboard .label {
-  color: #94ad99;
-  font-size: 11px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-#ian-dashboard .small {
-  color: #9caf9f;
-  font-size: 12px;
-  line-height: 1.6;
-  margin-top: 7px;
-}
-
-#ian-dashboard .value {
-  color: #39ff78;
-  font-size: 23px;
-  font-weight: bold;
-  overflow-wrap: anywhere;
-}
-
-#ian-dashboard .status {
-  color: #ffc76b;
-  font-size: 12px;
-  margin-top: 8px;
-}
-
-#ian-dashboard .green {
-  color: #39ff78;
-}
-
-#ian-dashboard .warning {
-  color: #ffc76b;
-}
-
-#ian-dashboard .muted {
-  color: #9caf9f;
-}
-
-#ian-dashboard .grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 16px;
-}
-
-#ian-dashboard .card {
-  min-width: 0;
-  padding: 14px;
-  background: #09110b;
-  border: 1px solid #1d3824;
-  border-radius: 12px;
-}
-
-#ian-dashboard button,
-#ian-dashboard select {
-  width: 100%;
-  padding: 11px;
-  margin-top: 10px;
-  border: 1px solid #285536;
-  border-radius: 8px;
-  background: #102116;
-  color: #39ff78;
-  font-weight: bold;
-  font-size: 12px;
-}
-
-#ian-dashboard button {
-  cursor: pointer;
-}
-
-#ian-dashboard button:disabled {
-  opacity: 0.6;
-}
-
-#ian-dashboard select {
-  cursor: pointer;
-}
-
-#ian-dashboard .section-title {
-  margin: 22px 0 10px;
-  color: #39ff78;
-  font-size: 18px;
-}
-
-#ian-dashboard .chart {
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
-  background: #080d09;
-  border: 1px solid #1d3824;
-  border-radius: 12px;
-}
-
-#ian-dashboard .chart iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-#ian-dashboard .level {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid #1b2a1e;
-  font-size: 12px;
-}
-
-#ian-dashboard .level:last-child {
-  border-bottom: 0;
-}
-
-#ian-dashboard .level strong {
-  text-align: right;
-  overflow-wrap: anywhere;
-}
-
-#ian-dashboard .strategy {
-  padding: 10px 12px;
-  margin: 9px 0;
-  background: #0b160e;
-  border-left: 2px solid #39ff78;
-  border-radius: 0 8px 8px 0;
-}
-
-#ian-dashboard .strategy strong {
-  font-size: 13px;
-}
-
-#ian-dashboard .monitor-pill {
-  border: 1px solid #285536;
-  border-radius: 20px;
-  padding: 8px 11px;
-  color: #39ff78;
-  font-size: 10px;
-}
-
-@media (max-width: 480px) {
-  #ian-dashboard {
-    padding: 10px;
-    border-radius: 10px;
-  }
-
-  #ian-dashboard .grid {
-    grid-template-columns: 1fr;
-    gap: 9px;
-  }
-
-  #ian-dashboard .card {
-    padding: 12px;
-  }
-
-  #ian-dashboard .chart {
-    height: 340px;
-  }
-
-  #ian-dashboard .section-title {
-    margin-top: 18px;
-  }
-}
-</style>
-
-<div id="ian-dashboard">
-  <div class="dash-header">
-    <div>
-      <div class="label">IAN XAU AI</div>
-      <h2 style="margin:0 0 6px;font-size:23px">
-        Trading Dashboard
-      </h2>
-      <div class="small">RULE-BASED XAUUSD TRADING SYSTEM</div>
-    </div>
-    <div class="monitor-pill">MARKET MONITOR</div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Trading Instrument</div>
-      <div class="value">XAUUSD</div>
-      <div class="small">Indicative gold spot price · USD per ounce</div>
-      <div id="ianGoldPrice" class="value"
-        style="font-size:27px;margin-top:12px">Loading...</div>
-      <div id="ianGoldStatus" class="status"
-        role="status" aria-live="polite">Connecting...</div>
-      <button type="button" id="ianRefreshGold">
-        REFRESH GOLD PRICE
-      </button>
-      <div class="small">
-        Indicative feed; your broker's quote may differ.
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="label">Chart Timeframe</div>
-      <div id="ianCurrentTimeframe" class="value">M15</div>
-      <label for="ianTimeframe" class="small">Choose timeframe</label>
-      <select id="ianTimeframe">
-        <option value="1">M1</option>
-        <option value="5">M5</option>
-        <option value="15" selected>M15</option>
-        <option value="30">M30</option>
-        <option value="60">H1</option>
-        <option value="240">H4</option>
-        <option value="D">D1</option>
-      </select>
-      <div class="small">
-        Changes the displayed chart only, not MT5.
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="label">Bot Connection</div>
-      <div class="value" style="font-size:18px">NOT CONNECTED</div>
-      <div class="status">MT5 connection not configured</div>
-      <div class="small">
-        This website cannot start or monitor an MT5 EA until a
-        secure backend connection is implemented.
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="label">Market Feed</div>
-      <div id="ianFeedState" class="value"
-        style="font-size:18px">CHECKING</div>
-      <div class="small">Last successful update:</div>
-      <div id="ianGoldUpdated" class="small">Not updated yet</div>
-      <div class="small">Refreshes automatically every 60 seconds.</div>
-    </div>
-  </div>
-
-  <h3 class="section-title">Live Gold Chart</h3>
-  <div class="chart">
-    <iframe
-      id="ianTradingViewChart"
-      title="XAUUSD TradingView chart"
-      src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=1&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1"
-      loading="lazy"
-      allowfullscreen>
-    </iframe>
-  </div>
-  <div class="small">
-    TradingView chart. Its quote may differ from your broker.
-  </div>
-
-  <h3 class="section-title" id="ianStrategy">Strategy Overview</h3>
-  <div class="card">
-    <div class="strategy">
-      <strong>1. Asia High / Asia Low</strong>
-      <div class="small">
-        Requires historical candles and a defined session timezone.
-      </div>
-    </div>
-    <div class="strategy">
-      <strong>2. PDH / PDL</strong>
-      <div class="small">
-        Previous-day high and low require historical price data.
-      </div>
-    </div>
-    <div class="strategy">
-      <strong>3. Entry Confirmation</strong>
-      <div class="small">
-        A level touch alone does not confirm a trade entry.
-      </div>
-    </div>
-    <div class="strategy">
-      <strong>4. Risk Management</strong>
-      <div class="small">
-        Position sizing, stop-loss, targets, spread limits and
-        daily loss limits should be defined before trading.
-      </div>
-    </div>
-  </div>
-
-  <h3 class="section-title">Market Levels</h3>
-  <div class="card">
-    <div class="level">
-      <span class="muted">Asia High</span>
-      <strong id="ianAsiaHigh">Not connected</strong>
-    </div>
-    <div class="level">
-      <span class="muted">Asia Low</span>
-      <strong id="ianAsiaLow">Not connected</strong>
-    </div>
-    <div class="level">
-      <span class="muted">Previous Day High (PDH)</span>
-      <strong id="ianPDH">Not connected</strong>
-    </div>
-    <div class="level">
-      <span class="muted">Previous Day Low (PDL)</span>
-      <strong id="ianPDL">Not connected</strong>
-    </div>
-    <div class="small">
-      These values need a historical market-data feed and
-      session calculations.
-    </div>
-  </div>
-
-  <h3 class="section-title">System Monitor</h3>
-  <div class="card">
-    <div class="level">
-      <span class="muted">Gold-price endpoint</span>
-      <strong id="ianEndpointStatus" class="warning">Checking</strong>
-    </div>
-    <div class="level">
-      <span class="muted">MT5 / Exness</span>
-      <strong class="warning">Not connected</strong>
-    </div>
-    <div class="level">
-      <span class="muted">Automated execution</span>
-      <strong class="warning">Not configured</strong>
-    </div>
-    <div class="level">
-      <span class="muted">Payment verification</span>
-      <strong class="warning">Separate integration required</strong>
-    </div>
-  </div>
-</div>
-
-<script>
-(function () {
-  const root = document.getElementById("ian-dashboard");
-
-  if (!root || root.dataset.initialized === "true") return;
-  root.dataset.initialized = "true";
-
-  const $ = id => root.querySelector("#" + id);
-
-  const priceEl = $("ianGoldPrice");
-  const statusEl = $("ianGoldStatus");
-  const feedEl = $("ianFeedState");
-  const updatedEl = $("ianGoldUpdated");
-  const endpointEl = $("ianEndpointStatus");
-  const refreshBtn = $("ianRefreshGold");
-  const timeframeSelect = $("ianTimeframe");
-  const timeframeLabel = $("ianCurrentTimeframe");
-  const chart = $("ianTradingViewChart");
-
-  let busy = false;
-
-  async function refreshGoldPrice() {
-    if (busy) return;
-
-    busy = true;
-    refreshBtn.disabled = true;
-    refreshBtn.textContent = "REFRESHING...";
-
-    try {
-      const response = await fetch("/api/market/gold", {
-        method: "GET",
-        headers: { Accept: "application/json" },
-        cache: "no-store"
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP " + response.status);
-      }
-
-      const data = await response.json();
-      const price = Number(data.price);
-
-      if (!Number.isFinite(price) || price <= 0) {
-        throw new Error("Invalid gold price");
-      }
-
-      priceEl.textContent = "$" + price.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-
-      statusEl.textContent = "PRICE RECEIVED";
-      statusEl.className = "status green";
-      feedEl.textContent = "CONNECTED";
-      feedEl.className = "value";
-      feedEl.style.fontSize = "18px";
-      endpointEl.textContent = "Connected";
-      endpointEl.className = "green";
-      updatedEl.textContent = new Date().toLocaleString();
-
-    } catch (error) {
-      console.error("Gold price refresh failed:", error);
-
-      statusEl.textContent = "PRICE UNAVAILABLE — RETRYING";
-      statusEl.className = "status warning";
-      feedEl.textContent = "UNAVAILABLE";
-      feedEl.className = "value warning";
-      feedEl.style.fontSize = "18px";
-      endpointEl.textContent = "Unavailable";
-      endpointEl.className = "warning";
-
-    } finally {
-      busy = false;
-      refreshBtn.disabled = false;
-      refreshBtn.textContent = "REFRESH GOLD PRICE";
+    .ian-dashboard .dash-wrap {
+      max-width: 1200px;
+      margin: auto;
     }
-  }
 
-  timeframeSelect.addEventListener("change", function () {
-    const labels = {
-      "1": "M1",
-      "5": "M5",
-      "15": "M15",
-      "30": "M30",
-      "60": "H1",
-      "240": "H4",
-      "D": "D1"
-    };
+    .ian-dashboard .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
 
-    const interval = timeframeSelect.value;
-    timeframeLabel.textContent = labels[interval] || interval;
+    .ian-dashboard .dash-title {
+      font-size: clamp(23px, 5vw, 34px);
+      font-weight: 900;
+      margin: 0 0 8px;
+      letter-spacing: -1px;
+    }
 
-    const url = new URL(chart.src);
-    url.searchParams.set("interval", interval);
-    chart.src = url.toString();
-  });
+    .ian-dashboard .green { color: #39ff78; }
 
-  refreshBtn.addEventListener("click", refreshGoldPrice);
+    .ian-dashboard .muted {
+      color: #8da994;
+      font-size: 13px;
+      line-height: 1.6;
+    }
 
-  refreshGoldPrice();
-  window.setInterval(refreshGoldPrice, 60000);
-})();
-</script>
-<!-- SECTION 2 END -->
+    .ian-dashboard .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #205c32;
+      background: #07170b;
+      color: #72ff9b;
+      border-radius: 30px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 800;
+    }
 
-</body>
-  </html>
+    .ian-dashboard .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #39ff78;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .ian-dashboard .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .ian-dashboard .dash-card {
+      background: linear-gradient(145deg, #0b130c, #050805);
+      border: 1px solid #1b3320;
+      border-radius: 15px;
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .ian-dashboard .card-label {
+      color: #91a995;
+      font-size: 12px;
+      margin-bottom: 13px;
+    }
+
+    .ian-dashboard .card-value {
+      font-size: clamp(19px, 3vw, 27px);
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .ian-dashboard .card-note {
+      color: #829887;
+      font-size: 11px;
+      margin-top: 9px;
+    }
+
+    .ian-dashboard .dash-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .ian-dashboard .panel {
+      background: #070b07;
+      border: 1px solid #1b3320;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      min-width: 0;
+    }
+
+    .ian-dashboard .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .ian-dashboard .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .ian-dashboard .chart-frame {
+      width: 100%;
+      height: 440px;
+      border: 1px solid #17291b;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #030603;
+    }
+
+    .ian-dashboard .chart-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .ian-dashboard .level-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #17251a;
+      padding: 13px 0;
+      font-size: 13px;
+    }
+
+    .ian-dashboard .level-row:last-child { border-bottom: 0; }
+
+    .ian-dashboard .level-name { color: #b7c8ba; }
+
+    .ian-dashboard .level-value {
+      color: #39ff78;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .ian-dashboard .info-box {
+      background: #0a160c;
+      border: 1px solid #1a3b22;
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .ian-dashboard .info-box strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .ian-dashboard .info-box p {
+      margin: 0;
+      color: #91a995;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .ian-dashboard .dash-btn {
+      display: inline-block;
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 9px;
+      border: 1px solid #39ff78;
+      background: #39ff78;
+      color: #031006;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 13px;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+
+    .ian-dashboard .dash-btn.secondary {
+      background: transparent;
+      color: #39ff78;
+    }
+
+    .ian-dashboard .disclaimer {
+      border: 1px solid #473b1a;
+      background: #171207;
+      color: #d9c88d;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .ian-dashboard .dash-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ian-dashboard .dash-main {
+        grid-template-columns: 1fr;
+      }
+
+      .ian-dashboard .chart-frame { height: 360px; }
+    }
+
+    @media (max-width: 380px) {
+      .ian-dashboard .dash-card { padding: 13px; }
+      .ian-dashboard .chart-frame { height: 300px; }
+    }
+  </style>
+
+  <div class="dash-wrap">
+    <div class="dash-top">
+      <div>
+        <p class="green" style="font-size:11px;font-weight:900;letter-spacing:3px;">
+          IAN XAU AI
+        </p>
+        <h2 class="dash-title">Trading <span class="green">Dashboard</span></h2>
+        <div class="muted">XAUUSD MARKET OVERVIEW · STRATEGY CONTROL CENTER</div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        MARKET DATA: CHART EMBED
+      </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="card-label">TRADING INSTRUMENT</div>
+        <div class="card-value">XAUUSD</div>
+        <div class="card-note">Gold against US Dollar</div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-label">CHART TIMEFRAME</div>
+        <div class="card-value">M15</div>
+        <div class="card-note">15-minute candles</div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-label">BOT STATUS</div>
+        <div class="card-value green">NOT CONNECTED</div>
+        <div class="card-note">No live MT5 connection confirmed</div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-label">ACCOUNT STATUS</div>
+        <div class="card-value">UNVERIFIED</div>
+        <div class="card-note">Access must be verified securely</div>
+      </div>
+    </div>
+
+    <div class="dash-main">
+      <!-- CHART -->
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">XAUUSD Live Chart</h3>
+            <span class="green" style="font-size:12px;font-weight:800;">TradingView</span>
+          </div>
+
+          <div class="chart-frame">
+            <iframe
+              title="XAUUSD TradingView Chart"
+              src="https://s.tradingview.com/widgetembed/?frameElementId=ian-xau-chart&symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=0&saveimage=0&toolbarbg=030603&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1&studies=%5B%5D"
+              loading="lazy"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <p class="muted" style="margin:12px 0 0;">
+            Chart data is supplied by TradingView. Your broker's prices may differ.
+          </p>
+        </div>
+
+        <!-- STRATEGY -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Strategy Overview</h3>
+            <span class="muted">Rule-based analysis</span>
+          </div>
+
+          <div class="info-box">
+            <strong>01 · Asia High / Asia Low</strong>
+            <p>Mark the Asian session range and monitor how price reacts around its boundaries.</p>
+          </div>
+
+          <div class="info-box">
+            <strong>02 · Previous Day High / Low</strong>
+            <p>Track PDH and PDL as reference levels. A level touch alone is not a trade signal.</p>
+          </div>
+
+          <div class="info-box">
+            <strong>03 · Confirmation before entry</strong>
+            <p>Wait for a defined reaction and apply risk limits. Do not enter solely because price crosses a level.</p>
+          </div>
+
+          <div class="info-box">
+            <strong>04 · Risk management</strong>
+            <p>Define stop-loss, take-profit, position size and maximum daily loss before trading.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">Key Market Levels</h3>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Asia High</span>
+            <span class="level-value">Not connected</span>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Asia Low</span>
+            <span class="level-value">Not connected</span>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Previous Day High</span>
+            <span class="level-value">Not connected</span>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Previous Day Low</span>
+            <span class="level-value">Not connected</span>
+          </div>
+
+          <p class="muted" style="margin:12px 0 0;">
+            These levels require a market-data calculation service before real values can appear.
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3 class="panel-title">System Monitor</h3>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Website interface</span>
+            <span class="level-value">DISPLAY</span>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">MT5 connection</span>
+            <span class="level-value">OFFLINE</span>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Automated signals</span>
+            <span class="level-value">NOT VERIFIED</span>
+          </div>
+
+          <div class="level-row">
+            <span class="level-name">Payment verification</span>
+            <span class="level-value">NOT CONNECTED</span>
+          </div>
+
+          <a class="dash-btn" href="#products">VIEW ACCESS PLANS</a>
+          <a class="dash-btn secondary" href="#strategy">EXPLORE STRATEGY</a>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Market Discipline</h3>
+          <p class="muted">
+            Protect capital first. Avoid chasing price, increasing risk after losses,
+            or treating an untested signal as guaranteed profit.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Risk notice:</strong> This dashboard is an interface, not proof of a working
+      trading bot. It does not execute trades or calculate live Asia/PDH/PDL levels.
+      Gold trading carries significant risk, and profits are not guaranteed.
+    </div>
+  </div>
+</section>
+<!-- =============== END SECTION 2 =============== -->
+  
+<!-- END SECTION 1 -->
