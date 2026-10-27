@@ -1,3 +1,4 @@
+
 const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
@@ -14,7 +15,9 @@ app.use(express.static(__dirname));
 */
 app.use(
     session({
-        secret: process.env.SESSION_SECRET || "CHANGE_THIS_SECRET",
+        secret:
+            process.env.SESSION_SECRET ||
+            "CHANGE_THIS_SECRET",
         resave: false,
         saveUninitialized: false,
         cookie: {
@@ -27,22 +30,9 @@ app.use(
 );
 
 /*
-  LOGIN DETAILS
-
-  Set these in Render Environment Variables:
-
-  ADMIN_EMAIL
-  ADMIN_PASSWORD
-
-  Example:
-  ADMIN_EMAIL = your@email.com
-  ADMIN_PASSWORD = your strong password
-
-  Do NOT put your real password inside this file.
-*/
-
-/*
-  LOGIN
+  ADMIN LOGIN
+  Configure ADMIN_EMAIL, ADMIN_PASSWORD and SESSION_SECRET
+  in Render Environment Variables.
 */
 app.post("/api/login", async (req, res) => {
     try {
@@ -64,7 +54,8 @@ app.post("/api/login", async (req, res) => {
         }
 
         const emailMatch =
-            email.toLowerCase().trim() === correctEmail.toLowerCase().trim();
+            email.toLowerCase().trim() ===
+            correctEmail.toLowerCase().trim();
 
         const passwordMatch = await bcrypt.compare(
             password,
@@ -81,15 +72,14 @@ app.post("/api/login", async (req, res) => {
             email: correctEmail
         };
 
-        res.json({
+        return res.json({
             success: true,
             message: "Login successful."
         });
-
     } catch (error) {
-        console.error(error);
+        console.error("Login error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             error: "Login failed."
         });
     }
@@ -105,7 +95,7 @@ app.get("/api/me", (req, res) => {
         });
     }
 
-    res.json({
+    return res.json({
         loggedIn: true,
         email: req.session.user.email
     });
@@ -115,16 +105,80 @@ app.get("/api/me", (req, res) => {
   LOGOUT
 */
 app.post("/api/logout", (req, res) => {
-    req.session.destroy(() => {
-        res.json({
+    req.session.destroy((error) => {
+        if (error) {
+            return res.status(500).json({
+                error: "Logout failed."
+            });
+        }
+
+        res.clearCookie("connect.sid");
+
+        return res.json({
             success: true
         });
     });
 });
 
 /*
+  GOLD MARKET DATA
+  Indicative XAU/USD spot price from XAUS.
+  This is not an Exness execution quote.
+*/
+app.get("/api/market/gold", async (req, res) => {
+    try {
+        const response = await fetch(
+            "https://xaus.com/api/v1/spot?compact=1",
+            {
+                headers: {
+                    Accept: "application/json"
+                },
+                signal: AbortSignal.timeout(10000)
+            }
+        );
+
+        if (!response.ok) {
+            return res.status(502).json({
+                error: "Gold price provider is unavailable."
+            });
+        }
+
+        const data = await response.json();
+
+        const price = Number(data.spot_usd_oz);
+
+        if (!Number.isFinite(price) || price <= 0) {
+            return res.status(502).json({
+                error: "The provider returned an invalid gold price."
+            });
+        }
+
+        res.set("Cache-Control", "public, max-age=60");
+
+        return res.json({
+            symbol: "XAUUSD",
+            price,
+            updatedAt: data.updated_at || null,
+            dataStatus: data.data_state?.status || "unknown",
+            source: "XAUS",
+            disclaimer:
+                "Indicative spot price; not an Exness trading quote."
+        });
+    } catch (error) {
+        console.error(
+            "Gold market data error:",
+            error.message
+        );
+
+        return res.status(502).json({
+            error: "Could not retrieve the gold price."
+        });
+    }
+});
+
+/*
   PAYSTACK PAYMENT
-  Legacy endpoint kept so the current website does not break.
+  Legacy endpoint retained for compatibility.
 */
 app.post("/api/paystack", async (req, res) => {
     try {
@@ -136,36 +190,39 @@ app.post("/api/paystack", async (req, res) => {
             });
         }
 
-        let amount;
+        const secretKey = process.env.PAYSTACK_SECRET_KEY;
 
-        if (product === "vip") {
-            amount = 1550000;
-        } else {
-            amount = 650000;
+        if (!secretKey) {
+            return res.status(500).json({
+                error: "Paystack is not configured."
+            });
         }
+
+        const amount =
+            product === "vip" ? 1550000 : 650000;
 
         const response = await fetch(
             "https://api.paystack.co/transaction/initialize",
             {
                 method: "POST",
                 headers: {
-                    Authorization:
-                        `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+                    Authorization: `Bearer ${secretKey}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    email: email,
-                    amount: amount,
+                    email,
+                    amount,
                     currency: "KES",
                     callback_url:
                         "https://ian-xau-bot.onrender.com/payment-success"
-                })
+                }),
+                signal: AbortSignal.timeout(15000)
             }
         );
 
         const data = await response.json();
 
-        if (!data.status) {
+        if (!response.ok || !data.status) {
             return res.status(400).json({
                 error:
                     data.message ||
@@ -173,67 +230,51 @@ app.post("/api/paystack", async (req, res) => {
             });
         }
 
-        res.json({
+        return res.json({
             url: data.data.authorization_url
         });
-
     } catch (error) {
-        console.error(error);
+        console.error("Paystack error:", error);
 
-        res.status(500).json({
-            error: "Server error."
+        return res.status(500).json({
+            error: "Payment service error."
         });
     }
 });
 
 /*
   PAYMENT SUCCESS PAGE
+  This page does not independently verify payment.
 */
 app.get("/payment-success", (req, res) => {
     res.send(`
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Received</title>
+<title>Payment Status</title>
 </head>
-
 <body style="
 background:#050505;
 color:white;
-font-family:Arial;
+font-family:Arial,sans-serif;
 text-align:center;
 padding:80px 20px;
 ">
-
-<h1 style="color:#dfff00;">
-Payment Received
-</h1>
-
-<p>
-We're checking your payment.
-</p>
-
-<p>
-Reference:
-${req.query.reference || "Not provided"}
-</p>
-
-<a
-href="/"
-style="
+<h1 style="color:#39ff78;">Payment Status</h1>
+<p>Your payment return was received.</p>
+<p>Payment must be verified separately before access is granted.</p>
+<a href="/" style="
 display:inline-block;
 margin-top:25px;
 padding:14px 22px;
-background:#dfff00;
+background:#39ff78;
 color:#050505;
 text-decoration:none;
 font-weight:bold;
 border-radius:8px;
-">
-BACK TO WEBSITE
-</a>
-
+">BACK TO WEBSITE</a>
 </body>
 </html>
 `);
@@ -245,3 +286,4 @@ BACK TO WEBSITE
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+  
