@@ -276,4 +276,317 @@
 })();
 </script>
 </section>
-<!-- END SECTION 1 -->
+<
+<style>
+#ian-dashboard {
+    background: #030603;
+    color: #e9f5eb;
+    font-family: Arial, sans-serif;
+    padding: 16px;
+    border: 1px solid #1d3824;
+    border-radius: 14px;
+}
+#ian-dashboard * { box-sizing: border-box; }
+#ian-dashboard .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+#ian-dashboard .card {
+    background: #09110b;
+    border: 1px solid #1d3824;
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 0;
+}
+#ian-dashboard .label {
+    color: #94ad99;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 9px;
+}
+#ian-dashboard .value {
+    color: #39ff78;
+    font-size: 23px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+#ian-dashboard .small {
+    color: #9caf9f;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 8px;
+}
+#ian-dashboard .status {
+    color: #ffc76b;
+    font-size: 12px;
+    margin-top: 8px;
+}
+#ian-dashboard button,
+#ian-dashboard select {
+    width: 100%;
+    background: #102116;
+    color: #39ff78;
+    border: 1px solid #285536;
+    border-radius: 8px;
+    padding: 11px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+#ian-dashboard button:disabled { opacity: 0.6; }
+#ian-dashboard .section-title {
+    color: #39ff78;
+    font-size: 19px;
+    margin: 24px 0 12px;
+}
+#ian-dashboard .chart {
+    width: 100%;
+    height: 420px;
+    border: 1px solid #1d3824;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #080d09;
+}
+#ian-dashboard .chart iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+#ian-dashboard .level {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #1b2a1e;
+    font-size: 13px;
+}
+#ian-dashboard .muted { color: #9caf9f; }
+#ian-dashboard .green { color: #39ff78; }
+#ian-dashboard .warning { color: #ffc76b; }
+#ian-dashboard .strategy {
+    border-left: 2px solid #39ff78;
+    background: #0b160e;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    margin: 10px 0;
+}
+@media (max-width: 480px) {
+    #ian-dashboard { padding: 10px; }
+    #ian-dashboard .grid { grid-template-columns: 1fr; }
+    #ian-dashboard .chart { height: 350px; }
+}
+</style>
+
+<div id="ian-dashboard">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+            <div class="label">IAN XAU AI</div>
+            <h2 style="margin:0 0 6px">Trading Dashboard</h2>
+            <div class="small">RULE-BASED XAUUSD TRADING SYSTEM</div>
+        </div>
+        <div style="border:1px solid #285536;border-radius:20px;padding:8px 12px;color:#39ff78;font-size:11px">
+            MARKET MONITOR
+        </div>
+    </div>
+
+    <div class="grid" style="margin-top:18px">
+
+        <div class="card">
+            <div class="label">Trading Instrument</div>
+            <div class="value">XAUUSD</div>
+            <div class="small">Indicative gold spot price · USD per ounce</div>
+            <div id="ianGoldPrice" class="value" style="font-size:27px;margin-top:12px">Loading...</div>
+            <div id="ianGoldStatus" class="status" role="status" aria-live="polite">Connecting...</div>
+            <button type="button" id="ianRefreshGold">REFRESH GOLD PRICE</button>
+            <div class="small">Source: XAUS. May differ from your Exness quote.</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Chart Timeframe</div>
+            <div id="ianCurrentTimeframe" class="value">M15</div>
+            <label for="ianTimeframe" class="small">Choose timeframe</label>
+            <select id="ianTimeframe">
+                <option value="1">M1</option>
+                <option value="5">M5</option>
+                <option value="15" selected>M15</option>
+                <option value="30">M30</option>
+                <option value="60">H1</option>
+                <option value="240">H4</option>
+                <option value="D">D1</option>
+            </select>
+            <div class="small">Changes the chart display only, not MT5.</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Bot Connection</div>
+            <div class="value" style="font-size:19px">NOT CONNECTED</div>
+            <div class="status">MT5 connection not configured</div>
+            <div class="small">This website cannot start or monitor an MT5 Expert Advisor yet.</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Market Feed</div>
+            <div id="ianFeedState" class="value" style="font-size:19px">CHECKING</div>
+            <div class="small">Last successful update:</div>
+            <div id="ianGoldUpdated" class="small">Not updated yet</div>
+            <div class="small">Automatic refresh every 60 seconds.</div>
+        </div>
+
+    </div>
+
+    <h3 class="section-title">Live Gold Chart</h3>
+    <div class="chart">
+        <iframe
+            id="ianTradingViewChart"
+            title="XAUUSD TradingView chart"
+            src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=1&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1"
+            loading="lazy"
+            allowfullscreen>
+        </iframe>
+    </div>
+    <div class="small">TradingView chart. Its quote may differ from the XAUS spot price.</div>
+
+    <h3 class="section-title" id="strategy">Strategy Overview</h3>
+    <div class="card">
+        <div class="strategy">
+            <strong>1. Asia High / Asia Low</strong>
+            <div class="small">Requires historical candles and a defined Asian-session timezone.</div>
+        </div>
+        <div class="strategy">
+            <strong>2. PDH / PDL</strong>
+            <div class="small">Previous-day high and low require historical OHLC data.</div>
+        </div>
+        <div class="strategy">
+            <strong>3. Confirmation</strong>
+            <div class="small">A level touch alone is not a confirmed trade entry.</div>
+        </div>
+        <div class="strategy">
+            <strong>4. Risk Management</strong>
+            <div class="small">Define position sizing, stop-loss, targets, spread limits and daily loss limits.</div>
+        </div>
+    </div>
+
+    <h3 class="section-title">Market Levels</h3>
+    <div class="card">
+        <div class="level"><span class="muted">Asia High</span><strong id="ianAsiaHigh">Not connected</strong></div>
+        <div class="level"><span class="muted">Asia Low</span><strong id="ianAsiaLow">Not connected</strong></div>
+        <div class="level"><span class="muted">Previous Day High (PDH)</span><strong id="ianPDH">Not connected</strong></div>
+        <div class="level"><span class="muted">Previous Day Low (PDL)</span><strong id="ianPDL">Not connected</strong></div>
+        <div class="small">These values require a historical market-data feed and session calculations.</div>
+    </div>
+
+    <h3 class="section-title">System Monitor</h3>
+    <div class="card">
+        <div class="level"><span class="muted">Gold-price endpoint</span><strong id="ianEndpointStatus" class="warning">Checking</strong></div>
+        <div class="level"><span class="muted">MT5 / Exness</span><strong class="warning">Not connected</strong></div>
+        <div class="level"><span class="muted">Automated trade execution</span><strong class="warning">Not configured</strong></div>
+        <div class="level"><span class="muted">Payment verification</span><strong class="warning">Separate integration required</strong></div>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    const root = document.getElementById("ian-dashboard");
+
+    if (!root || root.dataset.initialized === "true") return;
+    root.dataset.initialized = "true";
+
+    const priceEl = document.getElementById("ianGoldPrice");
+    const statusEl = document.getElementById("ianGoldStatus");
+    const feedEl = document.getElementById("ianFeedState");
+    const updatedEl = document.getElementById("ianGoldUpdated");
+    const endpointEl = document.getElementById("ianEndpointStatus");
+    const refreshBtn = document.getElementById("ianRefreshGold");
+    const timeframeSelect = document.getElementById("ianTimeframe");
+    const timeframeLabel = document.getElementById("ianCurrentTimeframe");
+    const chart = document.getElementById("ianTradingViewChart");
+
+    let busy = false;
+
+    async function refreshGoldPrice() {
+        if (busy) return;
+
+        busy = true;
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = "REFRESHING...";
+
+        try {
+            const response = await fetch("/api/market/gold", {
+                method: "GET",
+                headers: { Accept: "application/json" },
+                cache: "no-store"
+            });
+
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const data = await response.json();
+            const price = Number(data.price);
+
+            if (!Number.isFinite(price) || price <= 0) {
+                throw new Error("Invalid gold price");
+            }
+
+            priceEl.textContent = "$" + price.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            statusEl.textContent = "PRICE RECEIVED";
+            statusEl.className = "status green";
+            feedEl.textContent = "CONNECTED";
+            feedEl.className = "value";
+            feedEl.style.fontSize = "19px";
+            endpointEl.textContent = "Connected";
+            endpointEl.className = "green";
+            updatedEl.textContent = new Date().toLocaleString();
+
+        } catch (error) {
+            console.error("Gold price refresh failed:", error);
+
+            statusEl.textContent = "PRICE UNAVAILABLE — RETRYING";
+            statusEl.className = "status warning";
+            feedEl.textContent = "UNAVAILABLE";
+            feedEl.className = "value warning";
+            feedEl.style.fontSize = "19px";
+            endpointEl.textContent = "Unavailable";
+            endpointEl.className = "warning";
+
+        } finally {
+            busy = false;
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = "REFRESH GOLD PRICE";
+        }
+    }
+
+    timeframeSelect.addEventListener("change", function () {
+        const labels = {
+            "1": "M1",
+            "5": "M5",
+            "15": "M15",
+            "30": "M30",
+            "60": "H1",
+            "240": "H4",
+            "D": "D1"
+        };
+
+        const interval = timeframeSelect.value;
+        timeframeLabel.textContent = labels[interval] || interval;
+
+        const url = new URL(chart.src);
+        url.searchParams.set("interval", interval);
+        chart.src = url.toString();
+    });
+
+    refreshBtn.addEventListener("click", refreshGoldPrice);
+
+    refreshGoldPrice();
+    window.setInterval(refreshGoldPrice, 60000);
+})();
+</script>
+
+<!-- SECTION 2 END -->
