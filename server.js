@@ -1,153 +1,154 @@
 
-<!-- SECTION 1: IAN XAU AI PRO PLUS AUTHENTICATION -->
+<!-- SECTION 1: IAN XAU AI PRO PLUS AUTH -->
 <section id="ian-auth-section">
   <style>
     #ian-auth-section {
-      --ian-green: #39ff78;
-      --ian-bg: #030603;
-      --ian-card: #081109;
-      --ian-line: rgba(57, 255, 120, .22);
-      background: radial-gradient(ellipse at top, #102b17 0%, #030603 65%);
-      color: #f4fff6;
-      font-family: Arial, Helvetica, sans-serif;
-      padding: 38px 16px;
+      box-sizing: border-box;
       min-height: 100vh;
+      padding: 36px 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-sizing: border-box;
+      background:
+        radial-gradient(ellipse at 50% 0%, #173b22 0%, transparent 48%),
+        #030603;
+      color: #eef7ef;
+      font-family: Arial, sans-serif;
     }
 
-    #ian-auth-section * {
-      box-sizing: border-box;
-    }
+    #ian-auth-section * { box-sizing: border-box; }
 
     #ian-auth-section .ian-auth-card {
       width: 100%;
       max-width: 440px;
-      padding: 28px 22px;
-      border: 1px solid var(--ian-line);
+      padding: 30px;
+      border: 1px solid #294b31;
       border-radius: 20px;
-      background: linear-gradient(145deg, #0a140c, #050805);
-      box-shadow: 0 20px 70px rgba(0, 0, 0, .4);
+      background: linear-gradient(145deg, #0b140d, #060a07);
+      box-shadow: 0 20px 70px #0009, 0 0 35px #39ff780b;
+    }
+
+    #ian-auth-section .ian-topline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-bottom: 25px;
+    }
+
+    #ian-auth-section .ian-logo-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #39ff78;
+      border-radius: 10px;
+      color: #39ff78;
+      font-weight: 900;
+      font-size: 18px;
+      background: #102416;
     }
 
     #ian-auth-section .ian-brand {
-      text-align: center;
-      font-size: 12px;
+      color: #f2f8f2;
+      font-size: 14px;
+      letter-spacing: 2px;
       font-weight: 900;
-      letter-spacing: 3px;
-      color: var(--ian-green);
     }
 
-    #ian-auth-section .ian-status {
-      display: table;
-      margin: 18px auto 12px;
-      padding: 7px 11px;
-      border: 1px solid var(--ian-line);
-      border-radius: 30px;
-      color: var(--ian-green);
+    #ian-auth-section .ian-brand span {
+      display: block;
+      margin-top: 4px;
+      color: #39ff78;
+      font-size: 9px;
+      letter-spacing: 3px;
+    }
+
+    #ian-auth-section .ian-eyebrow {
+      text-align: center;
+      color: #c5a96a;
       font-size: 10px;
-      letter-spacing: 1.4px;
+      letter-spacing: 2px;
       font-weight: 800;
     }
 
     #ian-auth-section h2 {
+      margin: 12px 0 9px;
       text-align: center;
-      font-size: 29px;
+      font-size: clamp(25px, 6vw, 32px);
       letter-spacing: -1px;
-      margin: 12px 0 8px;
     }
 
     #ian-auth-section .ian-subtitle {
-      color: #9eaea1;
+      margin: 0 0 27px;
+      color: #9eafa1;
       text-align: center;
       font-size: 13px;
       line-height: 1.6;
-      margin: 0 0 26px;
     }
 
     #ian-auth-section label {
       display: block;
-      margin: 15px 0 7px;
-      color: #dce8df;
+      margin: 16px 0 8px;
+      color: #d3e0d5;
       font-size: 12px;
       font-weight: 700;
     }
 
     #ian-auth-section input {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #203725;
-      border-radius: 10px;
-      background: #030603;
+      min-height: 47px;
+      padding: 13px 14px;
       color: #fff;
-      font-size: 14px;
+      background: #030704;
+      border: 1px solid #2b4130;
+      border-radius: 10px;
       outline: none;
+      font-size: 14px;
     }
 
     #ian-auth-section input:focus {
-      border-color: var(--ian-green);
-      box-shadow: 0 0 0 3px rgba(57, 255, 120, .07);
+      border-color: #39ff78;
+      box-shadow: 0 0 0 3px #39ff7812;
     }
 
-    #ian-auth-section .ian-password-wrap {
-      position: relative;
-    }
-
-    #ian-auth-section .ian-password-wrap input {
-      padding-right: 65px;
-    }
-
-    #ian-auth-section .ian-show-password {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 0;
-      background: transparent;
-      color: var(--ian-green);
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    #ian-auth-section .ian-btn {
-      display: block;
+    #ian-auth-section button {
       width: 100%;
-      padding: 14px;
-      margin-top: 15px;
-      border: 1px solid var(--ian-green);
+      min-height: 47px;
+      margin-top: 16px;
+      padding: 13px;
       border-radius: 10px;
       font-size: 12px;
       font-weight: 900;
       letter-spacing: .6px;
       cursor: pointer;
+      transition: opacity .2s, transform .2s;
     }
 
-    #ian-auth-section .ian-btn-primary {
-      background: var(--ian-green);
-      color: #001a07;
-    }
-
-    #ian-auth-section .ian-btn-secondary {
-      background: #080e09;
-      color: #f4fff6;
-    }
-
-    #ian-auth-section .ian-btn:disabled {
+    #ian-auth-section button:disabled {
       opacity: .55;
       cursor: wait;
+    }
+
+    #ian-auth-section .ian-primary {
+      color: #031006;
+      background: linear-gradient(100deg, #39ff78, #a3ffb9);
+      border: 0;
+    }
+
+    #ian-auth-section .ian-secondary {
+      color: #eef7ef;
+      background: #0c150e;
+      border: 1px solid #304734;
     }
 
     #ian-auth-section .ian-divider {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 21px 0 6px;
-      color: #829286;
+      margin-top: 21px;
+      color: #718273;
       font-size: 10px;
-      text-align: center;
     }
 
     #ian-auth-section .ian-divider::before,
@@ -155,455 +156,428 @@
       content: "";
       flex: 1;
       height: 1px;
-      background: #203725;
+      background: #243328;
     }
 
     #ian-auth-section .ian-links {
-      text-align: center;
-      color: #9eaea1;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 21px;
       font-size: 12px;
-      line-height: 2.1;
-      margin-top: 20px;
     }
 
-    #ian-auth-section .ian-links a {
-      color: var(--ian-green);
+    #ian-auth-section a {
+      color: #65ff91;
       text-decoration: none;
       cursor: pointer;
     }
 
+    #ian-auth-section a:hover { text-decoration: underline; }
+
     #ian-auth-section .ian-message {
       display: none;
-      margin-top: 17px;
+      margin-top: 16px;
       padding: 12px;
-      border: 1px solid #29482f;
       border-radius: 9px;
-      color: #d8e5db;
+      color: #e6f8e9;
+      background: #101a12;
+      border: 1px solid #34533a;
       font-size: 12px;
       line-height: 1.6;
       overflow-wrap: anywhere;
     }
 
-    #ian-auth-section .ian-security-note {
-      margin-top: 22px;
-      color: #77877a;
+    #ian-auth-section .ian-security {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      margin-top: 27px;
+      color: #829386;
       font-size: 10px;
       text-align: center;
-      line-height: 1.7;
     }
 
-    #ian-auth-section .ian-auth-form[hidden] {
-      display: none !important;
+    #ian-auth-section .ian-security-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #39ff78;
+      box-shadow: 0 0 8px #39ff7866;
+    }
+
+    #ian-auth-section .ian-footnote {
+      margin-top: 13px;
+      text-align: center;
+      color: #536457;
+      font-size: 10px;
+      line-height: 1.6;
     }
 
     @media (max-width: 420px) {
-      #ian-auth-section .ian-auth-card {
-        padding: 25px 17px;
-      }
-
-      #ian-auth-section h2 {
-        font-size: 25px;
-      }
+      #ian-auth-section { padding: 20px 12px; }
+      #ian-auth-section .ian-auth-card { padding: 23px 19px; }
     }
   </style>
 
   <div class="ian-auth-card">
-    <div class="ian-brand">IAN XAU AI</div>
-    <div class="ian-status">PRO PLUS MEMBER ACCESS</div>
+    <div class="ian-topline">
+      <div class="ian-logo-mark">I</div>
+      <div class="ian-brand">
+        IAN XAU AI
+        <span>PRO PLUS</span>
+      </div>
+    </div>
 
-    <h2 id="ianAuthTitle">CLIENT LOGIN</h2>
-    <p class="ian-subtitle" id="ianAuthSubtitle">
-      Sign in to access your IAN XAU AI account.
-    </p>
+    <div class="ian-eyebrow">GOLD TRADING INTELLIGENCE</div>
 
-    <!-- LOGIN -->
-    <form class="ian-auth-form" id="ianLoginForm">
-      <label for="ianLoginEmail">Email address</label>
-      <input id="ianLoginEmail" type="email"
-        autocomplete="email" placeholder="you@example.com" required>
+    <h2 id="ian-auth-title">Welcome back.</h2>
 
-      <label for="ianLoginPassword">Password</label>
-      <div class="ian-password-wrap">
-        <input id="ianLoginPassword" type="password"
-          autocomplete="current-password" placeholder="Your password" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianLoginPassword">SHOW</button>
+    <div class="ian-subtitle" id="ian-auth-subtitle">
+      Sign in to continue to your trading dashboard.
+    </div>
+
+    <form id="ian-auth-form">
+      <div id="ian-name-wrap" hidden>
+        <label for="ian-auth-name">FULL NAME</label>
+        <input id="ian-auth-name" type="text"
+          autocomplete="name" placeholder="Enter your full name">
       </div>
 
-      <button class="ian-btn ian-btn-primary" type="submit">
-        LOG IN
-      </button>
+      <label for="ian-auth-email">EMAIL ADDRESS</label>
+      <input id="ian-auth-email" type="email"
+        autocomplete="email" required placeholder="you@example.com">
 
-      <div class="ian-divider">OR</div>
-
-      <button class="ian-btn ian-btn-secondary" type="button"
-        id="ianGoogleLogin">
-        🌐 CONTINUE WITH GOOGLE
-      </button>
-
-      <div class="ian-links">
-        <a href="#" data-ian-view="forgot">Forgot password?</a>
-        <br>
-        Don't have an account?
-        <a href="#" data-ian-view="signup">Create account</a>
-      </div>
-    </form>
-
-    <!-- CREATE ACCOUNT -->
-    <form class="ian-auth-form" id="ianSignupForm" hidden>
-      <label for="ianSignupName">Full name</label>
-      <input id="ianSignupName" type="text"
-        autocomplete="name" placeholder="Your full name" required>
-
-      <label for="ianSignupEmail">Email address</label>
-      <input id="ianSignupEmail" type="email"
-        autocomplete="email" placeholder="you@example.com" required>
-
-      <label for="ianSignupPassword">Create password</label>
-      <div class="ian-password-wrap">
-        <input id="ianSignupPassword" type="password"
-          autocomplete="new-password" minlength="8"
-          placeholder="At least 8 characters" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianSignupPassword">SHOW</button>
+      <div id="ian-password-wrap">
+        <label for="ian-auth-password">PASSWORD</label>
+        <input id="ian-auth-password" type="password"
+          autocomplete="current-password"
+          minlength="8" required placeholder="Enter your password">
       </div>
 
-      <button class="ian-btn ian-btn-primary" type="submit">
-        CREATE ACCOUNT
-      </button>
-
-      <div class="ian-divider">OR</div>
-
-      <button class="ian-btn ian-btn-secondary" type="button"
-        id="ianGoogleSignup">
-        🌐 SIGN UP WITH GOOGLE
-      </button>
-
-      <div class="ian-links">
-        Already registered?
-        <a href="#" data-ian-view="login">Log in</a>
-      </div>
-    </form>
-
-    <!-- FORGOT PASSWORD -->
-    <form class="ian-auth-form" id="ianForgotForm" hidden>
-      <label for="ianForgotEmail">Account email</label>
-      <input id="ianForgotEmail" type="email"
-        autocomplete="email" placeholder="you@example.com" required>
-
-      <button class="ian-btn ian-btn-primary" type="submit">
-        SEND PASSWORD RESET LINK
-      </button>
-
-      <div class="ian-links">
-        <a href="#" data-ian-view="login">Back to login</a>
-      </div>
-    </form>
-
-    <!-- SET NEW PASSWORD -->
-    <form class="ian-auth-form" id="ianUpdatePasswordForm" hidden>
-      <label for="ianNewPassword">New password</label>
-      <div class="ian-password-wrap">
-        <input id="ianNewPassword" type="password"
-          autocomplete="new-password" minlength="8"
-          placeholder="At least 8 characters" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianNewPassword">SHOW</button>
-      </div>
-
-      <label for="ianConfirmPassword">Confirm new password</label>
-      <div class="ian-password-wrap">
-        <input id="ianConfirmPassword" type="password"
-          autocomplete="new-password" minlength="8"
-          placeholder="Repeat new password" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianConfirmPassword">SHOW</button>
-      </div>
-
-      <button class="ian-btn ian-btn-primary" type="submit">
-        UPDATE PASSWORD
+      <button id="ian-auth-submit" class="ian-primary" type="submit">
+        SIGN IN TO YOUR ACCOUNT
       </button>
     </form>
 
-    <div id="ianAuthMessage" class="ian-message" role="status"
+    <div class="ian-divider">OR CONTINUE WITH</div>
+
+    <button id="ian-google-login" class="ian-secondary" type="button">
+      Continue with Google
+    </button>
+
+    <div class="ian-links">
+      <a href="#" id="ian-forgot-password">Forgot password?</a>
+      <a href="#" id="ian-toggle-mode">Create account</a>
+    </div>
+
+    <div id="ian-auth-message" class="ian-message" role="status"
       aria-live="polite"></div>
 
-    <div class="ian-security-note">
-      Passwords and login sessions are handled by Supabase.
-      <br>
-      Trading involves risk. Profits are not guaranteed.
+    <div class="ian-security">
+      <span class="ian-security-dot"></span>
+      SECURE ACCOUNT ACCESS · SUPABASE AUTH
+    </div>
+
+    <div class="ian-footnote">
+      Trading involves risk. Account access does not guarantee trading profits.
     </div>
   </div>
+</section>
 
-  <!-- Supabase JavaScript library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Load Supabase only once on the page. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script>
-    (() => {
-      "use strict";
+<script>
+(function () {
+  const SUPABASE_URL =
+    "https://elnqijtvqstzaxrydyox.supabase.co";
+  const SUPABASE_KEY =
+    "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
 
-      /*
-       * IAN XAU AI Supabase public configuration.
-       * Never put a Supabase service-role key in website code.
-       */
-      const IAN_SUPABASE_URL =
-        "https://elnqijtvqstzaxrydyox.supabase.co";
+  const root = document.getElementById("ian-auth-section");
+  if (!root || root.dataset.initialized === "true") return;
+  root.dataset.initialized = "true";
 
-      const IAN_SUPABASE_KEY =
-        "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
+  const $ = (selector) => root.querySelector(selector);
 
-      const root = document.getElementById("ian-auth-section");
-      if (!root) return;
+  const title = $("#ian-auth-title");
+  const subtitle = $("#ian-auth-subtitle");
+  const form = $("#ian-auth-form");
+  const nameWrap = $("#ian-name-wrap");
+  const nameInput = $("#ian-auth-name");
+  const emailInput = $("#ian-auth-email");
+  const passwordInput = $("#ian-auth-password");
+  const passwordWrap = $("#ian-password-wrap");
+  const submitButton = $("#ian-auth-submit");
+  const googleButton = $("#ian-google-login");
+  const toggleLink = $("#ian-toggle-mode");
+  const forgotLink = $("#ian-forgot-password");
+  const message = $("#ian-auth-message");
 
-      if (!window.supabase || !window.supabase.createClient) {
-        console.error("Supabase library failed to load.");
+  let mode = "login";
+  let busy = false;
+  let recoveryMode = false;
+
+  function showMessage(text) {
+    message.textContent = text;
+    message.style.display = "block";
+  }
+
+  function clearMessage() {
+    message.textContent = "";
+    message.style.display = "none";
+  }
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    clearMessage();
+
+    const signup = mode === "signup";
+    const reset = mode === "reset";
+
+    title.textContent = signup ? "Create your account" :
+      reset ? "Reset your password" : "Welcome back.";
+
+    subtitle.textContent = signup ?
+      "Create your account to get started with IAN XAU AI." :
+      reset ? "Request a secure password-reset email." :
+      "Sign in to continue to your trading dashboard.";
+
+    nameWrap.hidden = !signup;
+    nameInput.required = signup;
+    passwordWrap.style.display = reset ? "none" : "";
+    passwordInput.required = !reset;
+    passwordInput.autocomplete = signup ? "new-password" :
+      "current-password";
+
+    submitButton.textContent = signup ? "CREATE ACCOUNT" :
+      reset ? "SEND RESET EMAIL" : "SIGN IN TO YOUR ACCOUNT";
+
+    toggleLink.textContent = signup ? "Back to login" : "Create account";
+    forgotLink.style.display = signup || reset ? "none" : "";
+    googleButton.style.display = reset ? "none" : "";
+  }
+
+  function openDashboard() {
+    // Use the site's existing login-success handler if it exists.
+    if (typeof window.ianOnLoginSuccess === "function") {
+      window.ianOnLoginSuccess();
+      return;
+    }
+
+    const dashboard = document.getElementById("ian-dashboard");
+
+    if (dashboard) {
+      root.hidden = true;
+      dashboard.hidden = false;
+      dashboard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+      return;
+    }
+
+    showMessage(
+      "Login succeeded, but Section 2 was not found on this page. " +
+      "Check that the dashboard section is included."
+    );
+  }
+
+  if (!window.supabase || !window.supabase.createClient) {
+    showMessage(
+      "Supabase did not load. Check your internet connection and refresh."
+    );
+    return;
+  }
+
+  // Reuse the existing Supabase client if Section 2 already created it.
+  window.ianSupabase = window.ianSupabase ||
+    window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const client = window.ianSupabase;
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (busy) return;
+
+    clearMessage();
+    busy = true;
+    submitButton.disabled = true;
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const fullName = nameInput.value.trim();
+
+    try {
+      let result;
+
+      if (recoveryMode) {
+        if (password.length < 8) {
+          showMessage("Your new password must be at least 8 characters.");
+          return;
+        }
+
+        result = await client.auth.updateUser({ password });
+
+        if (result.error) {
+          showMessage(result.error.message);
+        } else {
+          recoveryMode = false;
+          showMessage("Password updated successfully. Please sign in again.");
+          setMode("login");
+          passwordInput.value = "";
+        }
         return;
       }
 
-      /*
-       * Reuse an existing client if the rest of the website has one.
-       * This avoids creating a second client on the same page.
-       */
-      const client = window.ianSupabase ||
-        window.supabase.createClient(
-          IAN_SUPABASE_URL,
-          IAN_SUPABASE_KEY,
-          {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true
-            }
-          }
-        );
-
-      window.ianSupabase = client;
-
-      const title = root.querySelector("#ianAuthTitle");
-      const subtitle = root.querySelector("#ianAuthSubtitle");
-      const message = root.querySelector("#ianAuthMessage");
-
-      const forms = {
-        login: root.querySelector("#ianLoginForm"),
-        signup: root.querySelector("#ianSignupForm"),
-        forgot: root.querySelector("#ianForgotForm"),
-        update: root.querySelector("#ianUpdatePasswordForm")
-      };
-
-      function showMessage(text, success = false) {
-        message.textContent = text;
-        message.style.display = text ? "block" : "none";
-        message.style.borderColor = success ? "#39ff78" : "#29482f";
-        message.style.color = success ? "#39ff78" : "#d8e5db";
-      }
-
-      function setView(view) {
-        Object.values(forms).forEach(form => {
-          form.hidden = true;
+      if (mode === "login") {
+        result = await client.auth.signInWithPassword({
+          email,
+          password
         });
-
-        const settings = {
-          login: ["CLIENT LOGIN", "Sign in to your IAN XAU AI account."],
-          signup: ["CREATE ACCOUNT", "Create your IAN XAU AI member account."],
-          forgot: ["RESET PASSWORD", "Receive a password reset link by email."],
-          update: ["SET NEW PASSWORD", "Choose a new password for your account."]
-        };
-
-        const selected = settings[view] ? view : "login";
-        forms[selected].hidden = false;
-        title.textContent = settings[selected][0];
-        subtitle.textContent = settings[selected][1];
-        showMessage("");
-      }
-
-      root.querySelectorAll("[data-ian-view]").forEach(link => {
-        link.addEventListener("click", event => {
-          event.preventDefault();
-          setView(link.dataset.ianView);
-        });
-      });
-
-      root.querySelectorAll("[data-ian-toggle]").forEach(button => {
-        button.addEventListener("click", () => {
-          const input = root.querySelector(
-            "#" + button.dataset.ianToggle
-          );
-          if (!input) return;
-
-          const reveal = input.type === "password";
-          input.type = reveal ? "text" : "password";
-          button.textContent = reveal ? "HIDE" : "SHOW";
-        });
-      });
-
-      async function withButtonLoading(form, action) {
-        const button = form.querySelector('button[type="submit"]');
-        const originalText = button.textContent;
-
-        button.disabled = true;
-        button.textContent = "PLEASE WAIT...";
-        showMessage("");
-
-        try {
-          await action();
-        } catch (error) {
-          showMessage(error.message || "Something went wrong. Please try again.");
-        } finally {
-          button.disabled = false;
-          button.textContent = originalText;
-        }
-      }
-
-      /* Email login */
-      forms.login.addEventListener("submit", event => {
-        event.preventDefault();
-
-        withButtonLoading(forms.login, async () => {
-          const email = root.querySelector("#ianLoginEmail").value.trim();
-          const password = root.querySelector("#ianLoginPassword").value;
-
-          const { error } = await client.auth.signInWithPassword({
-            email,
-            password
-          });
-
-          if (error) throw error;
-
-          showMessage("Login successful.", true);
-
-          /*
-           * Connect your existing dashboard-opening logic here if required.
-           * This code does not grant paid access or verify payment.
-           */
-          if (typeof window.ianOnLoginSuccess === "function") {
-            window.ianOnLoginSuccess();
-          }
-        });
-      });
-
-      /* Create account */
-      forms.signup.addEventListener("submit", event => {
-        event.preventDefault();
-
-        withButtonLoading(forms.signup, async () => {
-          const name = root.querySelector("#ianSignupName").value.trim();
-          const email = root.querySelector("#ianSignupEmail").value.trim();
-          const password = root.querySelector("#ianSignupPassword").value;
-
-          if (password.length < 8) {
-            throw new Error("Your password must contain at least 8 characters.");
-          }
-
-          const { data, error } = await client.auth.signUp({
-            email,
-            password,
-            options: {
-              data: { full_name: name },
-              emailRedirectTo: window.location.origin +
-                window.location.pathname
-            }
-          });
-
-          if (error) throw error;
-
-          if (data.session) {
-            showMessage("Account created and signed in successfully.", true);
-          } else {
-            showMessage(
-              "Account created. Check your email to confirm your account.",
-              true
-            );
-          }
-        });
-      });
-
-      /* Google login and signup */
-      async function googleSignIn() {
-        showMessage("Opening Google sign-in...");
-
-        const { error } = await client.auth.signInWithOAuth({
-          provider: "google",
+      } else if (mode === "signup") {
+        result = await client.auth.signUp({
+          email,
+          password,
           options: {
-            redirectTo: window.location.origin +
-              window.location.pathname
+            data: { full_name: fullName },
+            emailRedirectTo:
+              window.location.origin + window.location.pathname
           }
         });
+      } else {
+        result = await client.auth.resetPasswordForEmail(email, {
+          redirectTo:
+            window.location.origin + window.location.pathname
+        });
 
-        if (error) showMessage(error.message);
+        if (!result.error) {
+          showMessage(
+            "If the email is registered, a password-reset link will be sent."
+          );
+          return;
+        }
       }
 
-      root.querySelector("#ianGoogleLogin")
-        .addEventListener("click", googleSignIn);
+      if (result.error) {
+        showMessage(result.error.message);
+        return;
+      }
 
-      root.querySelector("#ianGoogleSignup")
-        .addEventListener("click", googleSignIn);
+      if (mode === "signup" && !result.data.session) {
+        showMessage(
+          "Account created. Check your email to confirm your account, " +
+          "then return here and log in."
+        );
+        return;
+      }
 
-      /* Password reset email */
-      forms.forgot.addEventListener("submit", event => {
-        event.preventDefault();
+      if (result.data && result.data.session) {
+        openDashboard();
+      } else {
+        showMessage(
+          "No active session yet. Confirm your email if requested, then log in."
+        );
+      }
+    } catch (error) {
+      showMessage(error.message || "Something went wrong. Please try again.");
+    } finally {
+      busy = false;
+      submitButton.disabled = false;
+    }
+  }
 
-        withButtonLoading(forms.forgot, async () => {
-          const email = root.querySelector("#ianForgotEmail").value.trim();
+  form.addEventListener("submit", handleSubmit);
 
-          const { error } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin +
-              window.location.pathname
-          });
+  toggleLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    setMode(mode === "signup" ? "login" : "signup");
+  });
 
-          if (error) throw error;
+  forgotLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    setMode(mode === "reset" ? "login" : "reset");
+  });
 
-          showMessage("Password reset email sent. Check your inbox.", true);
-        });
-      });
+  googleButton.addEventListener("click", async function () {
+    if (busy) return;
 
-      /* Save new password after opening the reset link */
-      forms.update.addEventListener("submit", event => {
-        event.preventDefault();
+    clearMessage();
+    busy = true;
+    googleButton.disabled = true;
 
-        withButtonLoading(forms.update, async () => {
-          const password = root.querySelector("#ianNewPassword").value;
-          const confirm = root.querySelector("#ianConfirmPassword").value;
-
-          if (password.length < 8) {
-            throw new Error("Your password must contain at least 8 characters.");
-          }
-
-          if (password !== confirm) {
-            throw new Error("The passwords do not match.");
-          }
-
-          const { error } = await client.auth.updateUser({ password });
-
-          if (error) throw error;
-
-          forms.update.reset();
-          showMessage("Password updated successfully.", true);
-          setTimeout(() => setView("login"), 1500);
-        });
-      });
-
-      /* Detect password-recovery links */
-      client.auth.onAuthStateChange((event) => {
-        if (event === "PASSWORD_RECOVERY") {
-          setView("update");
-          showMessage("Choose your new password below.", true);
+    try {
+      const result = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo:
+            window.location.origin + window.location.pathname
         }
       });
 
-      if (
-        window.location.hash.includes("type=recovery") ||
-        window.location.hash.includes("access_token=")
-      ) {
-        setView("update");
-      }
+      if (result.error) showMessage(result.error.message);
+    } catch (error) {
+      showMessage(error.message || "Google sign-in failed.");
+    } finally {
+      busy = false;
+      googleButton.disabled = false;
+    }
+  });
 
-      /* Keep the login screen as the default initial view */
-      setView("login");
-    })();
-  </script>
-</section>
+  client.auth.onAuthStateChange(function (event, session) {
+    if (event === "PASSWORD_RECOVERY") {
+      recoveryMode = true;
+      setMode("reset");
+      title.textContent = "Choose a new password";
+      subtitle.textContent = "Enter your new password below.";
+      passwordWrap.style.display = "";
+      passwordInput.required = true;
+      passwordInput.autocomplete = "new-password";
+      submitButton.textContent = "UPDATE PASSWORD";
+      return;
+    }
+
+    if (session && (
+      event === "SIGNED_IN" ||
+      event === "INITIAL_SESSION"
+    )) {
+      setTimeout(openDashboard, 0);
+    }
+  });
+
+  client.auth.getSession().then(function (result) {
+    if (result.error) {
+      console.error("Supabase session check failed:", result.error);
+      return;
+    }
+
+    if (result.data && result.data.session) {
+      openDashboard();
+    }
+  }).catch(function (error) {
+    console.error("Session check failed:", error);
+  });
+
+  // Support password-reset links using Supabase's recovery URL hash.
+  if (window.location.hash.includes("type=recovery")) {
+    recoveryMode = true;
+    setMode("reset");
+    title.textContent = "Choose a new password";
+    subtitle.textContent = "Enter your new password below.";
+    passwordWrap.style.display = "";
+    passwordInput.required = true;
+    passwordInput.autocomplete = "new-password";
+    submitButton.textContent = "UPDATE PASSWORD";
+  } else {
+    setMode("login");
+  }
+})();
+</script>
 <!-- END SECTION 1 -->
-
+  
 <!-- SECTION 2: IAN XAU AI PRO PLUS INSTITUTIONAL TERMINAL -->
 <section id="ian-dashboard">
 <style>
@@ -1153,4 +1127,348 @@
         throw new Error("Response does not contain a candles array.");
       }
 
-      const levels = calculate        
+      const levels = calculate
+      
+<!-- SECTION 3: IAN XAU AI PRO PLUS ECONOMIC CALENDAR -->
+<section id="ian-calendar">
+<style>
+#ian-calendar {
+  background:#030603;color:#e9f5eb;
+  font-family:Arial,sans-serif;padding:24px 14px;
+}
+#ian-calendar *{box-sizing:border-box}
+#ian-calendar .ic-wrap{max-width:1400px;margin:auto}
+#ian-calendar .ic-panel,#ian-calendar .ic-stat{
+  background:#080e0a;border:1px solid #1d3824;
+  border-radius:13px;padding:16px;margin-bottom:14px;
+}
+#ian-calendar .ic-brand{color:#39ff78;font-size:11px;
+  font-weight:bold;letter-spacing:2px}
+#ian-calendar h2{font-size:clamp(25px,4vw,36px);margin:10px 0}
+#ian-calendar h3{font-size:16px;margin:0 0 14px}
+#ian-calendar .ic-muted{color:#8da494;font-size:12px;line-height:1.6}
+#ian-calendar .ic-toolbar{display:flex;flex-wrap:wrap;
+  gap:10px;align-items:end;margin-top:18px}
+#ian-calendar label{display:grid;gap:6px;color:#8da494;
+  font-size:12px;flex:1 1 125px}
+#ian-calendar input,#ian-calendar select,#ian-calendar button{
+  min-width:0;width:100%;padding:11px;
+  background:#0b140e;color:#e9f5eb;
+  border:1px solid #294a32;border-radius:8px;font-size:13px
+}
+#ian-calendar button{cursor:pointer;font-weight:bold}
+#ian-calendar .ic-primary{background:#39ff78;color:#031006;
+  border-color:#39ff78}
+#ian-calendar .ic-status{display:inline-block;padding:7px 10px;
+  border:1px solid #294a32;border-radius:20px;
+  color:#ffc76b;font-size:11px;margin-top:14px}
+#ian-calendar .ic-status[data-state="ok"]{color:#39ff78}
+#ian-calendar .ic-status[data-state="error"]{color:#ff8585}
+#ian-calendar .ic-stats{display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#ian-calendar .ic-stat{margin:0;padding:14px;min-width:0}
+#ian-calendar .ic-stat small{display:block;color:#8da494;
+  font-size:10px;margin-bottom:10px}
+#ian-calendar .ic-stat strong{font-size:clamp(19px,3vw,27px)}
+#ian-calendar .ic-table-wrap{overflow-x:auto;width:100%}
+#ian-calendar table{width:100%;min-width:760px;
+  border-collapse:collapse;font-size:12px}
+#ian-calendar th,#ian-calendar td{
+  padding:13px 10px;text-align:left;
+  border-bottom:1px solid #1d3824;vertical-align:top}
+#ian-calendar th{background:#0b140e;color:#8da494;
+  font-weight:normal;white-space:nowrap}
+#ian-calendar .ic-impact{display:inline-block;padding:5px 7px;
+  border-radius:5px;font-size:10px;font-weight:bold}
+#ian-calendar .ic-high{background:#3a1717;color:#ff8585}
+#ian-calendar .ic-medium{background:#392b12;color:#ffc76b}
+#ian-calendar .ic-low{background:#132d1b;color:#39ff78}
+#ian-calendar .ic-unknown{background:#18231b;color:#aab9ad}
+#ian-calendar .ic-empty{text-align:center;color:#8da494;padding:28px 12px}
+#ian-calendar .ic-alert{border-left:3px solid #ffc76b;padding:10px 12px;
+  background:#100f09;color:#e9d8a5;font-size:12px;
+  line-height:1.6;margin:14px 0}
+@media(max-width:600px){
+  #ian-calendar{padding:16px 9px}
+  #ian-calendar .ic-panel{padding:12px}
+  #ian-calendar .ic-stat{padding:10px}
+  #ian-calendar .ic-stats{gap:6px}
+  #ian-calendar .ic-stat small{font-size:9px}
+  #ian-calendar .ic-toolbar button{flex-basis:100%}
+}
+</style>
+
+<div class="ic-wrap">
+  <div class="ic-panel">
+    <div class="ic-brand">IAN XAU AI / PRO PLUS</div>
+    <h2>Economic Calendar</h2>
+    <p class="ic-muted">
+      Monitor scheduled economic releases that may affect gold and the USD.
+    </p>
+
+    <div class="ic-toolbar">
+      <label>From
+        <input id="ic-from" type="date">
+      </label>
+      <label>To
+        <input id="ic-to" type="date">
+      </label>
+      <label>Impact
+        <select id="ic-impact">
+          <option value="ALL">All impacts</option>
+          <option value="HIGH">High</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="LOW">Low</option>
+          <option value="UNKNOWN">Unknown</option>
+        </select>
+      </label>
+      <label>Currency
+        <select id="ic-currency">
+          <option value="ALL">All currencies</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="JPY">JPY</option>
+          <option value="AUD">AUD</option>
+          <option value="CAD">CAD</option>
+          <option value="CHF">CHF</option>
+          <option value="NZD">NZD</option>
+        </select>
+      </label>
+      <label>Timezone
+        <select id="ic-timezone">
+          <option value="local">Device timezone</option>
+          <option value="Africa/Nairobi">Nairobi</option>
+          <option value="America/New_York">New York</option>
+          <option value="Etc/UTC">UTC</option>
+          <option value="Europe/London">London</option>
+        </select>
+      </label>
+      <button class="ic-primary" id="ic-refresh" type="button">
+        Refresh Calendar
+      </button>
+    </div>
+
+    <div id="ic-status" class="ic-status" data-state="loading"
+         role="status" aria-live="polite">
+      Checking calendar connection...
+    </div>
+    <p id="ic-updated" class="ic-muted">Last updated: —</p>
+
+    <div class="ic-alert">
+      <strong>Gold news monitor:</strong>
+      High-impact USD releases can increase XAUUSD volatility.
+      Check the event time before entering a trade.
+    </div>
+  </div>
+
+  <div class="ic-stats">
+    <div class="ic-stat">
+      <small>EVENTS SHOWN</small>
+      <strong id="ic-total">—</strong>
+    </div>
+    <div class="ic-stat">
+      <small>HIGH IMPACT</small>
+      <strong id="ic-high-count" style="color:#ff8585">—</strong>
+    </div>
+    <div class="ic-stat">
+      <small>UPCOMING USD</small>
+      <strong id="ic-usd-count" style="color:#39ff78">—</strong>
+    </div>
+  </div>
+
+  <div class="ic-panel" style="margin-top:14px">
+    <h3>Upcoming Economic Events</h3>
+    <div class="ic-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>DATE / TIME</th>
+            <th>COUNTRY</th>
+            <th>CURRENCY</th>
+            <th>EVENT</th>
+            <th>IMPACT</th>
+            <th>ACTUAL</th>
+            <th>FORECAST</th>
+            <th>PREVIOUS</th>
+          </tr>
+        </thead>
+        <tbody id="ic-events">
+          <tr><td colspan="8" class="ic-empty">
+            Connecting to the economic calendar...
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ic-muted">
+      Calendar data may be revised or delayed. Impact labels do not
+      predict market direction. This calendar does not execute trades.
+    </p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const root=document.getElementById("ian-calendar");
+  if(!root || root.dataset.initialized==="true") return;
+  root.dataset.initialized="true";
+
+  const $=id=>root.querySelector("#"+id);
+  let events=[];
+  let busy=false;
+
+  const pad=n=>String(n).padStart(2,"0");
+  const dateKey=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+
+  const start=new Date();
+  const end=new Date();
+  end.setDate(end.getDate()+7);
+  $("ic-from").value=dateKey(start);
+  $("ic-to").value=dateKey(end);
+
+  function status(message,state){
+    $("ic-status").textContent=message;
+    $("ic-status").dataset.state=state;
+  }
+
+  function textCell(row,value){
+    const cell=document.createElement("td");
+    cell.textContent=value===null||value===undefined||value===""
+      ?"—":String(value);
+    row.appendChild(cell);
+  }
+
+  function impactOf(value){
+    const v=String(value||"UNKNOWN").toUpperCase();
+    return ["HIGH","MEDIUM","LOW"].includes(v)?v:"UNKNOWN";
+  }
+
+  function displayTime(value){
+    const d=new Date(value);
+    if(Number.isNaN(d.getTime())) return "Time unavailable";
+    const zone=$("ic-timezone").value;
+    const options={
+      year:"numeric",month:"short",day:"2-digit",
+      hour:"2-digit",minute:"2-digit"
+    };
+    if(zone!=="local") options.timeZone=zone;
+    try{
+      return new Intl.DateTimeFormat("en-GB",options).format(d);
+    }catch(e){
+      return "Time unavailable";
+    }
+  }
+
+  function render(){
+    const selectedImpact=$("ic-impact").value;
+    const selectedCurrency=$("ic-currency").value;
+    const now=Date.now();
+
+    const shown=events.filter(e=>{
+      if(selectedImpact!=="ALL" &&
+         impactOf(e.impact)!==selectedImpact) return false;
+      if(selectedCurrency!=="ALL" &&
+         String(e.currency||"").toUpperCase()!==selectedCurrency) return false;
+      return true;
+    }).sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+    $("ic-total").textContent=shown.length;
+    $("ic-high-count").textContent=
+      shown.filter(e=>impactOf(e.impact)==="HIGH").length;
+    $("ic-usd-count").textContent=
+      shown.filter(e=>String(e.currency||"").toUpperCase()==="USD" &&
+        new Date(e.date).getTime()>=now).length;
+
+    const body=$("ic-events");
+    body.replaceChildren();
+
+    if(!shown.length){
+      const row=document.createElement("tr");
+      const cell=document.createElement("td");
+      cell.colSpan=8;
+      cell.className="ic-empty";
+      cell.textContent=events.length
+        ?"No events match your filters."
+        ?"No calendar events are available for this date range."
+        :"No events are available.";
+      row.appendChild(cell);
+      body.appendChild(row);
+      return;
+    }
+
+    shown.forEach(e=>{
+      const row=document.createElement("tr");
+      textCell(row,displayTime(e.date));
+      textCell(row,e.country);
+      textCell(row,e.currency);
+      textCell(row,e.name);
+
+      const impactCell=document.createElement("td");
+      const badge=document.createElement("span");
+      const level=impactOf(e.impact);
+      badge.className="ic-impact ic-"+level.toLowerCase();
+      badge.textContent=level;
+      impactCell.appendChild(badge);
+      row.appendChild(impactCell);
+
+      textCell(row,e.actual);
+      textCell(row,e.forecast);
+      textCell(row,e.previous);
+      body.appendChild(row);
+    });
+  }
+
+  async function load(){
+    if(busy) return;
+    busy=true;
+    $("ic-refresh").disabled=true;
+    status("Loading economic calendar...","loading");
+
+    try{
+      const from=$("ic-from").value;
+      const to=$("ic-to").value;
+      if(!from||!to||from>to) throw new Error("Choose a valid date range.");
+
+      const query=new URLSearchParams({from,to});
+      const response=await fetch(
+        "/api/economic-calendar?"+query.toString(),
+        {cache:"no-store"}
+      );
+      const data=await response.json();
+
+      if(!response.ok) throw new Error(
+        data.error||"Calendar service is unavailable."
+      );
+      if(!Array.isArray(data.events)) throw new Error(
+        "Calendar response is invalid."
+      );
+
+      events=data.events;
+      render();
+      status("CONNECTED · "+events.length+" EVENTS RECEIVED","ok");
+      $("ic-updated").textContent=
+        "Last updated: "+new Date(data.updatedAt||Date.now()).toLocaleString();
+    }catch(error){
+      events=[];
+      render();
+      status("CALENDAR UNAVAILABLE · "+error.message,"error");
+      $("ic-updated").textContent=
+        "Check the backend endpoint and provider API configuration.";
+    }finally{
+      busy=false;
+      $("ic-refresh").disabled=false;
+    }
+  }
+
+  $("ic-refresh").addEventListener("click",load);
+  ["ic-from","ic-to"].forEach(id=>$(id).addEventListener("change",load));
+  ["ic-impact","ic-currency","ic-timezone"].forEach(id=>
+    $(id).addEventListener("change",render)
+  );
+
+  load();
+})();
+</script>
+</section>
+<!-- END SECTION 3 -->
+    
