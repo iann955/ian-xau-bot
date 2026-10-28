@@ -602,5 +602,716 @@
     })();
   </script>
 </section>
+<!-- SECTION 2: IAN XAU AI PRO PLUS TRADING DASHBOARD -->
+<section id="ian-dashboard" hidden>
+  <style>
+    #ian-dashboard {
+      --bg: #030603;
+      --panel: #09110b;
+      --green: #39ff78;
+      --muted: #91a196;
+      --line: rgba(57,255,120,.20);
+      background: var(--bg);
+      color: #f3fff5;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 18px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    #ian-dashboard * { box-sizing: border-box; }
+
+    #ian-dashboard .ian-dash-wrap {
+      width: 100%;
+      max-width: 1250px;
+      margin: auto;
+    }
+
+    #ian-dashboard .ian-dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 0 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #ian-dashboard .ian-dash-brand {
+      color: var(--green);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    #ian-dashboard .ian-dash-caption {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    #ian-dashboard .ian-live-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 25px;
+      padding: 9px 12px;
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .7px;
+    }
+
+    #ian-dashboard .ian-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+    }
+
+    #ian-dashboard .ian-dash-title {
+      margin: 26px 0 7px;
+      font-size: clamp(23px, 4vw, 34px);
+      letter-spacing: -1px;
+    }
+
+    #ian-dashboard .ian-dash-description {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0 0 22px;
+    }
+
+    #ian-dashboard .ian-dash-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #ian-dashboard .ian-dash-card {
+      min-width: 0;
+      padding: 17px;
+      background: linear-gradient(145deg, #0b160e, #060a07);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+
+    #ian-dashboard .ian-card-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    #ian-dashboard .ian-card-value {
+      margin-top: 12px;
+      font-size: clamp(17px, 2.5vw, 25px);
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    #ian-dashboard .ian-card-note {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    #ian-dashboard .ian-green { color: var(--green); }
+    #ian-dashboard .ian-gold { color: #f3c969; }
+    #ian-dashboard .ian-red { color: #ff7777; }
+
+    #ian-dashboard .ian-dash-section {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      min-width: 0;
+    }
+
+    #ian-dashboard .ian-section-heading {
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+
+    #ian-dashboard .ian-section-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 0 0 15px;
+    }
+
+    #ian-dashboard .ian-chart-frame {
+      height: 490px;
+      width: 100%;
+      border: 1px solid #1b3020;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #050805;
+    }
+
+    #ian-dashboard .ian-chart-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    #ian-dashboard .ian-level-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #ian-dashboard .ian-level {
+      padding: 16px;
+      border-radius: 11px;
+      border: 1px solid var(--line);
+      background: #050905;
+    }
+
+    #ian-dashboard .ian-level-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    #ian-dashboard .ian-level-price {
+      font-size: 23px;
+      font-weight: 800;
+      margin-top: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    #ian-dashboard .ian-level-sub {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    #ian-dashboard .ian-level-tag {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      color: var(--green);
+    }
+
+    #ian-dashboard .ian-data-message {
+      padding: 12px;
+      border-radius: 9px;
+      background: #0b160e;
+      border: 1px solid var(--line);
+      color: #c2d2c5;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    #ian-dashboard .ian-action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    #ian-dashboard .ian-dash-btn {
+      padding: 11px 14px;
+      background: #0a170c;
+      color: var(--green);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #ian-dashboard .ian-strategy-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #ian-dashboard .ian-strategy-item {
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #050905;
+    }
+
+    #ian-dashboard .ian-strategy-item strong {
+      display: block;
+      color: var(--green);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    #ian-dashboard .ian-strategy-item p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    #ian-dashboard .ian-dash-footer {
+      margin-top: 22px;
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+      color: #718075;
+      font-size: 10px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      #ian-dashboard { padding: 13px; }
+      #ian-dashboard .ian-dash-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      #ian-dashboard .ian-strategy-list {
+        grid-template-columns: 1fr;
+      }
+      #ian-dashboard .ian-chart-frame { height: 390px; }
+    }
+
+    @media (max-width: 420px) {
+      #ian-dashboard .ian-level-grid { grid-template-columns: 1fr; }
+      #ian-dashboard .ian-dash-card { padding: 13px; }
+      #ian-dashboard .ian-dash-section { padding: 13px; }
+    }
+  </style>
+
+  <div class="ian-dash-wrap">
+    <header class="ian-dash-header">
+      <div>
+        <div class="ian-dash-brand">IAN XAU AI</div>
+        <div class="ian-dash-caption">PRO PLUS · XAUUSD TRADING SYSTEM</div>
+      </div>
+      <div class="ian-live-status">
+        <span class="ian-status-dot"></span>
+        <span id="ianMarketStatus">CHECKING DATA</span>
+      </div>
+    </header>
+
+    <h1 class="ian-dash-title">Trading Dashboard</h1>
+    <p class="ian-dash-description">
+      Read the market. Track key levels. Wait for confirmation.
+      All displayed price levels require real market-candle data.
+    </p>
+
+    <!-- MARKET SUMMARY -->
+    <div class="ian-dash-grid">
+      <div class="ian-dash-card">
+        <div class="ian-card-label">Instrument</div>
+        <div class="ian-card-value">XAUUSD</div>
+        <div class="ian-card-note">Gold / US Dollar</div>
+      </div>
+
+      <div class="ian-dash-card">
+        <div class="ian-card-label">Current Price</div>
+        <div class="ian-card-value" id="ianCurrentPrice">—</div>
+        <div class="ian-card-note" id="ianPriceTime">Awaiting market data</div>
+      </div>
+
+      <div class="ian-dash-card">
+        <div class="ian-card-label">Asia Session</div>
+        <div class="ian-card-value" id="ianAsiaStatus">—</div>
+        <div class="ian-card-note">New York time: 7 PM–12 AM</div>
+      </div>
+
+      <div class="ian-dash-card">
+        <div class="ian-card-label">Data Feed</div>
+        <div class="ian-card-value" id="ianFeedStatus">OFFLINE</div>
+        <div class="ian-card-note">Backend connection required</div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <section class="ian-dash-section">
+      <h2 class="ian-section-heading">Live XAUUSD Chart</h2>
+      <p class="ian-section-description">
+        TradingView chart view. Chart quotes may differ from your broker's
+        executable prices. The chart itself does not supply the levels below.
+      </p>
+
+      <div class="ian-chart-frame">
+        <iframe
+          title="TradingView XAUUSD 15 minute chart"
+          src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=030603&theme=dark&style=1&timezone=America%2FNew_York&withdateranges=1&hideideas=1&locale=en"
+          loading="lazy"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <!-- KEY LEVELS -->
+    <section class="ian-dash-section">
+      <h2 class="ian-section-heading">Key Market Levels</h2>
+      <p class="ian-section-description">
+        Asia session is defined here as 7:00 PM through midnight in
+        America/New_York time. PDH and PDL use the previous New York
+        calendar day, midnight to midnight. The times automatically follow
+        New York daylight-saving changes.
+      </p>
+
+      <div class="ian-level-grid">
+        <div class="ian-level">
+          <div class="ian-level-top">
+            <span>ASIA HIGH</span>
+            <span class="ian-level-tag">RESISTANCE REFERENCE</span>
+          </div>
+          <div class="ian-level-price ian-green" id="ianAsiaHigh">—</div>
+          <div class="ian-level-sub" id="ianAsiaHighNote">
+            Waiting for complete Asia-session candles.
+          </div>
+        </div>
+
+        <div class="ian-level">
+          <div class="ian-level-top">
+            <span>ASIA LOW</span>
+            <span class="ian-level-tag">SUPPORT REFERENCE</span>
+          </div>
+          <div class="ian-level-price ian-green" id="ianAsiaLow">—</div>
+          <div class="ian-level-sub" id="ianAsiaLowNote">
+            Waiting for complete Asia-session candles.
+          </div>
+        </div>
+
+        <div class="ian-level">
+          <div class="ian-level-top">
+            <span>PREVIOUS DAY HIGH</span>
+            <span class="ian-level-tag">PDH</span>
+          </div>
+          <div class="ian-level-price ian-gold" id="ianPDH">—</div>
+          <div class="ian-level-sub" id="ianPDHNote">
+            Waiting for previous-day candles.
+          </div>
+        </div>
+
+        <div class="ian-level">
+          <div class="ian-level-top">
+            <span>PREVIOUS DAY LOW</span>
+            <span class="ian-level-tag">PDL</span>
+          </div>
+          <div class="ian-level-price ian-gold" id="ianPDL">—</div>
+          <div class="ian-level-sub" id="ianPDLNote">
+            Waiting for previous-day candles.
+          </div>
+        </div>
+      </div>
+
+      <div class="ian-action-row">
+        <button type="button" class="ian-dash-btn" id="ianRefreshLevels">
+          REFRESH MARKET LEVELS
+        </button>
+        <span id="ianLastUpdated" class="ian-card-note">
+          Not yet updated
+        </span>
+      </div>
+
+      <div id="ianLevelMessage" class="ian-data-message" style="margin-top:14px">
+        Waiting for the market-data backend. Prices will remain blank until
+        real candle data is received.
+      </div>
+    </section>
+
+    <!-- MARKET PLAN -->
+    <section class="ian-dash-section">
+      <h2 class="ian-section-heading">Strategy Checklist</h2>
+      <p class="ian-section-description">
+        These are decision rules, not guaranteed trade signals.
+      </p>
+
+      <div class="ian-strategy-list">
+        <div class="ian-strategy-item">
+          <strong>01 · Mark the levels</strong>
+          <p>
+            Identify Asia High, Asia Low, PDH and PDL before looking for
+            a trade.
+          </p>
+        </div>
+
+        <div class="ian-strategy-item">
+          <strong>02 · Watch liquidity</strong>
+          <p>
+            A level being touched or swept is not enough on its own.
+            Wait for a clear reaction.
+          </p>
+        </div>
+
+        <div class="ian-strategy-item">
+          <strong>03 · Confirm and manage risk</strong>
+          <p>
+            Require your defined entry confirmation. Set a stop-loss and
+            position size before entering.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="ian-dash-footer">
+      IAN XAU AI PRO PLUS · MARKET ANALYSIS TOOL
+      <br>
+      Market data can be delayed or unavailable. Trading gold carries
+      significant risk. No profit is guaranteed.
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const root = document.getElementById("ian-dashboard");
+      if (!root || root.dataset.initialized === "yes") return;
+      root.dataset.initialized = "yes";
+
+      /*
+       * Required backend endpoint:
+       * GET /api/xauusd/candles?timeframe=M1&days=3
+       *
+       * Expected response:
+       * {
+       *   "candles": [
+       *     {
+       *       "time": 1793164800,
+       *       "open": 4000.10,
+       *       "high": 4002.20,
+       *       "low": 3998.90,
+       *       "close": 4001.50
+       *     }
+       *   ],
+       *   "source": "your market-data provider"
+       * }
+       *
+       * Candle time must be a Unix timestamp in SECONDS (UTC).
+       * The endpoint must return genuine XAUUSD candles, including
+       * the previous New York calendar day and the current Asia session.
+       */
+
+      const $ = id => root.querySelector("#" + id);
+      const timezone = "America/New_York";
+
+      const fmt = new Intl.DateTimeFormat("en-CA", {
+        timeZone: timezone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
+
+      const partsFmt = new Intl.DateTimeFormat("en-US", {
+        timeZone: timezone,
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      });
+
+      function nyDate(timestampSeconds) {
+        const parts = fmt.formatToParts(
+          new Date(timestampSeconds * 1000)
+        );
+        const out = {};
+        parts.forEach(p => {
+          if (p.type !== "literal") out[p.type] = p.value;
+        });
+        return out.year + "-" + out.month + "-" + out.day;
+      }
+
+      function nyMinutes(timestampSeconds) {
+        const parts = partsFmt.formatToParts(
+          new Date(timestampSeconds * 1000)
+        );
+        const out = {};
+        parts.forEach(p => {
+          if (p.type !== "literal") out[p.type] = p.value;
+        });
+        return Number(out.hour) * 60 + Number(out.minute);
+      }
+
+      function shiftDate(dateString, amount) {
+        const [y, m, d] = dateString.split("-").map(Number);
+        const date = new Date(Date.UTC(y, m - 1, d + amount));
+        return [
+          date.getUTCFullYear(),
+          String(date.getUTCMonth() + 1).padStart(2, "0"),
+          String(date.getUTCDate()).padStart(2, "0")
+        ].join("-");
+      }
+
+      function validCandle(c) {
+        return c &&
+          Number.isFinite(Number(c.time)) &&
+          Number.isFinite(Number(c.high)) &&
+          Number.isFinite(Number(c.low)) &&
+          Number(c.high) >= Number(c.low);
+      }
+
+      function formatPrice(price) {
+        return Number(price).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 3
+        });
+      }
+
+      function show(id, value) {
+        $(id).textContent = value;
+      }
+
+      function calculate(candles) {
+        const sorted = candles
+          .filter(validCandle)
+          .map(c => ({
+            time: Number(c.time),
+            high: Number(c.high),
+            low: Number(c.low),
+            close: Number(c.close)
+          }))
+          .sort((a, b) => a.time - b.time);
+
+        if (!sorted.length) {
+          throw new Error("The backend returned no valid candles.");
+        }
+
+        const todayNY = nyDate(Date.now() / 1000);
+        const previousNY = shiftDate(todayNY, -1);
+
+        /*
+         * Asia window is [19:00, 00:00) New York time.
+         * Before midnight, it belongs to the previous date's session.
+         * After midnight, the session date is the previous calendar date.
+         */
+        const nowMinutes = nyMinutes(Date.now() / 1000);
+        const currentSessionDate =
+          nowMinutes < 0 ? previousNY : todayNY;
+
+        const asiaSessionDate =
+          nowMinutes < 0 ? previousNY : todayNY;
+
+        const asia = sorted.filter(c => {
+          const date = nyDate(c.time);
+          const minute = nyMinutes(c.time);
+
+          if (date === asiaSessionDate) {
+            return minute >= 19 * 60;
+          }
+
+          if (date === shiftDate(asiaSessionDate, 1)) {
+            return minute < 0;
+          }
+
+          return false;
+        });
+
+        /*
+         * Use previous New York calendar day for PDH and PDL.
+         * The endpoint must provide candles covering that full day.
+         */
+        const previousDay = sorted.filter(
+          c => nyDate(c.time) === previousNY
+        );
+
+        const currentDay = sorted.filter(
+          c => nyDate(c.time) === todayNY
+        );
+
+        const latest = sorted[sorted.length - 1];
+
+        function range(items) {
+          if (!items.length) return null;
+          return {
+            high: Math.max(...items.map(c => c.high)),
+            low: Math.min(...items.map(c => c.low))
+          };
+        }
+
+        return {
+          latest,
+          todayNY,
+          previousNY,
+          asia: range(asia),
+          previous: range(previousDay),
+          currentDay: range(currentDay),
+          asiaCount: asia.length,
+          previousCount: previousDay.length,
+          currentCount: currentDay.length,
+          sourceCount: sorted.length
+        };
+      }
+
+      function updateLevel(id, noteId, range, key, count, note) {
+        if (!range) {
+          show(id, "—");
+          show(noteId, note);
+          return;
+        }
+
+        show(id, formatPrice(range[key]));
+        show(noteId, count + " candles used · " + note);
+      }
+
+      async function refreshLevels() {
+        show("ianMarketStatus", "LOADING DATA");
+        show("ianFeedStatus", "CONNECTING");
+        show("ianLevelMessage", "Requesting genuine XAUUSD candle data...");
+
+        try {
+          const response = await fetch(
+            "/api/xauusd/candles?timeframe=M1&days=3",
+            {
+              method: "GET",
+              headers: { "Accept": "application/json" },
+              cache: "no-store"
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(
+              "Market-data endpoint returned HTTP " + response.status +
+              ". The backend endpoint must be installed."
+            );
+          }
+
+          const payload = await response.json();
+          if (!payload || !Array.isArray(payload.candles)) {
+            throw new Error(
+              "Invalid response. Expected a JSON object containing candles."
+            );
+          }
+
+          const data = calculate(payload.candles);
+
+          show("ianCurrentPrice", formatPrice(data.latest.close));
+          show(
+            "ianPriceTime",
+            "Last candle: " +
+              new Date(data.latest.time * 1000).toLocaleString("en-US", {
+                timeZone: timezone,
+                dateStyle: "medium",
+                timeStyle: "short"
+              }) + " New York"
+          );
+
+          updateLevel(
+            "ianAsiaHigh", "ianAsiaHighNote",
+            data.asia, "high", data.asiaCount,
+            "Asia session high"
+          );
+
+          updateLevel(
+            "ianAsiaLow", "ianAsiaLowNote",
+            data.asia, "low", data.asiaCount,
+            "Asia session low"
+          );
+
+          updateLevel(
+            "ianPDH", "ianPDHNote",
+            data.previ
 <!-- END SECTION 1 -->
   
