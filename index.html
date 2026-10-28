@@ -1,1451 +1,872 @@
 
-<!-- SECTION 1: IAN XAU AI PRO PLUS AUTHENTICATION -->
+<!-- SECTION 1: IAN XAU AI PRO PLUS AUTH -->
 <section id="ian-auth-section">
   <style>
     #ian-auth-section {
-      --ian-green: #39ff78;
-      --ian-bg: #030603;
-      --ian-card: #081109;
-      --ian-line: rgba(57, 255, 120, .22);
-      background: radial-gradient(ellipse at top, #102b17 0%, #030603 65%);
-      color: #f4fff6;
-      font-family: Arial, Helvetica, sans-serif;
-      padding: 38px 16px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       box-sizing: border-box;
+      background: #030603;
+      color: #e9f5eb;
+      font-family: Arial, sans-serif;
+      padding: 30px 16px;
+      min-height: 70vh;
     }
-
-    #ian-auth-section * {
-      box-sizing: border-box;
-    }
-
+    #ian-auth-section * { box-sizing: border-box; }
     #ian-auth-section .ian-auth-card {
-      width: 100%;
-      max-width: 440px;
-      padding: 28px 22px;
-      border: 1px solid var(--ian-line);
-      border-radius: 20px;
-      background: linear-gradient(145deg, #0a140c, #050805);
-      box-shadow: 0 20px 70px rgba(0, 0, 0, .4);
+      max-width: 430px;
+      margin: 25px auto;
+      padding: 26px;
+      border: 1px solid #23452b;
+      border-radius: 18px;
+      background: #081009;
+      box-shadow: 0 0 30px #39ff7810;
     }
-
     #ian-auth-section .ian-brand {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 900;
+      color: #39ff78;
+      font-size: 13px;
       letter-spacing: 3px;
-      color: var(--ian-green);
-    }
-
-    #ian-auth-section .ian-status {
-      display: table;
-      margin: 18px auto 12px;
-      padding: 7px 11px;
-      border: 1px solid var(--ian-line);
-      border-radius: 30px;
-      color: var(--ian-green);
-      font-size: 10px;
-      letter-spacing: 1.4px;
       font-weight: 800;
+      text-align: center;
     }
-
     #ian-auth-section h2 {
       text-align: center;
-      font-size: 29px;
-      letter-spacing: -1px;
-      margin: 12px 0 8px;
+      margin: 13px 0 8px;
+      font-size: 27px;
     }
-
     #ian-auth-section .ian-subtitle {
-      color: #9eaea1;
       text-align: center;
+      color: #9bad9e;
       font-size: 13px;
-      line-height: 1.6;
-      margin: 0 0 26px;
+      margin-bottom: 24px;
     }
-
     #ian-auth-section label {
       display: block;
       margin: 15px 0 7px;
-      color: #dce8df;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 13px;
+      color: #c7d9ca;
     }
-
     #ian-auth-section input {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #203725;
-      border-radius: 10px;
-      background: #030603;
+      padding: 13px;
       color: #fff;
-      font-size: 14px;
+      background: #030603;
+      border: 1px solid #29432e;
+      border-radius: 9px;
       outline: none;
+      font-size: 15px;
     }
-
     #ian-auth-section input:focus {
-      border-color: var(--ian-green);
-      box-shadow: 0 0 0 3px rgba(57, 255, 120, .07);
+      border-color: #39ff78;
     }
-
-    #ian-auth-section .ian-password-wrap {
-      position: relative;
-    }
-
-    #ian-auth-section .ian-password-wrap input {
-      padding-right: 65px;
-    }
-
-    #ian-auth-section .ian-show-password {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
+    #ian-auth-section button {
+      width: 100%;
       border: 0;
-      background: transparent;
-      color: var(--ian-green);
-      font-size: 11px;
+      border-radius: 9px;
+      padding: 13px;
+      margin-top: 15px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
     }
-
-    #ian-auth-section .ian-btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin-top: 15px;
-      border: 1px solid var(--ian-green);
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: .6px;
-      cursor: pointer;
+    #ian-auth-section .ian-primary {
+      color: #031006;
+      background: #39ff78;
     }
-
-    #ian-auth-section .ian-btn-primary {
-      background: var(--ian-green);
-      color: #001a07;
+    #ian-auth-section .ian-secondary {
+      color: #e9f5eb;
+      background: #101a12;
+      border: 1px solid #29432e;
     }
-
-    #ian-auth-section .ian-btn-secondary {
-      background: #080e09;
-      color: #f4fff6;
-    }
-
-    #ian-auth-section .ian-btn:disabled {
-      opacity: .55;
-      cursor: wait;
-    }
-
-    #ian-auth-section .ian-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 21px 0 6px;
-      color: #829286;
-      font-size: 10px;
-      text-align: center;
-    }
-
-    #ian-auth-section .ian-divider::before,
-    #ian-auth-section .ian-divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #203725;
-    }
-
     #ian-auth-section .ian-links {
-      text-align: center;
-      color: #9eaea1;
-      font-size: 12px;
-      line-height: 2.1;
-      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      font-size: 13px;
+      flex-wrap: wrap;
     }
-
-    #ian-auth-section .ian-links a {
-      color: var(--ian-green);
-      text-decoration: none;
+    #ian-auth-section a {
+      color: #39ff78;
       cursor: pointer;
+      text-decoration: none;
     }
-
     #ian-auth-section .ian-message {
       display: none;
-      margin-top: 17px;
-      padding: 12px;
-      border: 1px solid #29482f;
-      border-radius: 9px;
-      color: #d8e5db;
-      font-size: 12px;
-      line-height: 1.6;
+      margin-top: 15px;
+      padding: 11px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
       overflow-wrap: anywhere;
+      background: #101a12;
+      border: 1px solid #29432e;
     }
-
-    #ian-auth-section .ian-security-note {
-      margin-top: 22px;
-      color: #77877a;
-      font-size: 10px;
+    #ian-auth-section .ian-small {
       text-align: center;
-      line-height: 1.7;
-    }
-
-    #ian-auth-section .ian-auth-form[hidden] {
-      display: none !important;
-    }
-
-    @media (max-width: 420px) {
-      #ian-auth-section .ian-auth-card {
-        padding: 25px 17px;
-      }
-
-      #ian-auth-section h2 {
-        font-size: 25px;
-      }
+      color: #728676;
+      font-size: 11px;
+      margin-top: 20px;
     }
   </style>
 
   <div class="ian-auth-card">
     <div class="ian-brand">IAN XAU AI</div>
-    <div class="ian-status">PRO PLUS MEMBER ACCESS</div>
+    <h2 id="ian-auth-title">Client Login</h2>
+    <div class="ian-subtitle" id="ian-auth-subtitle">
+      Sign in to access your trading dashboard.
+    </div>
 
-    <h2 id="ianAuthTitle">CLIENT LOGIN</h2>
-    <p class="ian-subtitle" id="ianAuthSubtitle">
-      Sign in to access your IAN XAU AI account.
-    </p>
-
-    <!-- LOGIN -->
-    <form class="ian-auth-form" id="ianLoginForm">
-      <label for="ianLoginEmail">Email address</label>
-      <input id="ianLoginEmail" type="email"
-        autocomplete="email" placeholder="you@example.com" required>
-
-      <label for="ianLoginPassword">Password</label>
-      <div class="ian-password-wrap">
-        <input id="ianLoginPassword" type="password"
-          autocomplete="current-password" placeholder="Your password" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianLoginPassword">SHOW</button>
+    <form id="ian-auth-form">
+      <div id="ian-name-wrap" hidden>
+        <label for="ian-auth-name">Full name</label>
+        <input id="ian-auth-name" type="text"
+          autocomplete="name" placeholder="Your full name">
       </div>
 
-      <button class="ian-btn ian-btn-primary" type="submit">
+      <label for="ian-auth-email">Email address</label>
+      <input id="ian-auth-email" type="email"
+        autocomplete="email" required placeholder="you@example.com">
+
+      <div id="ian-password-wrap">
+        <label for="ian-auth-password">Password</label>
+        <input id="ian-auth-password" type="password"
+          autocomplete="current-password" required
+          minlength="8" placeholder="At least 8 characters">
+      </div>
+
+      <button id="ian-auth-submit" class="ian-primary" type="submit">
         LOG IN
       </button>
-
-      <div class="ian-divider">OR</div>
-
-      <button class="ian-btn ian-btn-secondary" type="button"
-        id="ianGoogleLogin">
-        🌐 CONTINUE WITH GOOGLE
-      </button>
-
-      <div class="ian-links">
-        <a href="#" data-ian-view="forgot">Forgot password?</a>
-        <br>
-        Don't have an account?
-        <a href="#" data-ian-view="signup">Create account</a>
-      </div>
     </form>
 
-    <!-- CREATE ACCOUNT -->
-    <form class="ian-auth-form" id="ianSignupForm" hidden>
-      <label for="ianSignupName">Full name</label>
-      <input id="ianSignupName" type="text"
-        autocomplete="name" placeholder="Your full name" required>
+    <button id="ian-google-login" class="ian-secondary" type="button">
+      Continue with Google
+    </button>
 
-      <label for="ianSignupEmail">Email address</label>
-      <input id="ianSignupEmail" type="email"
-        autocomplete="email" placeholder="you@example.com" required>
+    <div class="ian-links">
+      <a href="#" id="ian-forgot-password">Forgot password?</a>
+      <a href="#" id="ian-toggle-mode">Create account</a>
+    </div>
 
-      <label for="ianSignupPassword">Create password</label>
-      <div class="ian-password-wrap">
-        <input id="ianSignupPassword" type="password"
-          autocomplete="new-password" minlength="8"
-          placeholder="At least 8 characters" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianSignupPassword">SHOW</button>
-      </div>
+    <div id="ian-auth-message" class="ian-message" role="status"></div>
 
-      <button class="ian-btn ian-btn-primary" type="submit">
-        CREATE ACCOUNT
-      </button>
-
-      <div class="ian-divider">OR</div>
-
-      <button class="ian-btn ian-btn-secondary" type="button"
-        id="ianGoogleSignup">
-        🌐 SIGN UP WITH GOOGLE
-      </button>
-
-      <div class="ian-links">
-        Already registered?
-        <a href="#" data-ian-view="login">Log in</a>
-      </div>
-    </form>
-
-    <!-- FORGOT PASSWORD -->
-    <form class="ian-auth-form" id="ianForgotForm" hidden>
-      <label for="ianForgotEmail">Account email</label>
-      <input id="ianForgotEmail" type="email"
-        autocomplete="email" placeholder="you@example.com" required>
-
-      <button class="ian-btn ian-btn-primary" type="submit">
-        SEND PASSWORD RESET LINK
-      </button>
-
-      <div class="ian-links">
-        <a href="#" data-ian-view="login">Back to login</a>
-      </div>
-    </form>
-
-    <!-- SET NEW PASSWORD -->
-    <form class="ian-auth-form" id="ianUpdatePasswordForm" hidden>
-      <label for="ianNewPassword">New password</label>
-      <div class="ian-password-wrap">
-        <input id="ianNewPassword" type="password"
-          autocomplete="new-password" minlength="8"
-          placeholder="At least 8 characters" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianNewPassword">SHOW</button>
-      </div>
-
-      <label for="ianConfirmPassword">Confirm new password</label>
-      <div class="ian-password-wrap">
-        <input id="ianConfirmPassword" type="password"
-          autocomplete="new-password" minlength="8"
-          placeholder="Repeat new password" required>
-        <button class="ian-show-password" type="button"
-          data-ian-toggle="ianConfirmPassword">SHOW</button>
-      </div>
-
-      <button class="ian-btn ian-btn-primary" type="submit">
-        UPDATE PASSWORD
-      </button>
-    </form>
-
-    <div id="ianAuthMessage" class="ian-message" role="status"
-      aria-live="polite"></div>
-
-    <div class="ian-security-note">
-      Passwords and login sessions are handled by Supabase.
-      <br>
-      Trading involves risk. Profits are not guaranteed.
+    <div class="ian-small">
+      Secure account access powered by Supabase.
     </div>
   </div>
-
-  <!-- Supabase JavaScript library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-    (() => {
-      "use strict";
-
-      /*
-       * IAN XAU AI Supabase public configuration.
-       * Never put a Supabase service-role key in website code.
-       */
-      const IAN_SUPABASE_URL =
-        "https://elnqijtvqstzaxrydyox.supabase.co";
-
-      const IAN_SUPABASE_KEY =
-        "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
-
-      const root = document.getElementById("ian-auth-section");
-      if (!root) return;
-
-      if (!window.supabase || !window.supabase.createClient) {
-        console.error("Supabase library failed to load.");
-        return;
-      }
-
-      /*
-       * Reuse an existing client if the rest of the website has one.
-       * This avoids creating a second client on the same page.
-       */
-      const client = window.ianSupabase ||
-        window.supabase.createClient(
-          IAN_SUPABASE_URL,
-          IAN_SUPABASE_KEY,
-          {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true
-            }
-          }
-        );
-
-      window.ianSupabase = client;
-
-      const title = root.querySelector("#ianAuthTitle");
-      const subtitle = root.querySelector("#ianAuthSubtitle");
-      const message = root.querySelector("#ianAuthMessage");
-
-      const forms = {
-        login: root.querySelector("#ianLoginForm"),
-        signup: root.querySelector("#ianSignupForm"),
-        forgot: root.querySelector("#ianForgotForm"),
-        update: root.querySelector("#ianUpdatePasswordForm")
-      };
-
-      function showMessage(text, success = false) {
-        message.textContent = text;
-        message.style.display = text ? "block" : "none";
-        message.style.borderColor = success ? "#39ff78" : "#29482f";
-        message.style.color = success ? "#39ff78" : "#d8e5db";
-      }
-
-      function setView(view) {
-        Object.values(forms).forEach(form => {
-          form.hidden = true;
-        });
-
-        const settings = {
-          login: ["CLIENT LOGIN", "Sign in to your IAN XAU AI account."],
-          signup: ["CREATE ACCOUNT", "Create your IAN XAU AI member account."],
-          forgot: ["RESET PASSWORD", "Receive a password reset link by email."],
-          update: ["SET NEW PASSWORD", "Choose a new password for your account."]
-        };
-
-        const selected = settings[view] ? view : "login";
-        forms[selected].hidden = false;
-        title.textContent = settings[selected][0];
-        subtitle.textContent = settings[selected][1];
-        showMessage("");
-      }
-
-      root.querySelectorAll("[data-ian-view]").forEach(link => {
-        link.addEventListener("click", event => {
-          event.preventDefault();
-          setView(link.dataset.ianView);
-        });
-      });
-
-      root.querySelectorAll("[data-ian-toggle]").forEach(button => {
-        button.addEventListener("click", () => {
-          const input = root.querySelector(
-            "#" + button.dataset.ianToggle
-          );
-          if (!input) return;
-
-          const reveal = input.type === "password";
-          input.type = reveal ? "text" : "password";
-          button.textContent = reveal ? "HIDE" : "SHOW";
-        });
-      });
-
-      async function withButtonLoading(form, action) {
-        const button = form.querySelector('button[type="submit"]');
-        const originalText = button.textContent;
-
-        button.disabled = true;
-        button.textContent = "PLEASE WAIT...";
-        showMessage("");
-
-        try {
-          await action();
-        } catch (error) {
-          showMessage(error.message || "Something went wrong. Please try again.");
-        } finally {
-          button.disabled = false;
-          button.textContent = originalText;
-        }
-      }
-
-      /* Email login */
-      forms.login.addEventListener("submit", event => {
-        event.preventDefault();
-
-        withButtonLoading(forms.login, async () => {
-          const email = root.querySelector("#ianLoginEmail").value.trim();
-          const password = root.querySelector("#ianLoginPassword").value;
-
-          const { error } = await client.auth.signInWithPassword({
-            email,
-            password
-          });
-
-          if (error) throw error;
-
-          showMessage("Login successful.", true);
-
-          /*
-           * Connect your existing dashboard-opening logic here if required.
-           * This code does not grant paid access or verify payment.
-           */
-          if (typeof window.ianOnLoginSuccess === "function") {
-            window.ianOnLoginSuccess();
-          }
-        });
-      });
-
-      /* Create account */
-      forms.signup.addEventListener("submit", event => {
-        event.preventDefault();
-
-        withButtonLoading(forms.signup, async () => {
-          const name = root.querySelector("#ianSignupName").value.trim();
-          const email = root.querySelector("#ianSignupEmail").value.trim();
-          const password = root.querySelector("#ianSignupPassword").value;
-
-          if (password.length < 8) {
-            throw new Error("Your password must contain at least 8 characters.");
-          }
-
-          const { data, error } = await client.auth.signUp({
-            email,
-            password,
-            options: {
-              data: { full_name: name },
-              emailRedirectTo: window.location.origin +
-                window.location.pathname
-            }
-          });
-
-          if (error) throw error;
-
-          if (data.session) {
-            showMessage("Account created and signed in successfully.", true);
-          } else {
-            showMessage(
-              "Account created. Check your email to confirm your account.",
-              true
-            );
-          }
-        });
-      });
-
-      /* Google login and signup */
-      async function googleSignIn() {
-        showMessage("Opening Google sign-in...");
-
-        const { error } = await client.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: window.location.origin +
-              window.location.pathname
-          }
-        });
-
-        if (error) showMessage(error.message);
-      }
-
-      root.querySelector("#ianGoogleLogin")
-        .addEventListener("click", googleSignIn);
-
-      root.querySelector("#ianGoogleSignup")
-        .addEventListener("click", googleSignIn);
-
-      /* Password reset email */
-      forms.forgot.addEventListener("submit", event => {
-        event.preventDefault();
-
-        withButtonLoading(forms.forgot, async () => {
-          const email = root.querySelector("#ianForgotEmail").value.trim();
-
-          const { error } = await client.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin +
-              window.location.pathname
-          });
-
-          if (error) throw error;
-
-          showMessage("Password reset email sent. Check your inbox.", true);
-        });
-      });
-
-      /* Save new password after opening the reset link */
-      forms.update.addEventListener("submit", event => {
-        event.preventDefault();
-
-        withButtonLoading(forms.update, async () => {
-          const password = root.querySelector("#ianNewPassword").value;
-          const confirm = root.querySelector("#ianConfirmPassword").value;
-
-          if (password.length < 8) {
-            throw new Error("Your password must contain at least 8 characters.");
-          }
-
-          if (password !== confirm) {
-            throw new Error("The passwords do not match.");
-          }
-
-          const { error } = await client.auth.updateUser({ password });
-
-          if (error) throw error;
-
-          forms.update.reset();
-          showMessage("Password updated successfully.", true);
-          setTimeout(() => setView("login"), 1500);
-        });
-      });
-
-      /* Detect password-recovery links */
-      client.auth.onAuthStateChange((event) => {
-        if (event === "PASSWORD_RECOVERY") {
-          setView("update");
-          showMessage("Choose your new password below.", true);
-        }
-      });
-
-      if (
-        window.location.hash.includes("type=recovery") ||
-        window.location.hash.includes("access_token=")
-      ) {
-        setView("update");
-      }
-
-      /* Keep the login screen as the default initial view */
-      setView("login");
-    })();
-  </script>
 </section>
-<script>
-window.ianHandleAuthSubmit = async function ({
-  mode,
-  fullName,
-  email,
-  password
-}) {
-  const supabase = window.ianSupabase;
 
-  if (!supabase) {
-    alert("Login system is not connected. Check Section 1.");
+<!-- Load Supabase once. If your page already loads this library,
+     do not add a second copy. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+(function () {
+  const SUPABASE_URL = "https://elnqijtvqstzaxrydyox.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
+
+  const root = document.getElementById("ian-auth-section");
+  if (!root) return;
+
+  const title = root.querySelector("#ian-auth-title");
+  const subtitle = root.querySelector("#ian-auth-subtitle");
+  const form = root.querySelector("#ian-auth-form");
+  const nameWrap = root.querySelector("#ian-name-wrap");
+  const nameInput = root.querySelector("#ian-auth-name");
+  const emailInput = root.querySelector("#ian-auth-email");
+  const passwordInput = root.querySelector("#ian-auth-password");
+  const submitButton = root.querySelector("#ian-auth-submit");
+  const googleButton = root.querySelector("#ian-google-login");
+  const toggleLink = root.querySelector("#ian-toggle-mode");
+  const forgotLink = root.querySelector("#ian-forgot-password");
+  const message = root.querySelector("#ian-auth-message");
+
+  let mode = "login";
+
+  function showMessage(text) {
+    message.style.display = "block";
+    message.textContent = text;
+  }
+
+  function clearMessage() {
+    message.style.display = "none";
+    message.textContent = "";
+  }
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    clearMessage();
+
+    const isSignup = mode === "signup";
+    const isReset = mode === "reset";
+
+    title.textContent = isSignup ? "Create Account" :
+      isReset ? "Reset Password" : "Client Login";
+
+    subtitle.textContent = isSignup ?
+      "Create your IAN XAU AI account." :
+      isReset ? "Request a password reset email." :
+      "Sign in to access your trading dashboard.";
+
+    nameWrap.hidden = !isSignup;
+    nameInput.required = isSignup;
+    passwordInput.parentElement.style.display = isReset ? "none" : "";
+    passwordInput.required = !isReset;
+
+    passwordInput.autocomplete = isSignup ?
+      "new-password" : "current-password";
+
+    submitButton.textContent = isSignup ? "CREATE ACCOUNT" :
+      isReset ? "SEND RESET EMAIL" : "LOG IN";
+
+    toggleLink.textContent = isSignup ?
+      "Back to login" : "Create account";
+
+    forgotLink.style.display = isSignup ? "none" : "";
+    googleButton.style.display = isReset ? "none" : "";
+  }
+
+  function openDashboard() {
+    if (typeof window.ianOnLoginSuccess === "function") {
+      window.ianOnLoginSuccess();
+      return;
+    }
+
+    const dashboard = document.getElementById("ian-dashboard");
+    if (dashboard) {
+      root.hidden = true;
+      dashboard.hidden = false;
+      dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    showMessage(
+      "Login succeeded, but the dashboard section was not found. " +
+      "Check that Section 2 is on this same page."
+    );
+  }
+
+  if (!window.supabase || !window.supabase.createClient) {
+    showMessage("Supabase library did not load. Refresh the page and try again.");
     return;
   }
 
-  try {
-    let result;
+  // Reuse an existing client if the page has already created one.
+  window.ianSupabase = window.ianSupabase ||
+    window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    if (mode === "login") {
-      result = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-    } else {
-      result = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName
+  const client = window.ianSupabase;
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    clearMessage();
+    submitButton.disabled = true;
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const fullName = nameInput.value.trim();
+
+    try {
+      let result;
+
+      if (mode === "login") {
+        result = await client.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+      } else if (mode === "signup") {
+        result = await client.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: { full_name: fullName },
+            emailRedirectTo: window.location.origin + window.location.pathname
           }
+        });
+      } else {
+        result = await client.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + window.location.pathname
+        });
+
+        if (!result.error) {
+          showMessage("If the email is registered, a password-reset link will be sent.");
+          return;
+        }
+      }
+
+      if (result.error) {
+        showMessage(result.error.message);
+        return;
+      }
+
+      if (mode === "signup" && !result.data.session) {
+        showMessage(
+          "Account created. Check your email and confirm your account. " +
+          "Then return here and log in."
+        );
+        return;
+      }
+
+      if (mode === "signup" || mode === "login") {
+        if (result.data.session) {
+          openDashboard();
+        } else {
+          showMessage("No active session yet. Confirm your email if requested, then log in.");
+        }
+      }
+    } catch (error) {
+      showMessage(error.message || "Something went wrong. Please try again.");
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  toggleLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    setMode(mode === "signup" ? "login" : "signup");
+  });
+
+  forgotLink.addEventListener("click", function (event) {
+    event.preventDefault();
+    setMode(mode === "reset" ? "login" : "reset");
+  });
+
+  googleButton.addEventListener("click", async function () {
+    clearMessage();
+    googleButton.disabled = true;
+
+    try {
+      const result = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
         }
       });
+
+      if (result.error) showMessage(result.error.message);
+    } catch (error) {
+      showMessage(error.message || "Google sign-in failed.");
+    } finally {
+      googleButton.disabled = false;
     }
+  });
 
-    if (result.error) {
-      alert(result.error.message);
-      return;
+  // Handles returning from Google OAuth and existing signed-in sessions.
+  client.auth.onAuthStateChange(function (event, session) {
+    if (session && (
+      event === "SIGNED_IN" ||
+      event === "INITIAL_SESSION" ||
+      event === "PASSWORD_RECOVERY"
+    )) {
+      setTimeout(openDashboard, 0);
     }
+  });
 
-    if (!result.data.session) {
-      alert(
-        "Account created. Check your email to confirm your account, then log in."
-      );
-      return;
+  client.auth.getSession().then(function (result) {
+    if (result.data && result.data.session) {
+      openDashboard();
     }
+  }).catch(function (error) {
+    console.error("Session check failed:", error);
+  });
 
-    document.getElementById("ian-auth-section")
-      ?.setAttribute("hidden", "");
+  // Supabase password-reset links may return with a recovery session.
+  if (window.location.hash.includes("type=recovery")) {
+    setMode("reset");
+    title.textContent = "Choose a new password";
+    subtitle.textContent = "Enter your new password below.";
+    passwordInput.parentElement.style.display = "";
+    passwordInput.required = true;
+    submitButton.textContent = "UPDATE PASSWORD";
 
-    if (typeof window.ianOnLoginSuccess === "function") {
-      await window.ianOnLoginSuccess();
-    } else {
-      const dashboard = document.getElementById("ian-dashboard");
+    form.onsubmit = async function (event) {
+      event.preventDefault();
+      clearMessage();
+      const result = await client.auth.updateUser({
+        password: passwordInput.value
+      });
 
-      if (dashboard) {
-        dashboard.hidden = false;
-        dashboard.scrollIntoView({ behavior: "smooth" });
+      if (result.error) {
+        showMessage(result.error.message);
       } else {
-        alert("Dashboard section was not found.");
+        showMessage("Password updated. You can now continue to your dashboard.");
+        openDashboard();
       }
-    }
-  } catch (error) {
-    alert("Authentication failed: " + error.message);
+    };
   }
-};
-</script>
 
-<!-- SECTION 2: IAN XAU AI PRO PLUS TRADING DASHBOARD -->
+  setMode("login");
+})();
+</script>
+<!-- END SECTION 1 -->
+<!-- SECTION 2: IAN XAU AI PRO PLUS DASHBOARD -->
 <section id="ian-dashboard" hidden>
   <style>
     #ian-dashboard {
-      --bg: #030603;
-      --panel: #09110b;
-      --green: #39ff78;
-      --muted: #91a196;
-      --line: rgba(57,255,120,.20);
-      background: var(--bg);
-      color: #f3fff5;
-      font-family: Arial, Helvetica, sans-serif;
-      padding: 18px;
+      background: #030603;
+      color: #e9f5eb;
+      font-family: Arial, sans-serif;
+      padding: 18px 14px 35px;
       min-height: 100vh;
-      box-sizing: border-box;
     }
-
+    #ian-dashboard[hidden] { display: none !important; }
     #ian-dashboard * { box-sizing: border-box; }
-
     #ian-dashboard .ian-dash-wrap {
-      width: 100%;
-      max-width: 1250px;
+      max-width: 1150px;
       margin: auto;
     }
-
-    #ian-dashboard .ian-dash-header {
+    #ian-dashboard .ian-dash-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      padding: 12px 0 22px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid #203c26;
+      padding-bottom: 17px;
+      margin-bottom: 20px;
     }
-
     #ian-dashboard .ian-dash-brand {
-      color: var(--green);
-      font-size: 17px;
-      font-weight: 900;
+      color: #39ff78;
+      font-size: 13px;
+      font-weight: 800;
       letter-spacing: 2px;
     }
-
-    #ian-dashboard .ian-dash-caption {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing: 1px;
+    #ian-dashboard h1 {
+      font-size: clamp(23px, 4vw, 35px);
+      margin: 9px 0;
     }
-
-    #ian-dashboard .ian-live-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid var(--line);
-      border-radius: 25px;
-      padding: 9px 12px;
-      color: var(--green);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .7px;
-    }
-
-    #ian-dashboard .ian-status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      display: inline-block;
-    }
-
-    #ian-dashboard .ian-dash-title {
-      margin: 26px 0 7px;
-      font-size: clamp(23px, 4vw, 34px);
-      letter-spacing: -1px;
-    }
-
-    #ian-dashboard .ian-dash-description {
-      color: var(--muted);
+    #ian-dashboard .ian-muted {
+      color: #93a797;
       font-size: 13px;
-      line-height: 1.7;
-      margin: 0 0 22px;
+      line-height: 1.6;
     }
-
-    #ian-dashboard .ian-dash-grid {
+    #ian-dashboard button {
+      border: 1px solid #315238;
+      background: #0b150d;
+      color: #e9f5eb;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    #ian-dashboard .ian-refresh {
+      background: #39ff78;
+      color: #031006;
+      border-color: #39ff78;
+    }
+    #ian-dashboard .ian-level-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
+      margin: 18px 0;
     }
-
-    #ian-dashboard .ian-dash-card {
-      min-width: 0;
-      padding: 17px;
-      background: linear-gradient(145deg, #0b160e, #060a07);
-      border: 1px solid var(--line);
+    #ian-dashboard .ian-panel {
+      background: #081009;
+      border: 1px solid #203c26;
       border-radius: 13px;
+      padding: 16px;
+      min-width: 0;
     }
-
-    #ian-dashboard .ian-card-label {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 800;
+    #ian-dashboard .ian-level-label {
+      font-size: 11px;
+      color: #91a493;
       letter-spacing: 1px;
-      text-transform: uppercase;
+      margin-bottom: 10px;
     }
-
-    #ian-dashboard .ian-card-value {
-      margin-top: 12px;
-      font-size: clamp(17px, 2.5vw, 25px);
+    #ian-dashboard .ian-level-value {
+      color: #39ff78;
+      font-size: clamp(17px, 2.5vw, 24px);
       font-weight: 800;
       overflow-wrap: anywhere;
     }
-
-    #ian-dashboard .ian-card-note {
-      margin-top: 9px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    #ian-dashboard .ian-green { color: var(--green); }
-    #ian-dashboard .ian-gold { color: #f3c969; }
-    #ian-dashboard .ian-red { color: #ff7777; }
-
-    #ian-dashboard .ian-dash-section {
-      margin-top: 18px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--panel);
-      min-width: 0;
-    }
-
-    #ian-dashboard .ian-section-heading {
-      font-size: 15px;
-      font-weight: 800;
-      margin: 0 0 8px;
-    }
-
-    #ian-dashboard .ian-section-description {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-      margin: 0 0 15px;
-    }
-
-    #ian-dashboard .ian-chart-frame {
-      height: 490px;
+    #ian-dashboard .ian-chart {
+      height: 520px;
       width: 100%;
-      border: 1px solid #1b3020;
-      border-radius: 10px;
+      border: 1px solid #203c26;
+      border-radius: 13px;
       overflow: hidden;
-      background: #050805;
+      background: #080d09;
     }
-
-    #ian-dashboard .ian-chart-frame iframe {
+    #ian-dashboard .ian-chart iframe {
       width: 100%;
       height: 100%;
       border: 0;
     }
-
-    #ian-dashboard .ian-level-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    #ian-dashboard .ian-level {
-      padding: 16px;
-      border-radius: 11px;
-      border: 1px solid var(--line);
-      background: #050905;
-    }
-
-    #ian-dashboard .ian-level-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    #ian-dashboard .ian-level-price {
-      font-size: 23px;
-      font-weight: 800;
-      margin-top: 12px;
-      overflow-wrap: anywhere;
-    }
-
-    #ian-dashboard .ian-level-sub {
-      color: var(--muted);
-      font-size: 10px;
-      margin-top: 8px;
-      line-height: 1.6;
-    }
-
-    #ian-dashboard .ian-level-tag {
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: .5px;
-      color: var(--green);
-    }
-
-    #ian-dashboard .ian-data-message {
+    #ian-dashboard .ian-status {
       padding: 12px;
       border-radius: 9px;
-      background: #0b160e;
-      border: 1px solid var(--line);
-      color: #c2d2c5;
-      font-size: 12px;
-      line-height: 1.7;
+      background: #101a12;
+      border: 1px solid #29432e;
+      color: #c7d9ca;
+      font-size: 13px;
+      line-height: 1.6;
       overflow-wrap: anywhere;
+      margin-top: 14px;
     }
-
-    #ian-dashboard .ian-action-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    #ian-dashboard .ian-status.error {
+      border-color: #804040;
+      color: #ffb6b6;
+    }
+    #ian-dashboard .ian-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
       margin-top: 15px;
     }
-
-    #ian-dashboard .ian-dash-btn {
-      padding: 11px 14px;
-      background: #0a170c;
-      color: var(--green);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
+    #ian-dashboard h2 {
+      font-size: 17px;
+      margin: 0 0 13px;
     }
-
-    #ian-dashboard .ian-strategy-list {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    #ian-dashboard .ian-strategy-item {
-      padding: 15px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: #050905;
-    }
-
-    #ian-dashboard .ian-strategy-item strong {
-      display: block;
-      color: var(--green);
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    #ian-dashboard .ian-strategy-item p {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
+    #ian-dashboard ul {
       margin: 0;
+      padding-left: 20px;
+      color: #b8cabb;
+      font-size: 13px;
+      line-height: 1.9;
     }
-
-    #ian-dashboard .ian-dash-footer {
-      margin-top: 22px;
-      padding: 18px 0;
-      border-top: 1px solid var(--line);
-      color: #718075;
-      font-size: 10px;
-      line-height: 1.8;
-      text-align: center;
+    #ian-dashboard .ian-footer {
+      color: #718574;
+      font-size: 11px;
+      line-height: 1.6;
+      margin-top: 20px;
     }
-
-    @media (max-width: 760px) {
-      #ian-dashboard { padding: 13px; }
-      #ian-dashboard .ian-dash-grid {
+    @media (max-width: 700px) {
+      #ian-dashboard .ian-level-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      #ian-dashboard .ian-strategy-list {
+      #ian-dashboard .ian-two-col {
         grid-template-columns: 1fr;
       }
-      #ian-dashboard .ian-chart-frame { height: 390px; }
-    }
-
-    @media (max-width: 420px) {
-      #ian-dashboard .ian-level-grid { grid-template-columns: 1fr; }
-      #ian-dashboard .ian-dash-card { padding: 13px; }
-      #ian-dashboard .ian-dash-section { padding: 13px; }
+      #ian-dashboard .ian-chart {
+        height: 430px;
+      }
     }
   </style>
 
   <div class="ian-dash-wrap">
-    <header class="ian-dash-header">
+    <div class="ian-dash-top">
       <div>
-        <div class="ian-dash-brand">IAN XAU AI</div>
-        <div class="ian-dash-caption">PRO PLUS · XAUUSD TRADING SYSTEM</div>
+        <div class="ian-dash-brand">IAN XAU AI · PRO PLUS</div>
+        <h1>XAUUSD Trading Dashboard</h1>
+        <div class="ian-muted">
+          RULE-BASED TRADING SYSTEM · READ THE MARKET. FOLLOW THE RULES.
+        </div>
       </div>
-      <div class="ian-live-status">
-        <span class="ian-status-dot"></span>
-        <span id="ianMarketStatus">CHECKING DATA</span>
-      </div>
-    </header>
-
-    <h1 class="ian-dash-title">Trading Dashboard</h1>
-    <p class="ian-dash-description">
-      Read the market. Track key levels. Wait for confirmation.
-      All displayed price levels require real market-candle data.
-    </p>
-
-    <!-- MARKET SUMMARY -->
-    <div class="ian-dash-grid">
-      <div class="ian-dash-card">
-        <div class="ian-card-label">Instrument</div>
-        <div class="ian-card-value">XAUUSD</div>
-        <div class="ian-card-note">Gold / US Dollar</div>
-      </div>
-
-      <div class="ian-dash-card">
-        <div class="ian-card-label">Current Price</div>
-        <div class="ian-card-value" id="ianCurrentPrice">—</div>
-        <div class="ian-card-note" id="ianPriceTime">Awaiting market data</div>
-      </div>
-
-      <div class="ian-dash-card">
-        <div class="ian-card-label">Asia Session</div>
-        <div class="ian-card-value" id="ianAsiaStatus">—</div>
-        <div class="ian-card-note">New York time: 7 PM–12 AM</div>
-      </div>
-
-      <div class="ian-dash-card">
-        <div class="ian-card-label">Data Feed</div>
-        <div class="ian-card-value" id="ianFeedStatus">OFFLINE</div>
-        <div class="ian-card-note">Backend connection required</div>
+      <div>
+        <button id="ian-dash-refresh" class="ian-refresh">REFRESH LEVELS</button>
+        <button id="ian-dash-logout">LOG OUT</button>
       </div>
     </div>
 
-    <!-- CHART -->
-    <section class="ian-dash-section">
-      <h2 class="ian-section-heading">Live XAUUSD Chart</h2>
-      <p class="ian-section-description">
-        TradingView chart view. Chart quotes may differ from your broker's
-        executable prices. The chart itself does not supply the levels below.
-      </p>
+    <div class="ian-level-grid">
+      <div class="ian-panel">
+        <div class="ian-level-label">ASIA HIGH</div>
+        <div class="ian-level-value" id="ian-asia-high">Loading...</div>
+      </div>
+      <div class="ian-panel">
+        <div class="ian-level-label">ASIA LOW</div>
+        <div class="ian-level-value" id="ian-asia-low">Loading...</div>
+      </div>
+      <div class="ian-panel">
+        <div class="ian-level-label">PDH · PREVIOUS DAY HIGH</div>
+        <div class="ian-level-value" id="ian-pdh">Loading...</div>
+      </div>
+      <div class="ian-panel">
+        <div class="ian-level-label">PDL · PREVIOUS DAY LOW</div>
+        <div class="ian-level-value" id="ian-pdl">Loading...</div>
+      </div>
+    </div>
 
-      <div class="ian-chart-frame">
+    <div class="ian-panel">
+      <h2>Live Chart · XAUUSD</h2>
+      <div class="ian-chart">
         <iframe
-          title="TradingView XAUUSD 15 minute chart"
-          src="https://s.tradingview.com/widgetembed/?symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=030603&theme=dark&style=1&timezone=America%2FNew_York&withdateranges=1&hideideas=1&locale=en"
+          title="TradingView XAUUSD chart"
+          src="https://s.tradingview.com/widgetembed/?frameElementId=ianTradingViewChart&symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=030603&theme=dark&style=1&timezone=America%2FNew_York&withdateranges=1&hideideas=1&studies=[]&locale=en"
           loading="lazy"
           allowfullscreen>
         </iframe>
       </div>
-    </section>
-
-    <!-- KEY LEVELS -->
-    <section class="ian-dash-section">
-      <h2 class="ian-section-heading">Key Market Levels</h2>
-      <p class="ian-section-description">
-        Asia session is defined here as 7:00 PM through midnight in
-        America/New_York time. PDH and PDL use the previous New York
-        calendar day, midnight to midnight. The times automatically follow
-        New York daylight-saving changes.
-      </p>
-
-      <div class="ian-level-grid">
-        <div class="ian-level">
-          <div class="ian-level-top">
-            <span>ASIA HIGH</span>
-            <span class="ian-level-tag">RESISTANCE REFERENCE</span>
-          </div>
-          <div class="ian-level-price ian-green" id="ianAsiaHigh">—</div>
-          <div class="ian-level-sub" id="ianAsiaHighNote">
-            Waiting for complete Asia-session candles.
-          </div>
-        </div>
-
-        <div class="ian-level">
-          <div class="ian-level-top">
-            <span>ASIA LOW</span>
-            <span class="ian-level-tag">SUPPORT REFERENCE</span>
-          </div>
-          <div class="ian-level-price ian-green" id="ianAsiaLow">—</div>
-          <div class="ian-level-sub" id="ianAsiaLowNote">
-            Waiting for complete Asia-session candles.
-          </div>
-        </div>
-
-        <div class="ian-level">
-          <div class="ian-level-top">
-            <span>PREVIOUS DAY HIGH</span>
-            <span class="ian-level-tag">PDH</span>
-          </div>
-          <div class="ian-level-price ian-gold" id="ianPDH">—</div>
-          <div class="ian-level-sub" id="ianPDHNote">
-            Waiting for previous-day candles.
-          </div>
-        </div>
-
-        <div class="ian-level">
-          <div class="ian-level-top">
-            <span>PREVIOUS DAY LOW</span>
-            <span class="ian-level-tag">PDL</span>
-          </div>
-          <div class="ian-level-price ian-gold" id="ianPDL">—</div>
-          <div class="ian-level-sub" id="ianPDLNote">
-            Waiting for previous-day candles.
-          </div>
-        </div>
+      <div class="ian-muted" style="margin-top:10px">
+        TradingView chart prices may differ from your broker's Exness execution prices.
       </div>
+    </div>
 
-      <div class="ian-action-row">
-        <button type="button" class="ian-dash-btn" id="ianRefreshLevels">
-          REFRESH MARKET LEVELS
-        </button>
-        <span id="ianLastUpdated" class="ian-card-note">
-          Not yet updated
-        </span>
+    <div id="ian-data-status" class="ian-status" role="status">
+      Connecting to the market-data service...
+    </div>
+
+    <div class="ian-two-col">
+      <div class="ian-panel">
+        <h2>Strategy Reference</h2>
+        <ul>
+          <li>Mark Asia High and Asia Low using New York time.</li>
+          <li>Mark PDH and PDL from the previous New York calendar day.</li>
+          <li>Look for liquidity sweeps and a clear reaction.</li>
+          <li>Wait for confirmation before considering an entry.</li>
+          <li>Define stop-loss and take-profit before any trade.</li>
+        </ul>
       </div>
-
-      <div id="ianLevelMessage" class="ian-data-message" style="margin-top:14px">
-        Waiting for the market-data backend. Prices will remain blank until
-        real candle data is received.
+      <div class="ian-panel">
+        <h2>Session Definition</h2>
+        <ul>
+          <li>Asia range: 7:00 PM to midnight, New York time.</li>
+          <li>Before 7:00 PM New York time, the latest completed Asia range is used.</li>
+          <li>After 7:00 PM, the current Asia range is still forming until midnight.</li>
+          <li>PDH/PDL: previous New York calendar day, midnight to midnight.</li>
+        </ul>
       </div>
-    </section>
+    </div>
 
-    <!-- MARKET PLAN -->
-    <section class="ian-dash-section">
-      <h2 class="ian-section-heading">Strategy Checklist</h2>
-      <p class="ian-section-description">
-        These are decision rules, not guaranteed trade signals.
-      </p>
-
-      <div class="ian-strategy-list">
-        <div class="ian-strategy-item">
-          <strong>01 · Mark the levels</strong>
-          <p>
-            Identify Asia High, Asia Low, PDH and PDL before looking for
-            a trade.
-          </p>
-        </div>
-
-        <div class="ian-strategy-item">
-          <strong>02 · Watch liquidity</strong>
-          <p>
-            A level being touched or swept is not enough on its own.
-            Wait for a clear reaction.
-          </p>
-        </div>
-
-        <div class="ian-strategy-item">
-          <strong>03 · Confirm and manage risk</strong>
-          <p>
-            Require your defined entry confirmation. Set a stop-loss and
-            position size before entering.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="ian-dash-footer">
-      IAN XAU AI PRO PLUS · MARKET ANALYSIS TOOL
-      <br>
-      Market data can be delayed or unavailable. Trading gold carries
-      significant risk. No profit is guaranteed.
+    <div class="ian-footer">
+      Market levels are calculated from the candles returned by your configured data provider.
+      Missing candles, market closures, provider limits or delayed data can affect the result.
+      This dashboard does not place trades or guarantee profits.
     </div>
   </div>
+</section>
 
-  <script>
-    (() => {
-      "use strict";
-
-      const root = document.getElementById("ian-dashboard");
-      if (!root || root.dataset.initialized === "yes") return;
-      root.dataset.initialized = "yes";
-
-      /*
-       * Required backend endpoint:
-       * GET /api/xauusd/candles?timeframe=M1&days=3
-       *
-       * Expected response:
-       * {
-       *   "candles": [
-       *     {
-       *       "time": 1793164800,
-       *       "open": 4000.10,
-       *       "high": 4002.20,
-       *       "low": 3998.90,
-       *       "close": 4001.50
-       *     }
-       *   ],
-       *   "source": "your market-data provider"
-       * }
-       *
-       * Candle time must be a Unix timestamp in SECONDS (UTC).
-       * The endpoint must return genuine XAUUSD candles, including
-       * the previous New York calendar day and the current Asia session.
-       */
-
-      const $ = id => root.querySelector("#" + id);
-      const timezone = "America/New_York";
-
-      const fmt = new Intl.DateTimeFormat("en-CA", {
-        timeZone: timezone,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      });
-
-      const partsFmt = new Intl.DateTimeFormat("en-US", {
-        timeZone: timezone,
-        hour: "2-digit",
-        minute: "2-digit",
-        hourCycle: "h23"
-      });
-
-      function nyDate(timestampSeconds) {
-        const parts = fmt.formatToParts(
-          new Date(timestampSeconds * 1000)
-        );
-        const out = {};
-        parts.forEach(p => {
-          if (p.type !== "literal") out[p.type] = p.value;
-        });
-        return out.year + "-" + out.month + "-" + out.day;
-      }
-
-      function nyMinutes(timestampSeconds) {
-        const parts = partsFmt.formatToParts(
-          new Date(timestampSeconds * 1000)
-        );
-        const out = {};
-        parts.forEach(p => {
-          if (p.type !== "literal") out[p.type] = p.value;
-        });
-        return Number(out.hour) * 60 + Number(out.minute);
-      }
-
-      function shiftDate(dateString, amount) {
-        const [y, m, d] = dateString.split("-").map(Number);
-        const date = new Date(Date.UTC(y, m - 1, d + amount));
-        return [
-          date.getUTCFullYear(),
-          String(date.getUTCMonth() + 1).padStart(2, "0"),
-          String(date.getUTCDate()).padStart(2, "0")
-        ].join("-");
-      }
-
-      function validCandle(c) {
-        return c &&
-          Number.isFinite(Number(c.time)) &&
-          Number.isFinite(Number(c.high)) &&
-          Number.isFinite(Number(c.low)) &&
-          Number(c.high) >= Number(c.low);
-      }
-
-      function formatPrice(price) {
-        return Number(price).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 3
-        });
-      }
-
-      function show(id, value) {
-        $(id).textContent = value;
-      }
-
-      function calculate(candles) {
-        const sorted = candles
-          .filter(validCandle)
-          .map(c => ({
-            time: Number(c.time),
-            high: Number(c.high),
-            low: Number(c.low),
-            close: Number(c.close)
-          }))
-          .sort((a, b) => a.time - b.time);
-
-        if (!sorted.length) {
-          throw new Error("The backend returned no valid candles.");
-        }
-
-        const todayNY = nyDate(Date.now() / 1000);
-        const previousNY = shiftDate(todayNY, -1);
-
-        /*
-         * Asia window is [19:00, 00:00) New York time.
-         * Before midnight, it belongs to the previous date's session.
-         * After midnight, the session date is the previous calendar date.
-         */
-        const nowMinutes = nyMinutes(Date.now() / 1000);
-        const currentSessionDate =
-          nowMinutes < 0 ? previousNY : todayNY;
-
-        const asiaSessionDate =
-          nowMinutes < 0 ? previousNY : todayNY;
-
-        const asia = sorted.filter(c => {
-          const date = nyDate(c.time);
-          const minute = nyMinutes(c.time);
-
-          if (date === asiaSessionDate) {
-            return minute >= 19 * 60;
-          }
-
-          if (date === shiftDate(asiaSessionDate, 1)) {
-            return minute < 0;
-          }
-
-          return false;
-        });
-
-        /*
-         * Use previous New York calendar day for PDH and PDL.
-         * The endpoint must provide candles covering that full day.
-         */
-        const previousDay = sorted.filter(
-          c => nyDate(c.time) === previousNY
-        );
-
-        const currentDay = sorted.filter(
-          c => nyDate(c.time) === todayNY
-        );
-
-        const latest = sorted[sorted.length - 1];
-
-        function range(items) {
-          if (!items.length) return null;
-          return {
-            high: Math.max(...items.map(c => c.high)),
-            low: Math.min(...items.map(c => c.low))
-          };
-        }
-
-        return {
-          latest,
-          todayNY,
-          previousNY,
-          asia: range(asia),
-          previous: range(previousDay),
-          currentDay: range(currentDay),
-          asiaCount: asia.length,
-          previousCount: previousDay.length,
-          currentCount: currentDay.length,
-          sourceCount: sorted.length
-        };
-      }
-
-      function updateLevel(id, noteId, range, key, count, note) {
-        if (!range) {
-          show(id, "—");
-          show(noteId, note);
-          return;
-        }
-
-        show(id, formatPrice(range[key]));
-        show(noteId, count + " candles used · " + note);
-      }
-
-      async function refreshLevels() {
-        show("ianMarketStatus", "LOADING DATA");
-        show("ianFeedStatus", "CONNECTING");
-        show("ianLevelMessage", "Requesting genuine XAUUSD candle data...");
-
-        try {
-          const response = await fetch(
-            "/api/xauusd/candles?timeframe=M1&days=3",
-            {
-              method: "GET",
-              headers: { "Accept": "application/json" },
-              cache: "no-store"
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(
-              "Market-data endpoint returned HTTP " + response.status +
-              ". The backend endpoint must be installed."
-            );
-          }
-
-          const payload = await response.json();
-          if (!payload || !Array.isArray(payload.candles)) {
-            throw new Error(
-              "Invalid response. Expected a JSON object containing candles."
-            );
-          }
-
-          const data = calculate(payload.candles);
-
-          show("ianCurrentPrice", formatPrice(data.latest.close));
-          show(
-            "ianPriceTime",
-            "Last candle: " +
-              new Date(data.latest.time * 1000).toLocaleString("en-US", {
-                timeZone: timezone,
-                dateStyle: "medium",
-                timeStyle: "short"
-              }) + " New York"
-          );
-
-          updateLevel(
-            "ianAsiaHigh", "ianAsiaHighNote",
-            data.asia, "high", data.asiaCount,
-            "Asia session high"
-          );
-
-          updateLevel(
-            "ianAsiaLow", "ianAsiaLowNote",
-            data.asia, "low", data.asiaCount,
-            "Asia session low"
-          );
-
-          updateLevel(
-            "ianPDH", "ianPDHNote",
-            data.previ
-<!-- END SECTION 1 -->
-  
 <script>
-window.ianHandleAuthSubmit = async function ({
-  mode,
-  fullName,
-  email,
-  password
-}) {
-  const supabase = window.ianSupabase;
+(function () {
+  const dashboard = document.getElementById("ian-dashboard");
+  if (!dashboard) return;
 
-  if (!supabase) {
-    alert("Login system is not connected. Check Section 1.");
-    return;
+  const $ = (id) => dashboard.querySelector("#" + id);
+
+  const highEl = $("ian-asia-high");
+  const lowEl = $("ian-asia-low");
+  const pdhEl = $("ian-pdh");
+  const pdlEl = $("ian-pdl");
+  const statusEl = $("ian-data-status");
+  const refreshButton = $("ian-dash-refresh");
+  const logoutButton = $("ian-dash-logout");
+
+  let refreshInProgress = false;
+
+  function status(text, isError) {
+    statusEl.textContent = text;
+    statusEl.classList.toggle("error", !!isError);
   }
 
-  try {
-    let result;
+  function showNumber(value) {
+    return Number.isFinite(value) ? value.toFixed(2) : "Unavailable";
+  }
 
-    if (mode === "login") {
-      result = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-    } else {
-      result = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName
-          }
-        }
-      });
+  // Get New York calendar date and minute for a UTC Unix timestamp.
+  function nyParts(unixSeconds) {
+    const date = new Date(unixSeconds * 1000);
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(date);
+
+    const values = {};
+    for (const part of parts) {
+      if (part.type !== "literal") values[part.type] = part.value;
     }
 
-    if (result.error) {
-      alert(result.error.message);
-      return;
-    }
+    const year = Number(values.year);
+    const month = Number(values.month);
+    const day = Number(values.day);
+    const hour = Number(values.hour);
+    const minute = Number(values.minute);
 
-    if (!result.data.session) {
-      alert(
-        "Account created. Check your email to confirm your account, then log in."
+    return {
+      dateKey: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+      minuteOfDay: hour * 60 + minute
+    };
+  }
+
+  function shiftDateKey(dateKey, amount) {
+    const [year, month, day] = dateKey.split("-").map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day + amount));
+    return [
+      date.getUTCFullYear(),
+      String(date.getUTCMonth() + 1).padStart(2, "0"),
+      String(date.getUTCDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function highest(candles) {
+    if (!candles.length) return null;
+    return Math.max(...candles.map(c => c.high));
+  }
+
+  function lowest(candles) {
+    if (!candles.length) return null;
+    return Math.min(...candles.map(c => c.low));
+  }
+
+  async function refreshLevels() {
+    if (refreshInProgress) return;
+    refreshInProgress = true;
+    refreshButton.disabled = true;
+
+    highEl.textContent = "Loading...";
+    lowEl.textContent = "Loading...";
+    pdhEl.textContent = "Loading...";
+    pdlEl.textContent = "Loading...";
+    status("Loading XAUUSD candles from the backend...", false);
+
+    try {
+      const response = await fetch(
+        "/api/xauusd/candles?timeframe=M1&days=3",
+        { cache: "no-store" }
       );
-      return;
-    }
 
-    document.getElementById("ian-auth-section")
-      ?.setAttribute("hidden", "");
-
-    if (typeof window.ianOnLoginSuccess === "function") {
-      await window.ianOnLoginSuccess();
-    } else {
-      const dashboard = document.getElementById("ian-dashboard");
-
-      if (dashboard) {
-        dashboard.hidden = false;
-        dashboard.scrollIntoView({ behavior: "smooth" });
-      } else {
-        alert("Dashboard section was not found.");
+      let payload;
+      try {
+        payload = await response.json();
+      } catch (_) {
+        throw new Error("The market-data endpoint did not return valid JSON.");
       }
+
+      if (!response.ok) {
+        throw new Error(payload.error || "Market-data request failed.");
+      }
+
+      if (!Array.isArray(payload.candles) || !payload.candles.length) {
+        throw new Error("No candles were returned by the market-data provider.");
+      }
+
+      const candles = payload.candles
+        .map(c => ({
+          time: Number(c.time),
+          open: Number(c.open),
+          high: Number(c.high),
+          low: Number(c.low),
+          close: Number(c.close)
+        }))
+        .filter(c =>
+          Number.isFinite(c.time) &&
+          Number.isFinite(c.high) &&
+          Number.isFinite(c.low) &&
+          c.high >= c.low
+        )
+        .sort((a, b) => a.time - b.time);
+
+      if (!candles.length) {
+        throw new Error("The provider returned no usable candle data.");
+      }
+
+      const nowParts = nyParts(Date.now() / 1000);
+      const todayNY = nowParts.dateKey;
+      const nowMinutes = nowParts.minuteOfDay;
+
+      // Asia session is 19:00–23:59 New York time.
+      // If current NY time is before 19:00, use the previous night's session.
+      const asiaSessionDate = nowMinutes >= 19 * 60
+        ? todayNY
+        : shiftDateKey(todayNY, -1);
+
+      const previousNYDate = shiftDateKey(todayNY, -1);
+
+      const asiaCandles = candles.filter(c => {
+        const p = nyParts(c.time);
+        return p.dateKey === asiaSessionDate &&
+          p.minuteOfDay >= 19 * 60;
+      });
+
+      const previousDayCandles = candles.filter(c => {
+        const p = nyParts(c.time);
+        return p.dateKey === previousNYDate;
+      });
+
+      const asiaHigh = highest(asiaCandles);
+      const asiaLow = lowest(asiaCandles);
+      const pdh = highest(previousDayCandles);
+      const pdl = lowest(previousDayCandles);
+
+      highEl.textContent = showNumber(asiaHigh);
+      lowEl.textContent = showNumber(asiaLow);
+      pdhEl.textContent = showNumber(pdh);
+      pdlEl.textContent = showNumber(pdl);
+
+      const asiaStatus = nowMinutes >= 19 * 60
+        ? "current Asia session is forming"
+        : "latest completed Asia session";
+
+      const warnings = [];
+
+      if (!asiaCandles.length) {
+        warnings.push("No candles found for the selected Asia session.");
+      } else if (asiaCandles.length < 60) {
+        warnings.push("The Asia range has fewer than 60 one-minute candles.");
+      }
+
+      if (!previousDayCandles.length) {
+        warnings.push("No candles found for the previous New York calendar day.");
+      }
+
+      status(
+        "Data source: " + (payload.source || "configured provider") +
+        ". Received " + candles.length + " candles. New York time: " +
+        new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/New_York",
+          dateStyle: "medium",
+          timeStyle: "short"
+        }).format(new Date()) +
+        ". Asia range: " + asiaStatus + ". " +
+        (warnings.length ? "Check: " + warnings.join(" ") :
+          "Levels calculated from available candles.") ,
+        warnings.length > 0
+      );
+    } catch (error) {
+      highEl.textContent = "Unavailable";
+      lowEl.textContent = "Unavailable";
+      pdhEl.textContent = "Unavailable";
+      pdlEl.textContent = "Unavailable";
+      status(error.message || "Unable to load market data.", true);
+    } finally {
+      refreshInProgress = false;
+      refreshButton.disabled = false;
     }
-  } catch (error) {
-    alert("Authentication failed: " + error.message);
   }
-};
+
+  // Section 1 calls this after successful login or account creation.
+  window.ianOnLoginSuccess = function () {
+    const authSection = document.getElementById("ian-auth-section");
+    if (authSection) authSection.hidden = true;
+
+    dashboard.hidden = false;
+    dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+    refreshLevels();
+  };
+
+  refreshButton.addEventListener("click", refreshLevels);
+
+  logoutButton.addEventListener("click", async function () {
+    try {
+      if (window.ianSupabase) {
+        await window.ianSupabase.auth.signOut();
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+
+    dashboard.hidden = true;
+
+    const authSection = document.getElementById("ian-auth-section");
+    if (authSection) {
+      authSection.hidden = false;
+      authSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
+  // If a user already has an active Supabase session, show the dashboard.
+  if (window.ianSupabase) {
+    window.ianSupabase.auth.getSession().then(function (result) {
+      if (result.data && result.data.session) {
+        window.ianOnLoginSuccess();
+      }
+    }).catch(function (error) {
+      console.error("Dashboard session check failed:", error);
+    });
+  }
+})();
 </script>
-  
+<!-- END SECTION 2 -->
