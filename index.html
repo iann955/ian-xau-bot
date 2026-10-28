@@ -602,6 +602,73 @@
     })();
   </script>
 </section>
+<script>
+window.ianHandleAuthSubmit = async function ({
+  mode,
+  fullName,
+  email,
+  password
+}) {
+  const supabase = window.ianSupabase;
+
+  if (!supabase) {
+    alert("Login system is not connected. Check Section 1.");
+    return;
+  }
+
+  try {
+    let result;
+
+    if (mode === "login") {
+      result = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+    } else {
+      result = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName
+          }
+        }
+      });
+    }
+
+    if (result.error) {
+      alert(result.error.message);
+      return;
+    }
+
+    if (!result.data.session) {
+      alert(
+        "Account created. Check your email to confirm your account, then log in."
+      );
+      return;
+    }
+
+    document.getElementById("ian-auth-section")
+      ?.setAttribute("hidden", "");
+
+    if (typeof window.ianOnLoginSuccess === "function") {
+      await window.ianOnLoginSuccess();
+    } else {
+      const dashboard = document.getElementById("ian-dashboard");
+
+      if (dashboard) {
+        dashboard.hidden = false;
+        dashboard.scrollIntoView({ behavior: "smooth" });
+      } else {
+        alert("Dashboard section was not found.");
+      }
+    }
+  } catch (error) {
+    alert("Authentication failed: " + error.message);
+  }
+};
+</script>
+
 <!-- SECTION 2: IAN XAU AI PRO PLUS TRADING DASHBOARD -->
 <section id="ian-dashboard" hidden>
   <style>
