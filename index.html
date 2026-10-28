@@ -869,4 +869,706 @@
   }
 })();
 </script>
+
+<!-- SECTION 3: IAN XAU AI PRO PLUS ECONOMIC CALENDAR -->
+<section id="ian-calendar-section">
+  <style>
+    #ian-calendar-section {
+      --cal-bg: #030603;
+      --cal-panel: #09110b;
+      --cal-border: #203426;
+      --cal-green: #39ff78;
+      --cal-text: #e8f5eb;
+      --cal-muted: #8ca293;
+      background: var(--cal-bg);
+      color: var(--cal-text);
+      padding: 26px 14px 36px;
+      font-family: Arial, sans-serif;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    #ian-calendar-section * {
+      box-sizing: border-box;
+    }
+
+    #ian-calendar-section .cal-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #ian-calendar-section .cal-eyebrow {
+      color: var(--cal-green);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 9px;
+    }
+
+    #ian-calendar-section .cal-heading {
+      font-size: clamp(25px, 5vw, 38px);
+      line-height: 1.15;
+      margin: 0 0 10px;
+      font-weight: 800;
+    }
+
+    #ian-calendar-section .cal-intro {
+      color: var(--cal-muted);
+      line-height: 1.6;
+      font-size: 13px;
+      margin: 0 0 22px;
+    }
+
+    #ian-calendar-section .cal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 15px;
+      background: var(--cal-panel);
+      border: 1px solid var(--cal-border);
+      border-radius: 13px;
+      margin-bottom: 14px;
+    }
+
+    #ian-calendar-section .cal-live {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #ian-calendar-section .cal-dot {
+      height: 8px;
+      width: 8px;
+      border-radius: 50%;
+      background: var(--cal-green);
+      box-shadow: 0 0 10px #39ff7866;
+    }
+
+    #ian-calendar-section .cal-updated {
+      display: block;
+      color: var(--cal-muted);
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    #ian-calendar-section .cal-button {
+      background: var(--cal-green);
+      color: #041007;
+      border: 0;
+      padding: 11px 15px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    #ian-calendar-section .cal-button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #ian-calendar-section .cal-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    #ian-calendar-section .cal-stat {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--cal-border);
+      border-radius: 11px;
+      background: var(--cal-panel);
+    }
+
+    #ian-calendar-section .cal-stat-label {
+      color: var(--cal-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    #ian-calendar-section .cal-stat-number {
+      display: block;
+      font-size: 25px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    #ian-calendar-section .cal-stat-number.green {
+      color: var(--cal-green);
+    }
+
+    #ian-calendar-section .cal-filters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 15px;
+      border: 1px solid var(--cal-border);
+      border-radius: 12px;
+      background: var(--cal-panel);
+      margin-bottom: 16px;
+    }
+
+    #ian-calendar-section .cal-field {
+      min-width: 0;
+    }
+
+    #ian-calendar-section .cal-field label {
+      display: block;
+      font-size: 10px;
+      color: var(--cal-muted);
+      font-weight: 800;
+      margin-bottom: 7px;
+      letter-spacing: 0.5px;
+    }
+
+    #ian-calendar-section .cal-field input,
+    #ian-calendar-section .cal-field select {
+      width: 100%;
+      min-width: 0;
+      background: #030704;
+      border: 1px solid #2a4130;
+      border-radius: 7px;
+      color: var(--cal-text);
+      padding: 11px 9px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    #ian-calendar-section .cal-field input:focus,
+    #ian-calendar-section .cal-field select:focus {
+      border-color: var(--cal-green);
+    }
+
+    #ian-calendar-section .cal-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--cal-border);
+      border-radius: 12px;
+      background: var(--cal-panel);
+    }
+
+    #ian-calendar-section .cal-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 780px;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    #ian-calendar-section .cal-table th {
+      background: #101b13;
+      color: var(--cal-muted);
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 14px 12px;
+      white-space: nowrap;
+    }
+
+    #ian-calendar-section .cal-table td {
+      border-top: 1px solid #1a2b1e;
+      padding: 14px 12px;
+      vertical-align: middle;
+    }
+
+    #ian-calendar-section .cal-table tbody tr:hover {
+      background: #101b13;
+    }
+
+    #ian-calendar-section .cal-event-name {
+      color: #f0fff2;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    #ian-calendar-section .cal-subtext {
+      display: block;
+      color: var(--cal-muted);
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    #ian-calendar-section .cal-impact {
+      display: inline-block;
+      border-radius: 5px;
+      padding: 5px 7px;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    #ian-calendar-section .cal-high {
+      background: #3a1717;
+      color: #ff7979;
+      border: 1px solid #713232;
+    }
+
+    #ian-calendar-section .cal-medium {
+      background: #392b12;
+      color: #ffcf6e;
+      border: 1px solid #6c501d;
+    }
+
+    #ian-calendar-section .cal-low {
+      background: #142c1b;
+      color: #78efa0;
+      border: 1px solid #285b37;
+    }
+
+    #ian-calendar-section .cal-unknown {
+      background: #202520;
+      color: #b5c2b7;
+      border: 1px solid #39423b;
+    }
+
+    #ian-calendar-section .cal-value {
+      color: #d8e9db;
+      white-space: nowrap;
+    }
+
+    #ian-calendar-section .cal-message {
+      text-align: center;
+      padding: 35px 18px;
+      color: var(--cal-muted);
+      line-height: 1.6;
+    }
+
+    #ian-calendar-section .cal-message strong {
+      display: block;
+      color: var(--cal-text);
+      margin-bottom: 7px;
+    }
+
+    #ian-calendar-section .cal-error {
+      color: #ff9292;
+    }
+
+    #ian-calendar-section .cal-footer {
+      color: var(--cal-muted);
+      font-size: 11px;
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 700px) {
+      #ian-calendar-section {
+        padding: 22px 10px 28px;
+      }
+
+      #ian-calendar-section .cal-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #ian-calendar-section .cal-stats {
+        gap: 7px;
+      }
+
+      #ian-calendar-section .cal-stat {
+        padding: 11px 9px;
+      }
+
+      #ian-calendar-section .cal-stat-label {
+        font-size: 9px;
+        letter-spacing: 0.3px;
+      }
+
+      #ian-calendar-section .cal-stat-number {
+        font-size: 22px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      #ian-calendar-section .cal-filters {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="cal-shell">
+    <div class="cal-eyebrow">IAN XAU AI / MARKET INTELLIGENCE</div>
+    <h2 class="cal-heading">Economic Calendar</h2>
+    <p class="cal-intro">
+      Track scheduled economic releases that may affect gold,
+      the US dollar and market volatility.
+    </p>
+
+    <div class="cal-topbar">
+      <div>
+        <div class="cal-live">
+          <span class="cal-dot"></span>
+          <span id="ianCalStatus">CONNECTING TO CALENDAR</span>
+        </div>
+        <span class="cal-updated" id="ianCalUpdated">
+          Waiting for calendar data...
+        </span>
+      </div>
+
+      <button class="cal-button" id="ianCalRefresh" type="button">
+        ↻ REFRESH EVENTS
+      </button>
+    </div>
+
+    <div class="cal-stats">
+      <div class="cal-stat">
+        <span class="cal-stat-label">Visible Events</span>
+        <strong class="cal-stat-number" id="ianCalTotal">—</strong>
+      </div>
+      <div class="cal-stat">
+        <span class="cal-stat-label">High Impact</span>
+        <strong class="cal-stat-number green" id="ianCalHigh">—</strong>
+      </div>
+      <div class="cal-stat">
+        <span class="cal-stat-label">USD Events</span>
+        <strong class="cal-stat-number" id="ianCalUsd">—</strong>
+      </div>
+    </div>
+
+    <div class="cal-filters">
+      <div class="cal-field">
+        <label for="ianCalSearch">SEARCH EVENT</label>
+        <input id="ianCalSearch" type="search"
+          placeholder="e.g. CPI, NFP, Fed">
+      </div>
+
+      <div class="cal-field">
+        <label for="ianCalCurrency">CURRENCY</label>
+        <select id="ianCalCurrency">
+          <option value="ALL">All currencies</option>
+          <option value="USD">USD — US Dollar</option>
+          <option value="EUR">EUR — Euro</option>
+          <option value="GBP">GBP — British Pound</option>
+          <option value="JPY">JPY — Japanese Yen</option>
+          <option value="AUD">AUD — Australian Dollar</option>
+          <option value="CAD">CAD — Canadian Dollar</option>
+          <option value="CHF">CHF — Swiss Franc</option>
+          <option value="NZD">NZD — New Zealand Dollar</option>
+          <option value="CNY">CNY — Chinese Yuan</option>
+        </select>
+      </div>
+
+      <div class="cal-field">
+        <label for="ianCalImpact">IMPACT</label>
+        <select id="ianCalImpact">
+          <option value="ALL">All impact levels</option>
+          <option value="HIGH">High impact</option>
+          <option value="MEDIUM">Medium impact</option>
+          <option value="LOW">Low impact</option>
+          <option value="UNKNOWN">Unknown impact</option>
+        </select>
+      </div>
+
+      <div class="cal-field">
+        <label for="ianCalDate">EVENT DATE</label>
+        <input id="ianCalDate" type="date">
+      </div>
+    </div>
+
+    <div class="cal-table-wrap">
+      <table class="cal-table">
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>Currency</th>
+            <th>Economic Event</th>
+            <th>Impact</th>
+            <th>Actual</th>
+            <th>Forecast</th>
+            <th>Previous</th>
+          </tr>
+        </thead>
+        <tbody id="ianCalRows">
+          <tr>
+            <td colspan="7" class="cal-message">
+              Loading economic calendar...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="cal-footer">
+      Times are displayed in your device's local timezone.
+      Economic releases can cause rapid price movements and wider spreads.
+      This calendar is informational and is not a trade signal.
+      Actual, forecast and previous values may be unavailable before release.
+    </p>
+  </div>
+
+  <script>
+  (() => {
+    const root = document.getElementById("ian-calendar-section");
+    if (!root || root.dataset.initialized === "true") return;
+    root.dataset.initialized = "true";
+
+    const $ = (id) => root.querySelector("#" + id);
+
+    const rows = $("ianCalRows");
+    const status = $("ianCalStatus");
+    const updated = $("ianCalUpdated");
+    const refresh = $("ianCalRefresh");
+
+    let allEvents = [];
+    let loading = false;
+
+    function safeText(value) {
+      if (value === null || value === undefined || value === "") {
+        return "—";
+      }
+      return String(value);
+    }
+
+    function dateValue(value) {
+      if (!value) return null;
+
+      let text = String(value).trim();
+
+      // Handle provider timestamps that have no timezone suffix.
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(text)) {
+        text = text.replace(" ", "T") + "Z";
+      } else if (
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(text) &&
+        !/(Z|[+-]\d{2}:\d{2})$/i.test(text)
+      ) {
+        text += "Z";
+      }
+
+      const parsed = new Date(text);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatDate(value) {
+      const date = dateValue(value);
+      if (!date) return safeText(value);
+
+      return new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function normalizeImpact(value) {
+      const impact = String(value || "UNKNOWN").toUpperCase();
+      if (impact === "HIGH" || impact === "MEDIUM" || impact === "LOW") {
+        return impact;
+      }
+      return "UNKNOWN";
+    }
+
+    function addCell(row, value, className) {
+      const cell = document.createElement("td");
+      if (className) cell.className = className;
+      cell.textContent = safeText(value);
+      row.appendChild(cell);
+      return cell;
+    }
+
+    function render() {
+      const search = $("ianCalSearch").value.trim().toLowerCase();
+      const currency = $("ianCalCurrency").value;
+      const impact = $("ianCalImpact").value;
+      const chosenDate = $("ianCalDate").value;
+
+      const filtered = allEvents.filter((event) => {
+        const eventCurrency = String(
+          event.currency || event.country || ""
+        ).toUpperCase();
+
+        const eventImpact = normalizeImpact(event.impact);
+        const eventDate = dateValue(event.date);
+        const name = String(event.name || "").toLowerCase();
+
+        const matchesSearch =
+          !search ||
+          name.includes(search) ||
+          eventCurrency.toLowerCase().includes(search) ||
+          String(event.country || "").toLowerCase().includes(search);
+
+        const matchesCurrency =
+          currency === "ALL" ||
+          eventCurrency === currency ||
+          (currency === "USD" &&
+            String(event.country || "").toUpperCase() === "UNITED STATES");
+
+        const matchesImpact =
+          impact === "ALL" || eventImpact === impact;
+
+        const matchesDate =
+          !chosenDate ||
+          (eventDate &&
+            eventDate.getFullYear() + "-" +
+            String(eventDate.getMonth() + 1).padStart(2, "0") + "-" +
+            String(eventDate.getDate()).padStart(2, "0") === chosenDate);
+
+        return matchesSearch && matchesCurrency &&
+          matchesImpact && matchesDate;
+      });
+
+      $("ianCalTotal").textContent = filtered.length;
+      $("ianCalHigh").textContent =
+        filtered.filter((event) =>
+          normalizeImpact(event.impact) === "HIGH"
+        ).length;
+      $("ianCalUsd").textContent =
+        filtered.filter((event) =>
+          String(event.currency || "").toUpperCase() === "USD" ||
+          String(event.country || "").toUpperCase() === "UNITED STATES"
+        ).length;
+
+      rows.replaceChildren();
+
+      if (!filtered.length) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 7;
+        cell.className = "cal-message";
+        cell.textContent = allEvents.length
+          ? "No events match your filters."
+          : "No calendar events are available. Check your API connection.";
+        row.appendChild(cell);
+        rows.appendChild(row);
+        return;
+      }
+
+      filtered.sort((a, b) => {
+        const da = dateValue(a.date);
+        const db = dateValue(b.date);
+        return (da ? da.getTime() : 0) - (db ? db.getTime() : 0);
+      });
+
+      filtered.forEach((event) => {
+        const row = document.createElement("tr");
+        const dateCell = addCell(row, formatDate(event.date));
+        dateCell.style.whiteSpace = "nowrap";
+
+        addCell(row, event.currency || event.country || "—");
+
+        const nameCell = document.createElement("td");
+        const name = document.createElement("div");
+        name.className = "cal-event-name";
+        name.textContent = safeText(event.name);
+        nameCell.appendChild(name);
+
+        if (event.country && event.currency) {
+          const subtext = document.createElement("span");
+          subtext.className = "cal-subtext";
+          subtext.textContent = event.country;
+          nameCell.appendChild(subtext);
+        }
+        row.appendChild(nameCell);
+
+        const impactCell = document.createElement("td");
+        const badge = document.createElement("span");
+        const normalized = normalizeImpact(event.impact);
+        badge.className = "cal-impact cal-" + normalized.toLowerCase();
+        badge.textContent = normalized;
+        impactCell.appendChild(badge);
+        row.appendChild(impactCell);
+
+        addCell(row, event.actual);
+        addCell(row, event.forecast);
+        addCell(row, event.previous);
+
+        rows.appendChild(row);
+      });
+    }
+
+    async function loadEvents() {
+      if (loading) return;
+      loading = true;
+      refresh.disabled = true;
+      refresh.textContent = "LOADING...";
+      status.textContent = "LOADING CALENDAR";
+
+      if (!allEvents.length) {
+        rows.replaceChildren();
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 7;
+        cell.className = "cal-message";
+        cell.textContent = "Connecting to economic calendar provider...";
+        row.appendChild(cell);
+        rows.appendChild(row);
+      }
+
+      try {
+        const response = await fetch("/api/economic-calendar", {
+          method: "GET",
+          headers: { Accept: "application/json" },
+          cache: "no-store"
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Calendar request failed (" + response.status + ")."
+          );
+        }
+
+        if (!Array.isArray(data.events)) {
+          throw new Error("The calendar API returned an unexpected response.");
+        }
+
+        allEvents = data.events;
+        status.textContent = "CALENDAR CONNECTED";
+        updated.textContent =
+          "Updated " + new Date().toLocaleTimeString() +
+          " · " + allEvents.length + " events received";
+
+        render();
+      } catch (error) {
+        status.textContent = "CALENDAR UNAVAILABLE";
+        updated.textContent = error.message;
+
+        rows.replaceChildren();
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 7;
+        cell.className = "cal-message cal-error";
+
+        const heading = document.createElement("strong");
+        heading.textContent = "Unable to load economic events";
+
+        const detail = document.createElement("span");
+        detail.textContent = error.message;
+
+        cell.appendChild(heading);
+        cell.appendChild(detail);
+        row.appendChild(cell);
+        rows.appendChild(row);
+
+        $("ianCalTotal").textContent = "—";
+        $("ianCalHigh").textContent = "—";
+        $("ianCalUsd").textContent = "—";
+      } finally {
+        loading = false;
+        refresh.disabled = false;
+        refresh.textContent = "↻ REFRESH EVENTS";
+      }
+    }
+
+    ["ianCalSearch", "ianCalCurrency", "ianCalImpact", "ianCalDate"]
+      .forEach((id) => {
+        $(id).addEventListener("input", render);
+        $(id).addEventListener("change", render);
+      });
+
+    refresh.addEventListener("click", loadEvents);
+
+    loadEvents();
+  })();
+  </script>
+</section>
+<!-- END SECTION 3 -->
+
 <!-- END SECTION 2 -->
