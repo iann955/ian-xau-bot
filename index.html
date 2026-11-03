@@ -1,7 +1,7 @@
 
 <!-- SECTION 1: IAN XAU AI PRO PLUS AUTH -->
-
 <section id="ian-auth-section">
+
 <style>
 #ian-auth-section {
   --green:#39ff78;
@@ -65,7 +65,6 @@
   color:#c5d1c7;
   margin-top:12px;
 }
-
 #ian-auth-section .ian-auth-box{
   position:relative;
   z-index:1;
@@ -76,9 +75,8 @@
   border-radius:25px;
   background:rgba(2,10,5,.94);
   box-shadow:0 0 30px rgba(57,255,120,.15),
-             0 20px 60px rgba(0,0,0,.6);
+  0 20px 60px rgba(0,0,0,.6);
 }
-
 #ian-auth-section h2{
   text-align:center;
   font-size:clamp(25px,5vw,36px);
@@ -314,6 +312,7 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 (() => {
   "use strict";
@@ -325,10 +324,13 @@
   const SUPABASE_URL = "https://elnqijtvqstzaxrydyox.supabase.co";
   const SUPABASE_KEY = "sb_publishable_krU-ZfHaxTgJC46LWL_1Tw_3iiV6FW4";
 
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const client = window.ianSupabase ||
+    window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
   window.ianSupabase = client;
 
   const $ = id => root.querySelector("#" + id);
+
   const form = $("ianAuthForm");
   const title = $("ianAuthTitle");
   const subtitle = $("ianAuthSubtitle");
@@ -348,6 +350,45 @@
   let mode = "login";
   let busy = false;
 
+  // Control visibility of the five main website sections.
+  function getWebsiteSections() {
+    return Array.from(document.querySelectorAll("section"))
+      .filter(section => section !== root);
+  }
+
+  function showLoginPage() {
+    root.style.display = "flex";
+
+    getWebsiteSections().forEach(section => {
+      section.style.display = "none";
+    });
+  }
+
+  function showMemberPage() {
+    root.style.display = "none";
+
+    getWebsiteSections().forEach(section => {
+      section.style.display = "block";
+    });
+
+    // Notify Section 2 after all other sections are visible.
+    if (typeof window.ianOnLoginSuccess === "function") {
+      window.ianOnLoginSuccess();
+    }
+
+    const dashboard = document.getElementById("ian-dashboard");
+    if (dashboard) {
+      dashboard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }
+
+  // Make these functions available to Section 2's logout code.
+  window.ianShowLoginPage = showLoginPage;
+  window.ianShowMemberPage = showMemberPage;
+
   function showMessage(text, error = false) {
     message.textContent = text;
     message.style.display = "block";
@@ -365,6 +406,7 @@
     clearMessage();
 
     const recovery = mode === "recovery";
+
     tabs.style.display = recovery ? "none" : "grid";
     divider.style.display = recovery ? "none" : "flex";
     googleButton.style.display = recovery ? "none" : "flex";
@@ -400,19 +442,20 @@
     busy = value;
     submitButton.disabled = value;
     googleButton.disabled = value;
-    if (value) submitButton.textContent = "PLEASE WAIT...";
+
+    if (value) {
+      submitButton.textContent = "PLEASE WAIT...";
+    } else {
+      submitButton.textContent =
+        mode === "login" ? "SIGN IN" :
+        mode === "signup" ? "CREATE ACCOUNT" :
+        mode === "reset" ? "SEND RESET LINK" :
+        "UPDATE PASSWORD";
+    }
   }
 
   function openDashboard() {
-    if (typeof window.ianOnLoginSuccess === "function") {
-      window.ianOnLoginSuccess();
-      return;
-    }
-    const dashboard = document.getElementById("ian-dashboard");
-    if (dashboard) {
-      root.style.display = "none";
-      dashboard.style.display = "block";
-    }
+    showMemberPage();
   }
 
   $("ianLoginTab").addEventListener("click", () => setMode("login"));
@@ -441,39 +484,65 @@
       const password = passwordInput.value;
 
       if (mode === "login") {
-        const result = await client.auth.signInWithPassword({email,password});
+        const result = await client.auth.signInWithPassword({
+          email,
+          password
+        });
+
         if (result.error) throw result.error;
+
         showMessage("Login successful.");
         openDashboard();
 
       } else if (mode === "signup") {
-        if (password.length < 8) throw new Error("Password must contain at least 8 characters.");
+        if (!nameInput.value.trim()) {
+          throw new Error("Please enter your full name.");
+        }
+
+        if (password.length < 8) {
+          throw new Error("Password must contain at least 8 characters.");
+        }
+
         const result = await client.auth.signUp({
-          email,password,
-          options:{
-            data:{full_name:nameInput.value.trim()},
-            emailRedirectTo:window.location.origin + window.location.pathname
+          email,
+          password,
+          options: {
+            data: {
+              full_name: nameInput.value.trim()
+            },
+            emailRedirectTo:
+              window.location.origin + window.location.pathname
           }
         });
+
         if (result.error) throw result.error;
+
         if (result.data.session) {
           showMessage("Account created successfully.");
           openDashboard();
         } else {
-          showMessage("Account created. Check your email to confirm your account.");
+          showMessage(
+            "Account created. Check your email to confirm your account."
+          );
         }
 
       } else if (mode === "reset") {
-        const result = await client.auth.resetPasswordForEmail(email,{
-          redirectTo:window.location.origin + window.location.pathname
+        const result = await client.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + window.location.pathname
         });
+
         if (result.error) throw result.error;
         showMessage("Password reset link sent. Check your email.");
 
       } else if (mode === "recovery") {
-        if (password.length < 8) throw new Error("New password must contain at least 8 characters.");
-        const result = await client.auth.updateUser({password});
+        if (password.length < 8) {
+          throw new Error("New password must contain at least 8 characters.");
+        }
+
+        const result = await client.auth.updateUser({ password });
+
         if (result.error) throw result.error;
+
         showMessage("Password updated successfully.");
         passwordInput.value = "";
         setMode("login");
@@ -488,17 +557,20 @@
 
   googleButton.addEventListener("click", async () => {
     if (busy) return;
+
     clearMessage();
     setBusy(true);
 
     try {
       const result = await client.auth.signInWithOAuth({
-        provider:"google",
-        options:{
-          redirectTo:window.location.origin + window.location.pathname
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
         }
       });
+
       if (result.error) throw result.error;
+
     } catch (error) {
       showMessage(error.message || "Google sign-in failed.", true);
       setBusy(false);
@@ -508,17 +580,31 @@
   client.auth.onAuthStateChange((event, session) => {
     if (event === "PASSWORD_RECOVERY") {
       setTimeout(() => setMode("recovery"), 0);
-    } else if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
+
+    } else if (
+      session &&
+      (event === "SIGNED_IN" || event === "INITIAL_SESSION")
+    ) {
       setTimeout(openDashboard, 0);
+
+    } else if (event === "SIGNED_OUT") {
+      setTimeout(showLoginPage, 0);
     }
   });
 
+  // Check existing login session when the website loads.
   client.auth.getSession().then(result => {
     if (result.error) {
       console.error("Session check failed:", result.error);
+      showLoginPage();
       return;
     }
-    if (result.data.session) openDashboard();
+
+    if (result.data.session) {
+      openDashboard();
+    } else {
+      showLoginPage();
+    }
   });
 
   if (window.location.hash.includes("type=recovery")) {
@@ -526,1487 +612,2663 @@
   } else {
     setMode("login");
   }
+
+  // Start with the login page visible until the session check completes.
+  showLoginPage();
+
 })();
 </script>
-
 <!-- END SECTION 1 -->
+ <!-- SECTION 2: IAN XAU AI PRO PLUS DASHBOARD — PART 1 -->
+<section id="ian-dashboard" style="display:none;">
 
-<!-- SECTION 2: IAN XAU AI PRO PLUS DASHBOARD -->
-
-<section id="ian-dashboard" style="display:none">
 <style>
 #ian-dashboard {
   --green:#39ff78;
-  --panel:#0a140d;
-  --border:#24452c;
-  background:#030603;
+  --bg:#030603;
+  --panel:#0a110c;
+  --border:rgba(57,255,120,.20);
+  --muted:#8b9b8f;
+  background:var(--bg);
   color:#e9f5eb;
   font-family:Arial,sans-serif;
-  padding:24px 14px 35px;
+  width:100%;
   min-height:100vh;
+  padding:16px;
   box-sizing:border-box;
 }
-#ian-dashboard *{box-sizing:border-box}
-#ian-dashboard .ian-dash-shell{max-width:1200px;margin:auto}
-#ian-dashboard .ian-dash-header{
+
+#ian-dashboard * {
+  box-sizing:border-box;
+}
+
+#ian-dashboard .ian-wrap {
+  max-width:1250px;
+  margin:auto;
+}
+
+#ian-dashboard .ian-header {
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:12px;
+  align-items:center;
   flex-wrap:wrap;
+  gap:14px;
   padding:15px 0 22px;
   border-bottom:1px solid var(--border);
 }
-#ian-dashboard .ian-dash-logo{
-  font-size:23px;
-  font-weight:900;
-  color:var(--green);
-}
-#ian-dashboard .ian-dash-logo span{color:#fff}
-#ian-dashboard .ian-dash-actions{display:flex;gap:9px}
-#ian-dashboard button{
-  cursor:pointer;
+
+#ian-dashboard .ian-brand {
+  font-size:21px;
   font-weight:800;
+  letter-spacing:1px;
 }
-#ian-dashboard .ian-dash-btn{
-  background:#101b13;
-  border:1px solid #36563d;
-  color:#dff5e4;
-  border-radius:7px;
-  padding:11px 13px;
-  font-size:11px;
-}
-#ian-dashboard .ian-dash-btn.logout{
-  color:#ff9b9b;
-  border-color:#693434;
-}
-#ian-dashboard .ian-dash-hero{
-  padding:28px 0 23px;
-}
-#ian-dashboard .ian-eyebrow{
+
+#ian-dashboard .ian-brand span {
   color:var(--green);
+}
+
+#ian-dashboard .ian-subtitle {
+  color:var(--muted);
   font-size:10px;
-  font-weight:900;
   letter-spacing:2px;
+  margin-top:5px;
 }
-#ian-dashboard .ian-dash-hero h2{
-  font-size:clamp(25px,5vw,38px);
-  line-height:1.2;
-  margin:12px 0;
-}
-#ian-dashboard .ian-dash-hero p{
-  color:#91a394;
-  font-size:13px;
-  line-height:1.6;
-}
-#ian-dashboard .ian-market-status{
+
+#ian-dashboard .ian-header-right {
   display:flex;
   align-items:center;
-  gap:8px;
-  color:#9eb2a2;
-  font-size:11px;
-  margin-top:15px;
+  gap:10px;
+  flex-wrap:wrap;
 }
-#ian-dashboard .ian-live-dot{
-  width:8px;height:8px;border-radius:50%;
+
+#ian-dashboard .ian-status {
+  color:var(--green);
+  border:1px solid var(--border);
+  background:rgba(57,255,120,.07);
+  border-radius:30px;
+  padding:8px 12px;
+  font-size:11px;
+}
+
+#ian-dashboard .ian-btn {
   background:var(--green);
-  box-shadow:0 0 10px var(--green);
+  color:#031006;
+  border:0;
+  border-radius:7px;
+  padding:10px 14px;
+  font-weight:800;
+  cursor:pointer;
 }
-#ian-dashboard .ian-section-title{
-  font-size:19px;
-  margin:0 0 7px;
+
+#ian-dashboard .ian-btn-outline {
+  background:transparent;
+  color:var(--green);
+  border:1px solid var(--border);
 }
-#ian-dashboard .ian-section-sub{
+
+#ian-dashboard .ian-section-title {
+  font-size:17px;
+  font-weight:800;
+  margin:25px 0 13px;
+}
+
+#ian-dashboard .ian-section-title span {
+  color:var(--green);
+}
+
+#ian-dashboard .ian-muted {
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+#ian-dashboard .ian-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+
+#ian-dashboard .ian-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  min-width:0;
+}
+
+#ian-dashboard .ian-card-label {
+  color:var(--muted);
   font-size:11px;
-  color:#91a394;
-  margin:0 0 17px;
-  line-height:1.5;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
-#ian-dashboard .ian-level-grid{
+
+#ian-dashboard .ian-card-value {
+  color:var(--green);
+  font-size:21px;
+  font-weight:800;
+  margin-top:9px;
+  overflow-wrap:anywhere;
+}
+
+#ian-dashboard .ian-chart-box {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  overflow:hidden;
+}
+
+#ian-dashboard .ian-chart-frame {
+  width:100%;
+  height:480px;
+  border:0;
+  border-radius:8px;
+  background:#050805;
+}
+
+#ian-dashboard .ian-level {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:13px;
+}
+
+#ian-dashboard .ian-level:last-child {
+  border-bottom:0;
+}
+
+#ian-dashboard .ian-level strong {
+  color:var(--green);
+  text-align:right;
+}
+
+#ian-dashboard .ian-level small {
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:4px;
+}
+
+#ian-dashboard .ian-strategy-grid {
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:12px;
 }
-#ian-dashboard .ian-level-card{
-  background:linear-gradient(145deg,#0d1b11,#071009);
+
+#ian-dashboard .ian-strategy-item {
+  background:rgba(57,255,120,.035);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:19px 15px;
-  min-width:0;
+  border-radius:10px;
+  padding:14px;
 }
-#ian-dashboard .ian-level-label{
-  font-size:10px;
-  letter-spacing:1px;
-  color:#9aada0;
-  font-weight:800;
-}
-#ian-dashboard .ian-level-value{
-  font-size:clamp(19px,4vw,27px);
-  font-weight:900;
+
+#ian-dashboard .ian-strategy-item h4 {
   color:var(--green);
-  margin-top:13px;
-  overflow-wrap:anywhere;
+  font-size:13px;
+  margin:0 0 8px;
 }
-#ian-dashboard .ian-level-note{
-  color:#718777;
-  font-size:10px;
-  margin-top:9px;
-}
-#ian-dashboard .ian-dash-panel{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:18px 15px;
-  margin-top:22px;
-}
-#ian-dashboard .ian-chart-frame{
-  width:100%;
-  height:430px;
-  border:0;
-  border-radius:8px;
-  background:#080e09;
-}
-#ian-dashboard .ian-info-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  padding:13px 0;
-  border-bottom:1px solid #203626;
+
+#ian-dashboard .ian-strategy-item p {
+  color:#b5c4b8;
   font-size:12px;
+  line-height:1.6;
+  margin:0;
 }
-#ian-dashboard .ian-info-row:last-child{border-bottom:0}
-#ian-dashboard .ian-info-row strong{color:var(--green)}
-#ian-dashboard .ian-note{
-  color:#91a394;
+
+#ian-dashboard .ian-note {
+  border-left:3px solid var(--green);
+  background:rgba(57,255,120,.05);
+  padding:12px;
+  color:#b5c4b8;
   font-size:11px;
-  line-height:1.7;
-  margin-top:15px;
+  line-height:1.6;
+  margin-top:14px;
 }
-#ian-dashboard .ian-error{color:#ff9b9b}
-#ian-dashboard .ian-dash-refresh{
-  margin-top:15px;
-  background:var(--green);
-  color:#031006;
-  border:0;
-  padding:13px 17px;
-  border-radius:8px;
-  font-size:11px;
+
+#ian-dashboard .ian-error {
+  color:#ff8888;
 }
-@media(min-width:700px){
-  #ian-dashboard{padding:35px 5%}
-  #ian-dashboard .ian-level-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-  #ian-dashboard .ian-chart-frame{height:550px}
+
+@media(max-width:700px) {
+  #ian-dashboard {
+    padding:12px;
+  }
+
+  #ian-dashboard .ian-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  #ian-dashboard .ian-strategy-grid {
+    grid-template-columns:1fr;
+  }
+
+  #ian-dashboard .ian-chart-frame {
+    height:380px;
+  }
+
+  #ian-dashboard .ian-brand {
+    font-size:18px;
+  }
 }
-@media(max-width:350px){
-  #ian-dashboard .ian-level-grid{grid-template-columns:1fr}
-  #ian-dashboard .ian-dash-btn{padding:9px;font-size:10px}
+
+@media(max-width:380px) {
+  #ian-dashboard .ian-card-value {
+    font-size:17px;
+  }
 }
 </style>
 
-<div class="ian-dash-shell">
+<div class="ian-wrap">
 
-  <header class="ian-dash-header">
-    <div class="ian-dash-logo">IAN <span>XAU AI</span></div>
-    <div class="ian-dash-actions">
-      <button type="button" class="ian-dash-btn" id="ianDashRefresh">↻ REFRESH</button>
-      <button type="button" class="ian-dash-btn logout" id="ianDashLogout">LOG OUT</button>
+  <!-- DASHBOARD HEADER -->
+  <header class="ian-header">
+    <div>
+      <div class="ian-brand">IAN XAU AI <span>PRO PLUS</span></div>
+      <div class="ian-subtitle">RULE-BASED XAUUSD TRADING SYSTEM</div>
+    </div>
+
+    <div class="ian-header-right">
+      <div class="ian-status">● SYSTEM DASHBOARD</div>
+      <button class="ian-btn ian-btn-outline"
+        onclick="ianRefreshDashboard()">REFRESH</button>
+      <button class="ian-btn"
+        onclick="ianLogout()">LOG OUT</button>
     </div>
   </header>
 
-  <div class="ian-dash-hero">
-    <div class="ian-eyebrow">PRO PLUS / MARKET INTELLIGENCE</div>
-    <h2>GOLD MARKET<br><span style="color:#39ff78">DASHBOARD.</span></h2>
-    <p>Read the market. Identify liquidity. Wait for confirmation. Follow the rules.</p>
-    <div class="ian-market-status">
-      <span class="ian-live-dot"></span>
-      <span id="ianLevelStatus">CONNECTING TO MARKET DATA...</span>
+  <!-- MARKET OVERVIEW -->
+  <div class="ian-section-title">MARKET <span>OVERVIEW</span></div>
+
+  <div class="ian-grid">
+    <div class="ian-card">
+      <div class="ian-card-label">Instrument</div>
+      <div class="ian-card-value">XAUUSD</div>
+      <div class="ian-muted">Gold / US Dollar</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Trading timeframe</div>
+      <div class="ian-card-value">M15</div>
+      <div class="ian-muted">15-minute chart</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Market data</div>
+      <div class="ian-card-value" id="ian-data-status">CHECKING</div>
+      <div class="ian-muted" id="ian-data-time">Waiting for data</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Trading mode</div>
+      <div class="ian-card-value">ANALYSIS</div>
+      <div class="ian-muted">No automatic execution</div>
     </div>
   </div>
 
-  <section>
-    <h3 class="ian-section-title">Key Market Levels</h3>
-    <p class="ian-section-sub">
-      Calculated using New York time. Values update when market data is available.
-    </p>
+  <!-- TRADINGVIEW CHART -->
+  <div class="ian-section-title">LIVE GOLD <span>CHART</span></div>
 
-    <div class="ian-level-grid">
-      <div class="ian-level-card">
-        <div class="ian-level-label">ASIA HIGH</div>
-        <div class="ian-level-value" id="ianAsiaHigh">—</div>
-        <div class="ian-level-note">Asia session high</div>
-      </div>
-
-      <div class="ian-level-card">
-        <div class="ian-level-label">ASIA LOW</div>
-        <div class="ian-level-value" id="ianAsiaLow">—</div>
-        <div class="ian-level-note">Asia session low</div>
-      </div>
-
-      <div class="ian-level-card">
-        <div class="ian-level-label">PREVIOUS DAY HIGH</div>
-        <div class="ian-level-value" id="ianPDH">—</div>
-        <div class="ian-level-note">Previous NY calendar day</div>
-      </div>
-
-      <div class="ian-level-card">
-        <div class="ian-level-label">PREVIOUS DAY LOW</div>
-        <div class="ian-level-value" id="ianPDL">—</div>
-        <div class="ian-level-note">Previous NY calendar day</div>
-      </div>
+  <div class="ian-chart-box">
+    <div class="ian-muted" style="margin-bottom:10px;">
+      XAUUSD · OANDA · 15 MINUTES
     </div>
-
-    <p class="ian-note" id="ianLevelUpdated">
-      Waiting for market data...
-    </p>
-  </section>
-
-  <section class="ian-dash-panel">
-    <div class="ian-eyebrow">LIVE MARKET CHART</div>
-    <h3 class="ian-section-title" style="margin-top:9px">XAUUSD · GOLD</h3>
-    <p class="ian-section-sub">OANDA · 15 MINUTE · NEW YORK TIME</p>
 
     <iframe
       class="ian-chart-frame"
-      title="XAUUSD TradingView chart"
-      src="https://s.tradingview.com/widgetembed/?frameElementId=ianTradingView&symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=0&saveimage=0&toolbarbg=030603&theme=dark&style=1&timezone=America%2FNew_York&withdateranges=1&hideideas=1&studies=%5B%5D"
+      title="XAUUSD TradingView Chart"
+      src="https://s.tradingview.com/widgetembed/?frameElementId=ianTradingView&symbol=OANDA%3AXAUUSD&interval=15&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=030603&studies=%5B%5D&theme=dark&style=1&timezone=America%2FNew_York&withdateranges=1&hideideas=1&allow_symbol_change=1"
       loading="lazy"
-      allowtransparency="true">
+      allowfullscreen>
     </iframe>
-  </section>
+  </div>
 
-  <section class="ian-dash-panel">
-    <div class="ian-eyebrow">TRADING METHODOLOGY</div>
-    <h3 class="ian-section-title" style="margin-top:9px">Strategy Overview</h3>
+  <!-- KEY MARKET LEVELS -->
+  <div class="ian-section-title">KEY MARKET <span>LEVELS</span></div>
 
-    <div class="ian-info-row">
-      <span>Asia High / Asia Low</span>
-      <strong>Liquidity levels</strong>
-    </div>
-    <div class="ian-info-row">
-      <span>PDH / PDL</span>
-      <strong>Daily liquidity</strong>
-    </div>
-    <div class="ian-info-row">
-      <span>Confirmation</span>
-      <strong>Price reaction required</strong>
-    </div>
-    <div class="ian-info-row">
-      <span>Risk management</span>
-      <strong>SL / TP</strong>
+  <div class="ian-grid">
+
+    <div class="ian-card">
+      <div class="ian-card-label">Asia High</div>
+      <div class="ian-card-value" id="ian-asia-high">--</div>
+      <div class="ian-muted">New York session</div>
     </div>
 
-    <p class="ian-note">
-      A level touch alone is not a trade signal. Wait for a confirmed market
-      reaction. Always manage risk.
-    </p>
-  </section>
-
-</div>
-
-<script>
-(() => {
-  const root = document.getElementById("ian-dashboard");
-  if (!root || root.dataset.levelsInitialized === "true") return;
-  root.dataset.levelsInitialized = "true";
-
-  const $ = id => root.querySelector("#" + id);
-
-  const status = $("ianLevelStatus");
-  const updated = $("ianLevelUpdated");
-  const refreshButton = $("ianDashRefresh");
-  const logoutButton = $("ianDashLogout");
-
-  function nyParts(date) {
-    const parts = new Intl.DateTimeFormat("en-US", {
-      timeZone:"America/New_York",
-      year:"numeric",
-      month:"2-digit",
-      day:"2-digit",
-      hour:"2-digit",
-      minute:"2-digit",
-      hourCycle:"h23"
-    }).formatToParts(date);
-
-    const result = {};
-    parts.forEach(part => {
-      if (part.type !== "literal") result[part.type] = part.value;
-    });
-    return result;
-  }
-
-  function dateKey(parts) {
-    return parts.year + "-" + parts.month + "-" + parts.day;
-  }
-
-  function shiftDateKey(key, amount) {
-    const [year, month, day] = key.split("-").map(Number);
-    const date = new Date(Date.UTC(year, month - 1, day + amount));
-    return date.toISOString().slice(0,10);
-  }
-
-  function highest(candles) {
-    return Math.max(...candles.map(c => Number(c.high)));
-  }
-
-  function lowest(candles) {
-    return Math.min(...candles.map(c => Number(c.low)));
-  }
-
-  function display(id, value) {
-    $(id).textContent = Number.isFinite(value)
-      ? value.toFixed(2)
-      : "—";
-  }
-
-  async function refreshLevels() {
-    refreshButton.disabled = true;
-    refreshButton.textContent = "LOADING...";
-    status.textContent = "FETCHING MARKET DATA";
-
-    try {
-      const response = await fetch(
-        "/api/xauusd/candles?timeframe=M1&days=3",
-        {cache:"no-store"}
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Market data request failed.");
-      }
-
-      const candles = Array.isArray(data.candles)
-        ? data.candles
-        : Array.isArray(data)
-          ? data
-          : [];
-
-      if (!candles.length) {
-        throw new Error("No candles returned by the market-data API.");
-      }
-
-      const parsed = candles.map(c => {
-        const rawDate = c.datetime || c.date || c.time;
-        const date = new Date(rawDate);
-
-        return {
-          date,
-          high:Number(c.high),
-          low:Number(c.low)
-        };
-      }).filter(c =>
-        !Number.isNaN(c.date.getTime()) &&
-        Number.isFinite(c.high) &&
-        Number.isFinite(c.low)
-      );
-
-      if (!parsed.length) {
-        throw new Error("Market data contains invalid candle values.");
-      }
-
-      const nowParts = nyParts(new Date());
-      const todayKey = dateKey(nowParts);
-      const previousKey = shiftDateKey(todayKey, -1);
-
-      // Asia session: 7:00 PM to midnight New York time.
-      const asiaCandles = parsed.filter(c => {
-        const p = nyParts(c.date);
-        const key = dateKey(p);
-        const hour = Number(p.hour);
-
-        return key === previousKey && hour >= 19 ||
-               key === todayKey && hour < 0;
-      });
-
-      // PDH and PDL: previous New York calendar day.
-      const previousDayCandles = parsed.filter(c =>
-        dateKey(nyParts(c.date)) === previousKey
-      );
-
-      if (asiaCandles.length) {
-        display("ianAsiaHigh", highest(asiaCandles));
-        display("ianAsiaLow", lowest(asiaCandles));
-      } else {
-        display("ianAsiaHigh", NaN);
-        display("ianAsiaLow", NaN);
-      }
-
-      if (previousDayCandles.length) {
-        display("ianPDH", highest(previousDayCandles));
-        display("ianPDL", lowest(previousDayCandles));
-      } else {
-        display("ianPDH", NaN);
-        display("ianPDL", NaN);
-      }
-
-      status.textContent = "MARKET DATA RECEIVED";
-      updated.textContent =
-        "Last updated: " + new Date().toLocaleTimeString() +
-        " · " + parsed.length + " candles received";
-
-    } catch (error) {
-      status.textContent = "MARKET DATA UNAVAILABLE";
-      updated.textContent = error.message;
-      updated.classList.add("ian-error");
-      console.error("IAN dashboard:", error);
-    } finally {
-      refreshButton.disabled = false;
-      refreshButton.textContent = "↻ REFRESH";
-    }
-  }
-
-  refreshButton.addEventListener("click", refreshLevels);
-
-  logoutButton.addEventListener("click", async () => {
-    logoutButton.disabled = true;
-
-    try {
-      if (window.ianSupabase) {
-        const result = await window.ianSupabase.auth.signOut();
-        if (result.error) throw result.error;
-      }
-
-      root.style.display = "none";
-
-      const auth = document.getElementById("ian-auth-section");
-      if (auth) auth.style.display = "flex";
-
-    } catch (error) {
-      alert(error.message || "Logout failed.");
-    } finally {
-      logoutButton.disabled = false;
-    }
-  });
-
-  window.ianOnLoginSuccess = function() {
-    const auth = document.getElementById("ian-auth-section");
-    if (auth) auth.style.display = "none";
-
-    root.style.display = "block";
-    refreshLevels();
-  };
-
-  if (window.ianSupabase) {
-    window.ianSupabase.auth.getSession().then(result => {
-      if (result.data && result.data.session) {
-        window.ianOnLoginSuccess();
-      }
-    });
-  }
-
-})();
-</script>
-
-<!-- SECTION 3: IAN XAU AI ECONOMIC CALENDAR -->
-
-<section id="ian-calendar-section">
-<style>
-#ian-calendar-section {
-  --cal-green:#39ff78;
-  --cal-border:#24452c;
-  --cal-panel:#0a140d;
-  --cal-muted:#91a394;
-  --cal-text:#e9f5eb;
-  color:var(--cal-text);
-  font-family:Arial,sans-serif;
-  margin-top:25px;
-}
-#ian-calendar-section *{box-sizing:border-box}
-#ian-calendar-section .cal-panel{
-  background:var(--cal-panel);
-  border:1px solid var(--cal-border);
-  border-radius:13px;
-  padding:18px 14px;
-}
-#ian-calendar-section .cal-eyebrow{
-  color:var(--cal-green);
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:2px;
-}
-#ian-calendar-section h3{
-  font-size:21px;
-  margin:10px 0;
-}
-#ian-calendar-section .cal-description{
-  color:var(--cal-muted);
-  font-size:11px;
-  line-height:1.6;
-}
-#ian-calendar-section .cal-stats{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px;
-  margin:18px 0;
-}
-#ian-calendar-section .cal-stat{
-  background:#101d13;
-  border:1px solid var(--cal-border);
-  border-radius:8px;
-  padding:12px 8px;
-}
-#ian-calendar-section .cal-stat span{
-  display:block;
-  color:var(--cal-muted);
-  font-size:9px;
-}
-#ian-calendar-section .cal-stat strong{
-  display:block;
-  color:var(--cal-green);
-  font-size:20px;
-  margin-top:7px;
-}
-#ian-calendar-section .cal-filters{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:9px;
-  margin:15px 0;
-}
-#ian-calendar-section input,
-#ian-calendar-section select{
-  width:100%;
-  min-width:0;
-  padding:12px 9px;
-  background:#071009;
-  color:#e9f5eb;
-  border:1px solid #36563d;
-  border-radius:7px;
-  font-size:11px;
-}
-#ian-calendar-section .cal-table-wrap{
-  overflow-x:auto;
-  border:1px solid var(--cal-border);
-  border-radius:8px;
-}
-#ian-calendar-section table{
-  width:100%;
-  min-width:700px;
-  border-collapse:collapse;
-  font-size:11px;
-}
-#ian-calendar-section th{
-  background:#132218;
-  color:var(--cal-green);
-  text-align:left;
-  padding:13px 10px;
-  white-space:nowrap;
-}
-#ian-calendar-section td{
-  padding:12px 10px;
-  border-top:1px solid #203626;
-  color:#d9e7dc;
-}
-#ian-calendar-section .impact{
-  font-weight:900;
-}
-#ian-calendar-section .high{color:#ff7777}
-#ian-calendar-section .medium{color:#f3c969}
-#ian-calendar-section .low{color:#39ff78}
-#ian-calendar-section .unknown{color:#9aa99e}
-#ian-calendar-section .cal-message{
-  padding:17px 5px;
-  color:var(--cal-muted);
-  font-size:11px;
-  line-height:1.6;
-}
-#ian-calendar-section .cal-refresh{
-  background:var(--cal-green);
-  color:#031006;
-  border:0;
-  border-radius:7px;
-  padding:12px 16px;
-  font-size:11px;
-  font-weight:900;
-  margin-top:14px;
-}
-@media(max-width:420px){
-  #ian-calendar-section .cal-filters{grid-template-columns:1fr}
-}
-</style>
-
-<div class="cal-panel">
-  <div class="cal-eyebrow">GLOBAL ECONOMIC EVENTS</div>
-  <h3>Economic Calendar</h3>
-  <p class="cal-description">
-    Monitor economic releases that may affect gold and the US dollar.
-    Check high-impact events before entering a trade.
-  </p>
-
-  <div class="cal-stats">
-    <div class="cal-stat">
-      <span>VISIBLE EVENTS</span>
-      <strong id="calTotal">0</strong>
+    <div class="ian-card">
+      <div class="ian-card-label">Asia Low</div>
+      <div class="ian-card-value" id="ian-asia-low">--</div>
+      <div class="ian-muted">New York session</div>
     </div>
-    <div class="cal-stat">
-      <span>HIGH IMPACT</span>
-      <strong id="calHigh">0</strong>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Previous Day High</div>
+      <div class="ian-card-value" id="ian-pdh">--</div>
+      <div class="ian-muted">PDH</div>
     </div>
-    <div class="cal-stat">
-      <span>USD EVENTS</span>
-      <strong id="calUSD">0</strong>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Previous Day Low</div>
+      <div class="ian-card-value" id="ian-pdl">--</div>
+      <div class="ian-muted">PDL</div>
+    </div>
+
+  </div>
+
+  <div class="ian-card" style="margin-top:12px;">
+    <div class="ian-card-label">Market level calculation</div>
+    <div class="ian-muted" id="ian-level-status" style="margin-top:8px;">
+      Waiting for market candles from the data server.
+    </div>
+    <div class="ian-muted" style="margin-top:8px;">
+      Asia session definition: 7:00 PM to 12:00 AM New York time.
+      Asia High and Low are calculated from candles within that window.
     </div>
   </div>
 
-  <div class="cal-filters">
-    <input id="calSearch" type="search" placeholder="Search events...">
+  <!-- STRATEGY OVERVIEW -->
+  <div class="ian-section-title">TRADING <span>STRATEGY</span></div>
 
-    <select id="calCurrency">
-      <option value="ALL">All currencies</option>
-      <option value="USD">USD</option>
-      <option value="EUR">EUR</option>
-      <option value="GBP">GBP</option>
-      <option value="JPY">JPY</option>
-      <option value="AUD">AUD</option>
-      <option value="CAD">CAD</option>
-      <option value="CHF">CHF</option>
-      <option value="NZD">NZD</option>
-      <option value="CNY">CNY</option>
-    </select>
+  <div class="ian-strategy-grid">
 
-    <select id="calImpact">
-      <option value="ALL">All impact levels</option>
-      <option value="HIGH">High impact</option>
-      <option value="MEDIUM">Medium impact</option>
-      <option value="LOW">Low impact</option>
-      <option value="UNKNOWN">Unknown impact</option>
-    </select>
+    <div class="ian-strategy-item">
+      <h4>01 · Identify Liquidity</h4>
+      <p>
+        Mark Asia High, Asia Low, Previous Day High and Previous Day Low.
+        These levels can attract price and liquidity.
+      </p>
+    </div>
 
-    <input id="calDate" type="date">
+    <div class="ian-strategy-item">
+      <h4>02 · Wait for a Sweep</h4>
+      <p>
+        Watch whether price moves beyond a key level and then returns.
+        A level touch alone is not a trade signal.
+      </p>
+    </div>
+
+    <div class="ian-strategy-item">
+      <h4>03 · Confirm the Reaction</h4>
+      <p>
+        Look for a clear reaction and confirmation on the selected
+        timeframe before considering an entry.
+      </p>
+    </div>
+
+    <div class="ian-strategy-item">
+      <h4>04 · Manage Risk</h4>
+      <p>
+        Define entry, stop loss and take profit before entering.
+        Avoid trades where the risk is not justified by the setup.
+      </p>
+    </div>
+
   </div>
 
-  <div class="cal-table-wrap">
-    <table>
+  <div class="ian-note">
+    EDUCATIONAL NOTICE: Market levels and strategy information are
+    analytical tools, not guaranteed trading signals. Always verify
+    prices and manage your risk.
+  </div>
+
+  <!-- PART 2 CONTINUES BELOW THIS LINE --> 
+    <!-- PERFORMANCE TRACKER -->
+  <div class="ian-section-title">PERFORMANCE <span>ANALYTICS</span></div>
+
+  <div class="ian-note">
+    ILLUSTRATIVE SAMPLE DATA — These figures are examples for dashboard
+    display only. They are not verified live or historical trading results.
+  </div>
+
+  <div class="ian-grid" style="margin-top:14px;">
+
+    <div class="ian-card">
+      <div class="ian-card-label">Net Profit</div>
+      <div class="ian-card-value">+$860.00</div>
+      <div class="ian-muted">Sample · +8.6%</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Win Rate</div>
+      <div class="ian-card-value">72.4%</div>
+      <div class="ian-muted">Sample performance</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Total Trades</div>
+      <div class="ian-card-value">125</div>
+      <div class="ian-muted">Sample trade count</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Max Drawdown</div>
+      <div class="ian-card-value">4.2%</div>
+      <div class="ian-muted">Sample drawdown</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Profit Factor</div>
+      <div class="ian-card-value">1.85</div>
+      <div class="ian-muted">Sample ratio</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Average Risk / Reward</div>
+      <div class="ian-card-value">1 : 2.1</div>
+      <div class="ian-muted">Sample ratio</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Winning Trades</div>
+      <div class="ian-card-value">91</div>
+      <div class="ian-muted">Sample count</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Losing Trades</div>
+      <div class="ian-card-value">34</div>
+      <div class="ian-muted">Sample count</div>
+    </div>
+
+  </div>
+
+  <!-- EQUITY CURVE -->
+  <div class="ian-section-title">EQUITY <span>CURVE</span></div>
+
+  <div class="ian-card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+      <div>
+        <div class="ian-card-label">Illustrative account balance</div>
+        <div class="ian-card-value">$10,860.00</div>
+        <div class="ian-muted">Sample starting balance: $10,000</div>
+      </div>
+
+      <div style="text-align:right;">
+        <div class="ian-card-label">Sample return</div>
+        <div class="ian-card-value">+8.6%</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;overflow:hidden;">
+      <svg viewBox="0 0 700 260"
+           width="100%"
+           role="img"
+           aria-label="Illustrative sample equity curve">
+
+        <defs>
+          <linearGradient id="ianEquityFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#39ff78" stop-opacity=".30"/>
+            <stop offset="100%" stop-color="#39ff78" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <g stroke="rgba(255,255,255,.10)" stroke-width="1">
+          <line x1="55" y1="35" x2="680" y2="35"/>
+          <line x1="55" y1="85" x2="680" y2="85"/>
+          <line x1="55" y1="135" x2="680" y2="135"/>
+          <line x1="55" y1="185" x2="680" y2="185"/>
+          <line x1="55" y1="225" x2="680" y2="225"/>
+        </g>
+
+        <g fill="#8b9b8f" font-size="11">
+          <text x="5" y="39">$11k</text>
+          <text x="5" y="89">$10.8k</text>
+          <text x="5" y="139">$10.5k</text>
+          <text x="5" y="189">$10.2k</text>
+          <text x="5" y="229">$10k</text>
+        </g>
+
+        <path
+          d="M55 225
+             L100 210
+             L145 218
+             L190 185
+             L235 192
+             L280 165
+             L325 175
+             L370 140
+             L415 150
+             L460 115
+             L505 125
+             L550 90
+             L595 100
+             L640 55
+             L680 35
+             L680 225
+             L55 225 Z"
+          fill="url(#ianEquityFill)"/>
+
+        <path
+          d="M55 225
+             L100 210
+             L145 218
+             L190 185
+             L235 192
+             L280 165
+             L325 175
+             L370 140
+             L415 150
+             L460 115
+             L505 125
+             L550 90
+             L595 100
+             L640 55
+             L680 35"
+          fill="none"
+          stroke="#39ff78"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+        <circle cx="680" cy="35" r="5" fill="#39ff78"/>
+      </svg>
+    </div>
+
+    <div class="ian-muted">
+      SAMPLE EQUITY CURVE · Illustrative only, not connected to a verified
+      trading account.
+    </div>
+  </div>
+
+  <!-- TRADE HISTORY -->
+  <div class="ian-section-title">RECENT TRADE <span>HISTORY</span></div>
+
+  <div class="ian-card" style="overflow-x:auto;">
+    <div class="ian-muted" style="margin-bottom:12px;">
+      ILLUSTRATIVE SAMPLE TRADES — Not actual executed trades.
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;min-width:440px;font-size:12px;">
       <thead>
-        <tr>
-          <th>Date / Time</th>
-          <th>Currency</th>
-          <th>Economic Event</th>
-          <th>Impact</th>
-          <th>Actual</th>
-          <th>Forecast</th>
-          <th>Previous</th>
+        <tr style="color:#8b9b8f;text-align:left;">
+          <th style="padding:12px 8px;">INSTRUMENT</th>
+          <th style="padding:12px 8px;">DIRECTION</th>
+          <th style="padding:12px 8px;">RESULT</th>
+          <th style="padding:12px 8px;">STATUS</th>
         </tr>
       </thead>
-      <tbody id="calEventsBody">
-        <tr>
-          <td colspan="7" class="cal-message">Loading economic events...</td>
+
+      <tbody>
+        <tr style="border-top:1px solid rgba(255,255,255,.08);">
+          <td style="padding:13px 8px;">XAUUSD</td>
+          <td style="padding:13px 8px;color:#39ff78;">BUY</td>
+          <td style="padding:13px 8px;color:#39ff78;">+$85.00</td>
+          <td style="padding:13px 8px;">WIN</td>
+        </tr>
+
+        <tr style="border-top:1px solid rgba(255,255,255,.08);">
+          <td style="padding:13px 8px;">XAUUSD</td>
+          <td style="padding:13px 8px;color:#ff8888;">SELL</td>
+          <td style="padding:13px 8px;color:#ff8888;">-$35.00</td>
+          <td style="padding:13px 8px;">LOSS</td>
+        </tr>
+
+        <tr style="border-top:1px solid rgba(255,255,255,.08);">
+          <td style="padding:13px 8px;">XAUUSD</td>
+          <td style="padding:13px 8px;color:#39ff78;">BUY</td>
+          <td style="padding:13px 8px;color:#39ff78;">+$120.00</td>
+          <td style="padding:13px 8px;">WIN</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div id="calMessage" class="cal-message">
-    Connecting to economic calendar...
+  <!-- SYSTEM MONITOR -->
+  <div class="ian-section-title">SYSTEM <span>MONITOR</span></div>
+
+  <div class="ian-grid">
+
+    <div class="ian-card">
+      <div class="ian-card-label">Dashboard</div>
+      <div class="ian-card-value" style="font-size:17px;">ACTIVE</div>
+      <div class="ian-muted">Website interface</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Market API</div>
+      <div class="ian-card-value" style="font-size:17px;" id="ian-api-monitor">CHECKING</div>
+      <div class="ian-muted">Market data connection</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Last Update</div>
+      <div class="ian-card-value" style="font-size:17px;" id="ian-last-update">--</div>
+      <div class="ian-muted">Browser local time</div>
+    </div>
+
+    <div class="ian-card">
+      <div class="ian-card-label">Execution</div>
+      <div class="ian-card-value" style="font-size:17px;">OFF</div>
+      <div class="ian-muted">No live orders sent</div>
+    </div>
+
   </div>
 
-  <button type="button" class="cal-refresh" id="calRefresh">
-    ↻ REFRESH CALENDAR
-  </button>
+  <div class="ian-note">
+    The dashboard does not execute trades. The performance figures and
+    trade history above are sample display data. Live account performance
+    requires a verified trading-account connection.
+  </div>
+
+  <div style="text-align:center;padding:25px 0 10px;color:#718174;font-size:10px;">
+    IAN XAU AI PRO PLUS · RULE-BASED XAUUSD TRADING SYSTEM
+  </div>
+
 </div>
+</section>
 
 <script>
-(() => {
-  const root = document.getElementById("ian-calendar-section");
-  if (!root || root.dataset.initialized === "true") return;
-  root.dataset.initialized = "true";
+(function () {
+  "use strict";
 
-  const $ = id => root.querySelector("#" + id);
-  let allEvents = [];
+  const dashboard = document.getElementById("ian-dashboard");
+  if (!dashboard) return;
 
-  function safe(value) {
-    return value === null || value === undefined || value === ""
-      ? "—"
-      : String(value);
+  const $ = function (id) {
+    return document.getElementById(id);
+  };
+
+  function setText(id, value) {
+    const element = $(id);
+    if (element) element.textContent = value;
   }
 
-  function impactName(value) {
-    const v = String(value || "").toUpperCase();
+  function getNewYorkParts(date) {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(date);
 
-    if (v.includes("HIGH") || v.includes("RED")) return "HIGH";
-    if (v.includes("MEDIUM") || v.includes("MODERATE") || v.includes("ORANGE")) return "MEDIUM";
-    if (v.includes("LOW") || v.includes("GREEN")) return "LOW";
-
-    return "UNKNOWN";
-  }
-
-  function eventDate(event) {
-    return event.date || event.datetime || event.time || event.Date || "";
-  }
-
-  function render() {
-    const search = $("calSearch").value.toLowerCase().trim();
-    const currency = $("calCurrency").value;
-    const impact = $("calImpact").value;
-    const date = $("calDate").value;
-
-    const filtered = allEvents.filter(event => {
-      const name = String(event.event || event.title || event.name || "").toLowerCase();
-      const curr = String(event.currency || event.country || event.Country || "").toUpperCase();
-      const level = impactName(event.impact || event.importance);
-      const rawDate = eventDate(event);
-      const parsedDate = rawDate ? new Date(rawDate) : null;
-      const dateKey = parsedDate && !Number.isNaN(parsedDate.getTime())
-        ? parsedDate.toLocaleDateString("en-CA")
-        : "";
-
-      return (!search || name.includes(search)) &&
-        (currency === "ALL" || curr.includes(currency)) &&
-        (impact === "ALL" || level === impact) &&
-        (!date || dateKey === date);
+    const result = {};
+    parts.forEach(function (part) {
+      result[part.type] = part.value;
     });
+    return result;
+  }
 
-    $("calTotal").textContent = filtered.length;
-    $("calHigh").textContent = filtered.filter(e =>
-      impactName(e.impact || e.importance) === "HIGH"
-    ).length;
-    $("calUSD").textContent = filtered.filter(e =>
-      String(e.currency || e.country || e.Country || "").toUpperCase().includes("USD")
-    ).length;
+  function nyDateKey(date) {
+    const p = getNewYorkParts(date);
+    return p.year + "-" + p.month + "-" + p.day;
+  }
 
-    const body = $("calEventsBody");
-    body.replaceChildren();
+  function shiftDateKey(key, amount) {
+    const pieces = key.split("-").map(Number);
+    const date = new Date(Date.UTC(pieces[0], pieces[1] - 1, pieces[2]));
+    date.setUTCDate(date.getUTCDate() + amount);
 
-    if (!filtered.length) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 7;
-      td.className = "cal-message";
-      td.textContent = "No matching economic events found.";
-      tr.appendChild(td);
-      body.appendChild(tr);
-      return;
+    return date.getUTCFullYear() + "-" +
+      String(date.getUTCMonth() + 1).padStart(2, "0") + "-" +
+      String(date.getUTCDate()).padStart(2, "0");
+  }
+
+  function candleDate(candle) {
+    const raw = candle.datetime || candle.timestamp ||
+      candle.date || candle.time;
+
+    if (raw === undefined || raw === null) return null;
+
+    let date;
+
+    if (typeof raw === "number" || /^\d+$/.test(String(raw))) {
+      let number = Number(raw);
+      if (String(Math.abs(number)).length <= 10) number *= 1000;
+      date = new Date(number);
+    } else {
+      date = new Date(raw);
     }
 
-    filtered.forEach(event => {
-      const tr = document.createElement("tr");
-      const rawDate = eventDate(event);
-      const parsedDate = rawDate ? new Date(rawDate) : null;
-      const formattedDate = parsedDate && !Number.isNaN(parsedDate.getTime())
-        ? parsedDate.toLocaleString()
-        : safe(rawDate);
-
-      const level = impactName(event.impact || event.importance);
-      const values = [
-        formattedDate,
-        safe(event.currency || event.country || event.Country),
-        safe(event.event || event.title || event.name),
-        level,
-        safe(event.actual),
-        safe(event.forecast),
-        safe(event.previous)
-      ];
-
-      values.forEach((value, index) => {
-        const td = document.createElement("td");
-        td.textContent = value;
-
-        if (index === 3) {
-          td.className = "impact " + level.toLowerCase();
-        }
-
-        tr.appendChild(td);
-      });
-
-      body.appendChild(tr);
-    });
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  async function loadEvents() {
-    $("calMessage").textContent = "Loading economic events...";
+  function getNumber(candle, field) {
+    const value = Number(candle[field]);
+    return Number.isFinite(value) ? value : null;
+  }
 
-    try {
-      const response = await fetch("/api/economic-calendar", {
-        cache:"no-store"
-      });
+  function calculateLevels(candles) {
+    const now = new Date();
+    const nowParts = getNewYorkParts(now);
+    const todayNY = nyDateKey(now);
 
-      if (!response.ok) {
-        throw new Error("Calendar request failed: " + response.status);
+    // The Asia session starts at 7:00 PM New York time.
+    const sessionDate = Number(nowParts.hour) >= 19
+      ? todayNY
+      : shiftDateKey(todayNY, -1);
+
+    const sessionStart = sessionDate + " 19:00";
+    const sessionEnd = shiftDateKey(sessionDate, 1) + " 00:00";
+
+    const previousDay = shiftDateKey(todayNY, -1);
+
+    let asiaHigh = -Infinity;
+    let asiaLow = Infinity;
+    let pdh = -Infinity;
+    let pdl = Infinity;
+
+    let asiaCount = 0;
+    let previousDayCount = 0;
+
+    candles.forEach(function (candle) {
+      const date = candleDate(candle);
+      if (!date) return;
+
+      const p = getNewYorkParts(date);
+      const key = p.year + "-" + p.month + "-" + p.day;
+      const minutes = Number(p.hour) * 60 + Number(p.minute);
+
+      const high = getNumber(candle, "high");
+      const low = getNumber(candle, "low");
+
+      if (high === null || low === null) return;
+
+      const sessionStartKey = sessionDate;
+      const sessionEndKey = shiftDateKey(sessionDate, 1);
+
+      const isAsia =
+        (key === sessionStartKey && minutes >= 19 * 60) ||
+        (key === sessionEndKey && minutes < 0);
+
+      if (isAsia) {
+        asiaHigh = Math.max(asiaHigh, high);
+        asiaLow = Math.min(asiaLow, low);
+        asiaCount++;
       }
 
-      const data = await response.json();
-      allEvents = Array.isArray(data.events) ? data.events : [];
+      if (key === previousDay) {
+        pdh = Math.max(pdh, high);
+        pdl = Math.min(pdl, low);
+        previousDayCount++;
+      }
+    });
 
-      render();
-      $("calMessage").textContent =
-        allEvents.length + " events received from the calendar service.";
+    if (asiaCount > 0) {
+      setText("ian-asia-high", asiaHigh.toFixed(2));
+      setText("ian-asia-low", asiaLow.toFixed(2));
+    } else {
+      setText("ian-asia-high", "--");
+      setText("ian-asia-low", "--");
+    }
+
+    if (previousDayCount > 0) {
+      setText("ian-pdh", pdh.toFixed(2));
+      setText("ian-pdl", pdl.toFixed(2));
+    } else {
+      setText("ian-pdh", "--");
+      setText("ian-pdl", "--");
+    }
+
+    const messages = [];
+
+    messages.push(asiaCount
+      ? "Asia session candles found: " + asiaCount
+      : "No Asia session candles found. Check API history and timezone.");
+
+    messages.push(previousDayCount
+      ? "Previous New York trading day candles found: " + previousDayCount
+      : "No previous-day candles found. Check API history.");
+
+    setText("ian-level-status", messages.join(" "));
+
+    return asiaCount > 0 && previousDayCount > 0;
+  }
+
+  async function refreshMarketData() {
+    setText("ian-data-status", "CHECKING");
+    setText("ian-api-monitor", "CHECKING");
+    setText("ian-data-time", "Requesting market candles...");
+
+    try {
+      const response = await fetch(
+        "/api/xauusd/candles?timeframe=M1&days=5",
+        { cache: "no-store" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Market API returned HTTP " + response.status);
+      }
+
+      const payload = await response.json();
+
+      const candles = Array.isArray(payload)
+        ? payload
+        : payload.candles;
+
+      if (!Array.isArray(candles) || candles.length === 0) {
+        throw new Error("No candles returned by market API");
+      }
+
+      const success = calculateLevels(candles);
+
+      setText("ian-data-status", success ? "CONNECTED" : "PARTIAL");
+      setText("ian-api-monitor", success ? "CONNECTED" : "PARTIAL");
+
+      const updated = new Date().toLocaleTimeString();
+      setText("ian-data-time", "Updated " + updated);
+      setText("ian-last-update", updated);
 
     } catch (error) {
-      $("calMessage").textContent =
-        "Calendar unavailable: " + error.message;
+      console.error("IAN XAU AI market data error:", error);
+
+      setText("ian-data-status", "OFFLINE");
+      setText("ian-api-monitor", "OFFLINE");
+      setText("ian-data-time", "Market data unavailable");
+      setText("ian-level-status",
+        "Could not load market candles. Check that /api/xauusd/candles exists and returns valid candle data."
+      );
+      setText("ian-last-update", "Unavailable");
     }
   }
 
-  ["calSearch", "calCurrency", "calImpact", "calDate"].forEach(id => {
-    $(id).addEventListener("input", render);
-    $(id).addEventListener("change", render);
-  });
+  window.ianRefreshDashboard = refreshMarketData;
 
-  $("calRefresh").addEventListener("click", loadEvents);
+  window.ianLogout = async function () {
+    try {
+      if (window.ianSupabase) {
+        await window.ianSupabase.auth.signOut();
+      }
+    } catch (error) {
+      console.error("IAN logout error:", error);
+    }
 
-  loadEvents();
+    if (typeof window.ianShowLoginPage === "function") {
+      window.ianShowLoginPage();
+    } else {
+      dashboard.style.display = "none";
+    }
+  };
+
+  window.ianOnLoginSuccess = function () {
+    dashboard.style.display = "block";
+    refreshMarketData();
+  };
+
 })();
-</script>
+  </script>
+  
+<!-- SECTION 3: IAN XAU AI PRO PLUS — ECONOMIC CALENDAR -->
+<section id="ian-calendar-section" style="display:none;">
 
-</section>
-
-<!-- END SECTION 3 -->
-                               
-</section>
-
-<!-- END SECTION 2 -->
-
-<!-- SECTION 4: IAN XAU AI PRICING + MT5 SETTINGS -->
-<section id="ian-pricing-section">
 <style>
-#ian-pricing-section {
-  background:#030603;
+#ian-calendar-section {
+  --green:#39ff78;
+  --gold:#e8c46b;
+  --bg:#030603;
+  --panel:#0a110c;
+  --panel2:#0d1710;
+  --border:rgba(57,255,120,.16);
+  background:var(--bg);
   color:#e9f5eb;
   font-family:Arial,sans-serif;
-  padding:25px 14px;
+  width:100%;
+  padding:20px;
+  box-sizing:border-box;
 }
-#ian-pricing-section * {box-sizing:border-box}
-#ian-pricing-section .ian-wrap {
-  max-width:850px;margin:auto;
+#ian-calendar-section * {box-sizing:border-box;}
+#ian-calendar-section .ec-wrap {
+  max-width:1250px;
+  margin:auto;
 }
-#ian-pricing-section h2 {
-  text-align:center;color:#39ff78;font-size:27px;
-}
-#ian-pricing-section .ian-subtitle {
-  text-align:center;color:#aab9ad;margin-bottom:25px;
-}
-#ian-pricing-section .ian-plans {
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+#ian-calendar-section .ec-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
   gap:15px;
+  margin-bottom:22px;
 }
-#ian-pricing-section .ian-plan {
-  background:#09110b;border:1px solid #203b27;
-  border-radius:14px;padding:20px;
+#ian-calendar-section .ec-brand {
+  color:var(--green);
+  font-size:21px;
+  font-weight:900;
+  letter-spacing:1.3px;
 }
-#ian-pricing-section .ian-plan.vip {
-  border-color:#39ff78;
+#ian-calendar-section .ec-subtitle {
+  color:#829187;
+  font-size:10px;
+  letter-spacing:1.8px;
+  margin-top:6px;
 }
-#ian-pricing-section .ian-plan h3 {
-  color:#39ff78;margin-top:0;
+#ian-calendar-section .ec-live {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--border);
+  border-radius:30px;
+  padding:9px 13px;
+  color:#a9b9ad;
+  font-size:10px;
+  letter-spacing:1px;
 }
-#ian-pricing-section .ian-price {
-  font-size:32px;font-weight:bold;margin:12px 0;
+#ian-calendar-section .ec-dot {
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
 }
-#ian-pricing-section .ian-plan ul {
-  padding-left:20px;color:#c5d2c8;line-height:1.9;
+#ian-calendar-section .ec-heading {
+  margin:0 0 6px;
+  color:#f0f5f1;
+  font-size:25px;
+  font-weight:800;
 }
-#ian-pricing-section button {
-  background:#39ff78;color:#031006;border:0;
-  border-radius:8px;padding:13px 16px;
-  font-weight:bold;cursor:pointer;width:100%;
+#ian-calendar-section .ec-description {
+  color:#839188;
+  font-size:12px;
+  line-height:1.6;
+  margin-bottom:20px;
 }
-#ian-pricing-section button:disabled {
-  opacity:.4;cursor:not-allowed;
+#ian-calendar-section .ec-stats {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:18px;
 }
-#ian-pricing-section .ian-panel {
-  margin-top:25px;padding:20px;
-  background:#09110b;border:1px solid #203b27;
-  border-radius:14px;
+#ian-calendar-section .ec-stat {
+  background:linear-gradient(145deg,#0d1710,#080e0a);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:17px;
+  min-width:0;
+  position:relative;
+  overflow:hidden;
 }
-#ian-pricing-section .ian-panel h3 {
-  color:#39ff78;
+#ian-calendar-section .ec-stat:after {
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  height:2px;
+  width:100%;
+  background:var(--green);
+  opacity:.65;
 }
-#ian-pricing-section .ian-grid {
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:13px;
+#ian-calendar-section .ec-stat-label {
+  color:#8b9b90;
+  font-size:10px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
 }
-#ian-pricing-section label {
-  display:block;font-size:13px;color:#b8c8bc;
-  margin-bottom:6px;
+#ian-calendar-section .ec-stat-value {
+  color:#f1f7f2;
+  font-size:27px;
+  font-weight:800;
+  margin-top:12px;
 }
-#ian-pricing-section input,
-#ian-pricing-section select {
-  width:100%;padding:12px;border-radius:7px;
-  border:1px solid #29432f;background:#030803;
-  color:white;font-size:15px;
+#ian-calendar-section .ec-stat-note {
+  color:#68796e;
+  font-size:10px;
+  margin-top:6px;
 }
-#ian-pricing-section .ian-field {margin-bottom:13px}
-#ian-pricing-section .ian-note {
-  color:#9baa9e;font-size:12px;line-height:1.6;
+#ian-calendar-section .ec-panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:18px;
+  margin-bottom:16px;
 }
-#ian-pricing-section .ian-vip-settings {
-  display:none;margin-top:18px;padding:16px;
-  border:1px solid #39ff78;border-radius:10px;
-  background:#061009;
+#ian-calendar-section .ec-panel-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:16px;
 }
-#ian-pricing-section .ian-vip-settings.visible {
+#ian-calendar-section .ec-panel-title {
+  color:var(--green);
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.8px;
+  margin:0;
+}
+#ian-calendar-section .ec-timezone {
+  color:#89988e;
+  font-size:10px;
+}
+#ian-calendar-section .ec-filters {
+  display:grid;
+  grid-template-columns:1.5fr repeat(3,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+#ian-calendar-section input,
+#ian-calendar-section select {
+  width:100%;
+  min-width:0;
+  padding:12px;
+  background:#060c08;
+  color:#e9f5eb;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:8px;
+  font-size:12px;
+  outline:none;
+}
+#ian-calendar-section input:focus,
+#ian-calendar-section select:focus {
+  border-color:var(--green);
+}
+#ian-calendar-section .ec-toolbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:13px;
+}
+#ian-calendar-section .ec-count {
+  color:#8b9b90;
+  font-size:11px;
+}
+#ian-calendar-section .ec-btn {
+  background:var(--green);
+  color:#031006;
+  border:0;
+  border-radius:7px;
+  padding:11px 15px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.6px;
+  cursor:pointer;
+}
+#ian-calendar-section .ec-btn:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+#ian-calendar-section .ec-btn-secondary {
+  background:#101b13;
+  color:var(--green);
+  border:1px solid var(--border);
+}
+#ian-calendar-section .ec-table-wrap {
+  overflow-x:auto;
+  width:100%;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:9px;
+}
+#ian-calendar-section table {
+  width:100%;
+  min-width:850px;
+  border-collapse:collapse;
+  font-size:11px;
+}
+#ian-calendar-section th {
+  background:#101b13;
+  color:#8fa194;
+  text-align:left;
+  padding:14px 12px;
+  font-size:9px;
+  letter-spacing:1px;
+  white-space:nowrap;
+}
+#ian-calendar-section td {
+  padding:15px 12px;
+  color:#c5d1c8;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  white-space:nowrap;
+}
+#ian-calendar-section tbody tr:hover {
+  background:rgba(57,255,120,.035);
+}
+#ian-calendar-section tbody tr:last-child td {
+  border-bottom:0;
+}
+#ian-calendar-section .ec-event-name {
+  color:#edf5ef;
+  font-weight:700;
+  white-space:normal;
+  min-width:180px;
+}
+#ian-calendar-section .ec-event-sub {
   display:block;
+  color:#718076;
+  font-size:9px;
+  margin-top:5px;
+  font-weight:400;
 }
-#ian-pricing-section .ian-vip-settings h4 {
-  color:#39ff78;margin-top:0;
+#ian-calendar-section .ec-impact {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:20px;
+  padding:6px 9px;
+  font-size:9px;
+  font-weight:800;
 }
-#ian-pricing-section .ian-status {
-  padding:12px;border-radius:8px;
-  background:#030803;margin:12px 0;
-  font-size:13px;
+#ian-calendar-section .ec-impact:before {
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:currentColor;
 }
-#ian-pricing-section .ian-actions {
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  margin-top:15px;
+#ian-calendar-section .ec-high {
+  color:#ff7777;
+  background:rgba(255,70,70,.10);
 }
-#ian-pricing-section .ian-stop {
-  background:#ff7777;color:#210505;
+#ian-calendar-section .ec-medium {
+  color:#e8c46b;
+  background:rgba(232,196,107,.10);
 }
-#ian-pricing-section .ian-message {
-  margin-top:12px;color:#39ff78;font-size:13px;
-  overflow-wrap:anywhere;
+#ian-calendar-section .ec-low {
+  color:#39ff78;
+  background:rgba(57,255,120,.09);
 }
-@media(max-width:450px) {
-  #ian-pricing-section .ian-actions {grid-template-columns:1fr}
+#ian-calendar-section .ec-unknown {
+  color:#a2afa5;
+  background:rgba(162,175,165,.1);
+}
+#ian-calendar-section .ec-currency {
+  color:var(--green);
+  font-weight:800;
+}
+#ian-calendar-section .ec-message {
+  color:#9aa99e;
+  font-size:11px;
+  line-height:1.6;
+  margin-top:13px;
+}
+#ian-calendar-section .ec-error {
+  color:#ff8585;
+}
+#ian-calendar-section .ec-empty {
+  text-align:center;
+  padding:35px 15px;
+  color:#819087;
+  white-space:normal;
+}
+#ian-calendar-section .ec-notice {
+  border-left:3px solid var(--gold);
+  background:rgba(232,196,107,.045);
+  padding:15px;
+  border-radius:5px;
+  color:#aeb9ae;
+  font-size:11px;
+  line-height:1.7;
+}
+#ian-calendar-section .ec-footer {
+  text-align:center;
+  color:#5f6d64;
+  font-size:10px;
+  margin-top:22px;
+  letter-spacing:.6px;
+}
+@media(max-width:700px) {
+  #ian-calendar-section {padding:13px;}
+  #ian-calendar-section .ec-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #ian-calendar-section .ec-filters {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  #ian-calendar-section .ec-heading {
+    font-size:21px;
+  }
+}
+@media(max-width:420px) {
+  #ian-calendar-section .ec-filters {
+    grid-template-columns:1fr;
+  }
+  #ian-calendar-section .ec-panel {
+    padding:13px;
+  }
 }
 </style>
 
-<div class="ian-wrap">
-  <h2>CHOOSE YOUR TRADING PLAN</h2>
-  <p class="ian-subtitle">
-    Select your IAN XAU AI trading package.
-  </p>
+<div class="ec-wrap">
 
-  <div class="ian-plans">
-    <div class="ian-plan">
-      <h3>STANDARD BOT ACCESS</h3>
-      <div class="ian-price">$50</div>
-      <p>One-time payment</p>
-      <ul>
-        <li>XAUUSD trading system</li>
-        <li>Custom lot size</li>
-        <li>Risk settings</li>
-        <li>Stop Loss and Take Profit</li>
-        <li>MT5 EA configuration</li>
-      </ul>
-      <button type="button" data-plan="standard">
-        SELECT STANDARD
-      </button>
+  <div class="ec-top">
+    <div>
+      <div class="ec-brand">IAN XAU AI PRO PLUS</div>
+      <div class="ec-subtitle">GLOBAL MARKET INTELLIGENCE</div>
     </div>
-
-    <div class="ian-plan vip">
-      <h3>VIP TICK SCALPER</h3>
-      <div class="ian-price">$120</div>
-      <p>One-time payment</p>
-      <ul>
-        <li>Everything in Standard</li>
-        <li>VIP tick-scalping settings</li>
-        <li>Minimum holding-time setting</li>
-        <li>Maximum holding-time setting</li>
-        <li>Advanced trade controls</li>
-      </ul>
-      <button type="button" data-plan="vip">
-        SELECT VIP
-      </button>
+    <div class="ec-live">
+      <span class="ec-dot"></span>
+      <span id="ian-cal-status">CALENDAR STANDBY</span>
     </div>
   </div>
 
-  <div class="ian-panel">
-    <h3>MT5 ACCOUNT SETTINGS</h3>
-    <p class="ian-note">
-      Enter your MT5 account details. Never enter your MT5 master
-      password on this website.
-    </p>
-
-    <div class="ian-status">
-      Selected plan: <strong id="ianSelectedPlan">Standard Bot — $50</strong>
-    </div>
-
-    <div class="ian-grid">
-      <div class="ian-field">
-        <label for="ianMt5Login">MT5 Login ID</label>
-        <input id="ianMt5Login" type="text"
-          inputmode="numeric" placeholder="Your MT5 account number">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianBroker">Broker</label>
-        <input id="ianBroker" type="text"
-          placeholder="Example: Exness">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianServer">Broker Server</label>
-        <input id="ianServer" type="text"
-          placeholder="Your MT5 server name">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianAccountType">Account Type</label>
-        <select id="ianAccountType">
-          <option value="demo">Demo</option>
-          <option value="live">Live</option>
-        </select>
-      </div>
-
-      <div class="ian-field">
-        <label for="ianLotSize">Lot Size</label>
-        <input id="ianLotSize" type="number"
-          min="0.01" max="10" step="0.01" value="0.01">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianRisk">Risk Percentage</label>
-        <input id="ianRisk" type="number"
-          min="0.1" max="5" step="0.1" value="1">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianStopLoss">Stop Loss (points)</label>
-        <input id="ianStopLoss" type="number"
-          min="1" value="500">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianTakeProfit">Take Profit (points)</label>
-        <input id="ianTakeProfit" type="number"
-          min="1" value="750">
-      </div>
-
-      <div class="ian-field">
-        <label for="ianMaxPositions">Maximum Open Positions</label>
-        <input id="ianMaxPositions" type="number"
-          min="1" max="10" value="1">
-      </div>
-    </div>
-
-    <!-- VIP ONLY SETTINGS -->
-    <div id="ianVipSettings" class="ian-vip-settings">
-      <h4>VIP TICK SCALPER — HOLDING TIME</h4>
-
-      <div class="ian-grid">
-        <div class="ian-field">
-          <label for="ianMinHold">
-            Minimum Trade Holding Time (seconds)
-          </label>
-          <input id="ianMinHold" type="number"
-            min="0" max="3600" step="1" value="5">
-        </div>
-
-        <div class="ian-field">
-          <label for="ianMaxHold">
-            Maximum Trade Holding Time (seconds)
-          </label>
-          <input id="ianMaxHold" type="number"
-            min="1" max="86400" step="1" value="60">
-        </div>
-      </div>
-
-      <p class="ian-note">
-        Minimum holding time is a preferred minimum, not a guarantee.
-        Stop Loss, emergency risk controls and manual closing must
-        always be allowed. Maximum holding time instructs the EA to
-        close an eligible trade after the configured duration.
-      </p>
-    </div>
-
-    <button type="button" id="ianSaveSettings">
-      SAVE MT5 SETTINGS
-    </button>
-
-    <div class="ian-status">
-      MT5 Connection: <strong id="ianMt5Status">Checking...</strong>
-      <br><br>
-      Bot Status: <strong id="ianBotStatus">Unknown</strong>
-    </div>
-
-    <div class="ian-actions">
-      <button type="button" id="ianStartBot" disabled>
-        START BOT
-      </button>
-      <button type="button" id="ianStopBot" class="ian-stop" disabled>
-        STOP BOT
-      </button>
-    </div>
-
-    <div id="ianBotMessage" class="ian-message" role="status"></div>
-
-    <p class="ian-note">
-      Trading involves risk. Test all settings on a demo account
-      before considering live trading. Saving settings does not
-      activate a bot or verify payment.
-    </p>
+  <h2 class="ec-heading">Economic Calendar</h2>
+  <div class="ec-description">
+    Monitor scheduled economic releases, market-moving events
+    and USD announcements that may affect gold volatility.
   </div>
+
+  <!-- EVENT STATISTICS -->
+  <div class="ec-stats">
+    <div class="ec-stat">
+      <div class="ec-stat-label">Total events</div>
+      <div class="ec-stat-value" id="ian-cal-total">--</div>
+      <div class="ec-stat-note">Events matching filters</div>
+    </div>
+
+    <div class="ec-stat">
+      <div class="ec-stat-label">High impact</div>
+      <div class="ec-stat-value" id="ian-cal-high">--</div>
+      <div class="ec-stat-note">Major volatility potential</div>
+    </div>
+
+    <div class="ec-stat">
+      <div class="ec-stat-label">Medium impact</div>
+      <div class="ec-stat-value" id="ian-cal-medium">--</div>
+      <div class="ec-stat-note">Moderate market relevance</div>
+    </div>
+
+    <div class="ec-stat">
+      <div class="ec-stat-label">Low impact</div>
+      <div class="ec-stat-value" id="ian-cal-low">--</div>
+      <div class="ec-stat-note">Lower expected impact</div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="ec-panel">
+
+    <div class="ec-panel-head">
+      <h3 class="ec-panel-title">UPCOMING ECONOMIC EVENTS</h3>
+      <div class="ec-timezone">DISPLAY TIME: NAIROBI (EAT)</div>
+    </div>
+
+    <div class="ec-filters">
+      <input
+        id="ian-cal-search"
+        type="search"
+        placeholder="Search economic events..."
+      >
+
+      <select id="ian-cal-currency">
+        <option value="ALL">All currencies</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GBP">GBP</option>
+        <option value="JPY">JPY</option>
+        <option value="AUD">AUD</option>
+        <option value="CAD">CAD</option>
+        <option value="CHF">CHF</option>
+        <option value="NZD">NZD</option>
+      </select>
+
+      <select id="ian-cal-impact">
+        <option value="ALL">All impact levels</option>
+        <option value="HIGH">High impact</option>
+        <option value="MEDIUM">Medium impact</option>
+        <option value="LOW">Low impact</option>
+      </select>
+
+      <select id="ian-cal-date">
+        <option value="ALL">All dates</option>
+        <option value="TODAY">Today</option>
+        <option value="TOMORROW">Tomorrow</option>
+        <option value="WEEK">Next 7 days</option>
+      </select>
+    </div>
+
+    <div class="ec-toolbar">
+      <div class="ec-count" id="ian-cal-count">
+        Waiting for calendar data...
+      </div>
+
+      <button
+        type="button"
+        class="ec-btn"
+        id="ian-cal-refresh"
+      >
+        ↻ REFRESH EVENTS
+      </button>
+    </div>
+
+    <div class="ec-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>DATE / TIME</th>
+            <th>CURRENCY</th>
+            <th>ECONOMIC EVENT</th>
+            <th>IMPACT</th>
+            <th>ACTUAL</th>
+            <th>FORECAST</th>
+            <th>PREVIOUS</th>
+          </tr>
+        </thead>
+        <tbody id="ian-cal-body">
+          <tr>
+            <td colspan="7" class="ec-empty">
+              Log in to load economic calendar data.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ec-message" id="ian-cal-message">
+      Calendar data has not loaded.
+    </div>
+  </div>
+
+  <!-- TRADING NOTICE -->
+  <div class="ec-panel">
+    <div class="ec-panel-head">
+      <h3 class="ec-panel-title">XAUUSD NEWS RISK MONITOR</h3>
+    </div>
+
+    <div class="ec-notice">
+      <strong style="color:#e8c46b;">IMPORTANT:</strong>
+      High-impact USD releases such as CPI, NFP, FOMC and
+      interest-rate decisions can cause sharp XAUUSD price
+      movements, wider spreads and slippage. Avoid treating
+      an economic release as an automatic entry signal.
+      Always wait for price confirmation and manage risk.
+    </div>
+  </div>
+
+  <div class="ec-footer">
+    IAN XAU AI PRO PLUS · ECONOMIC CALENDAR · MARKET RISK MONITOR
+  </div>
+
 </div>
 
 <script>
 (function () {
-  const root = document.getElementById("ian-pricing-section");
-  if (!root || root.dataset.initialized === "true") return;
-  root.dataset.initialized = "true";
+  const root = document.getElementById("ian-calendar-section");
 
-  let selectedPlan = "standard";
-  let connected = false;
-  let running = false;
+  if (!root || root.dataset.initialized === "yes") return;
+  root.dataset.initialized = "yes";
 
-  const $ = id => document.getElementById(id);
+  const $ = id => root.querySelector("#" + id);
 
-  const message = text => {
-    $("ianBotMessage").textContent = text;
-  };
+  let events = [];
+  let loggedIn = false;
+  let loading = false;
 
-  function selectPlan(plan) {
-    selectedPlan = plan;
+  function setText(id, value) {
+    const element = $(id);
+    if (element) element.textContent = value;
+  }
 
-    $("ianSelectedPlan").textContent =
-      plan === "vip" ? "VIP Tick Scalper — $120" :
-      "Standard Bot — $50";
+  function getDate(event) {
+    const raw =
+      event.datetime ||
+      event.date ||
+      event.timestamp ||
+      event.time;
 
-    $("ianVipSettings").classList.toggle(
-      "visible", plan === "vip"
+    if (!raw) return null;
+
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  function getImpact(event) {
+    const raw = String(
+      event.impact || event.importance || ""
+    ).toUpperCase();
+
+    if (raw.includes("HIGH") || raw === "3") return "HIGH";
+    if (raw.includes("MEDIUM") || raw === "2") return "MEDIUM";
+    if (raw.includes("LOW") || raw === "1") return "LOW";
+
+    return "UNKNOWN";
+  }
+
+  function getCurrency(event) {
+    return String(
+      event.currency || event.country_currency || ""
+    ).toUpperCase();
+  }
+
+  function getName(event) {
+    return String(
+      event.event || event.title || event.name || "Unnamed event"
     );
   }
 
-  root.querySelectorAll("[data-plan]").forEach(button => {
-    button.addEventListener("click", () => {
-      selectPlan(button.dataset.plan);
-      message("Selected " + button.dataset.plan.toUpperCase() +
-        ". Save your settings when ready.");
-    });
-  });
-
-  function readSettings() {
-    const settings = {
-      plan: selectedPlan,
-      mt5Login: $("ianMt5Login").value.trim(),
-      broker: $("ianBroker").value.trim(),
-      server: $("ianServer").value.trim(),
-      accountType: $("ianAccountType").value,
-      lotSize: Number($("ianLotSize").value),
-      risk: Number($("ianRisk").value),
-      stopLoss: Number($("ianStopLoss").value),
-      takeProfit: Number($("ianTakeProfit").value),
-      maxPositions: Number($("ianMaxPositions").value)
-    };
-
-    if (!settings.mt5Login || !settings.broker || !settings.server) {
-      throw new Error("Enter your MT5 Login ID, broker and server.");
-    }
-
-    if (!Number.isFinite(settings.lotSize) ||
-        settings.lotSize < 0.01 || settings.lotSize > 10) {
-      throw new Error("Enter a valid lot size between 0.01 and 10.");
-    }
-
-    if (!Number.isFinite(settings.risk) ||
-        settings.risk < 0.1 || settings.risk > 5) {
-      throw new Error("Risk must be between 0.1% and 5%.");
-    }
-
-    if (!Number.isInteger(settings.stopLoss) ||
-        settings.stopLoss < 1 ||
-        !Number.isInteger(settings.takeProfit) ||
-        settings.takeProfit < 1) {
-      throw new Error("Enter valid Stop Loss and Take Profit points.");
-    }
-
-    if (!Number.isInteger(settings.maxPositions) ||
-        settings.maxPositions < 1 || settings.maxPositions > 10) {
-      throw new Error("Maximum positions must be between 1 and 10.");
-    }
-
-    if (selectedPlan === "vip") {
-      const minHold = Number($("ianMinHold").value);
-      const maxHold = Number($("ianMaxHold").value);
-
-      if (!Number.isInteger(minHold) ||
-          minHold < 0 || minHold > 3600) {
-        throw new Error("VIP minimum holding time must be 0–3600 seconds.");
-      }
-
-      if (!Number.isInteger(maxHold) ||
-          maxHold < 1 || maxHold > 86400) {
-        throw new Error("VIP maximum holding time must be 1–86400 seconds.");
-      }
-
-      if (maxHold < minHold) {
-        throw new Error("Maximum holding time cannot be less than minimum.");
-      }
-
-      settings.minHoldSeconds = minHold;
-      settings.maxHoldSeconds = maxHold;
-    }
-
-    return settings;
+  function getDateKey(date) {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Africa/Nairobi",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).format(date);
   }
 
-  async function api(path, options = {}) {
-    const response = await fetch(path, {
-      credentials: "same-origin",
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {})
-      }
-    });
-
-    let data = {};
-    try { data = await response.json(); } catch (_) {}
-
-    if (!response.ok) {
-      throw new Error(data.error || data.message ||
-        "Request failed (" + response.status + ").");
-    }
-
-    return data;
+  function formatDate(date) {
+    return new Intl.DateTimeFormat("en-KE", {
+      timeZone: "Africa/Nairobi",
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(date);
   }
 
-  $("ianSaveSettings").addEventListener("click", async () => {
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    })[char]);
+  }
+
+  function getFilteredEvents() {
+    const search = $("ian-cal-search").value.toLowerCase().trim();
+    const currency = $("ian-cal-currency").value;
+    const impact = $("ian-cal-impact").value;
+    const dateFilter = $("ian-cal-date").value;
+
+    const now = new Date();
+    const today = getDateKey(now);
+
+    const tomorrowDate = new Date(now);
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    const tomorrow = getDateKey(tomorrowDate);
+
+    const weekLimit = new Date(now);
+    weekLimit.setDate(weekLimit.getDate() + 7);
+
+    return events.filter(event => {
+      const date = getDate(event);
+      if (!date) return false;
+
+      const name = getName(event).toLowerCase();
+      const eventCurrency = getCurrency(event);
+      const eventImpact = getImpact(event);
+
+      if (
+        search &&
+        !name.includes(search) &&
+        !eventCurrency.toLowerCase().includes(search)
+      ) return false;
+
+      if (currency !== "ALL" && eventCurrency !== currency) {
+        return false;
+      }
+
+      if (impact !== "ALL" && eventImpact !== impact) {
+        return false;
+      }
+
+      const key = getDateKey(date);
+
+      if (dateFilter === "TODAY" && key !== today) return false;
+      if (dateFilter === "TOMORROW" && key !== tomorrow) return false;
+
+      if (
+        dateFilter === "WEEK" &&
+        (date < now || date > weekLimit)
+      ) return false;
+
+      return true;
+    }).sort((a, b) => getDate(a) - getDate(b));
+  }
+
+  function renderEvents() {
+    const filtered = getFilteredEvents();
+    const body = $("ian-cal-body");
+
+    setText("ian-cal-total", filtered.length);
+
+    setText(
+      "ian-cal-high",
+      filtered.filter(e => getImpact(e) === "HIGH").length
+    );
+
+    setText(
+      "ian-cal-medium",
+      filtered.filter(e => getImpact(e) === "MEDIUM").length
+    );
+
+    setText(
+      "ian-cal-low",
+      filtered.filter(e => getImpact(e) === "LOW").length
+    );
+
+    setText(
+      "ian-cal-count",
+      filtered.length + " EVENTS DISPLAYED"
+    );
+
+    if (!filtered.length) {
+      body.innerHTML =
+        '<tr><td colspan="7" class="ec-empty">' +
+        'No events match your filters.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = filtered.map(event => {
+      const date = getDate(event);
+      const impact = getImpact(event);
+      const impactClass = {
+        HIGH:"ec-high",
+        MEDIUM:"ec-medium",
+        LOW:"ec-low"
+      }[impact] || "ec-unknown";
+
+      return `
+        <tr>
+          <td>${escapeHTML(formatDate(date))}</td>
+          <td class="ec-currency">${escapeHTML(getCurrency(event) || "--")}</td>
+          <td class="ec-event-name">
+            ${escapeHTML(getName(event))}
+          </td>
+          <td>
+            <span class="ec-impact ${impactClass}">
+              ${escapeHTML(impact)}
+            </span>
+          </td>
+          <td>${escapeHTML(event.actual ?? "--")}</td>
+          <td>${escapeHTML(event.forecast ?? "--")}</td>
+          <td>${escapeHTML(event.previous ?? "--")}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function refreshCalendar() {
+    if (!loggedIn || loading) return;
+
+    loading = true;
+
+    const button = $("ian-cal-refresh");
+    button.disabled = true;
+    button.textContent = "LOADING...";
+
+    setText("ian-cal-status", "UPDATING");
+    setText("ian-cal-message", "Fetching economic events...");
+
     try {
-      const settings = readSettings();
-      message("Saving settings...");
+      const response = await fetch(
+        "/api/economic-calendar",
+        { cache: "no-store" }
+      );
 
-      await api("/api/mt5/settings", {
-        method: "POST",
-        body: JSON.stringify(settings)
+      if (!response.ok) {
+        throw new Error(
+          "Calendar API returned HTTP " + response.status
+        );
+      }
+
+      const data = await response.json();
+
+      events = Array.isArray(data)
+        ? data
+        : data.events;
+
+      if (!Array.isArray(events)) {
+        throw new Error(
+          "Unexpected calendar response. Expected an events array."
+        );
+      }
+
+      events = events.filter(event => getDate(event));
+
+      renderEvents();
+
+      setText("ian-cal-status", "DATA CONNECTED");
+      setText(
+        "ian-cal-message",
+        "Calendar updated: " + new Date().toLocaleString("en-KE")
+      );
+
+      $("ian-cal-message").classList.remove("ec-error");
+
+    } catch (error) {
+      console.error("IAN calendar error:", error);
+
+      setText("ian-cal-status", "DATA UNAVAILABLE");
+      setText("ian-cal-count", "Calendar data unavailable");
+
+      $("ian-cal-body").innerHTML =
+        '<tr><td colspan="7" class="ec-empty">' +
+        'Unable to retrieve economic events.</td></tr>';
+
+      setText("ian-cal-total", "--");
+      setText("ian-cal-high", "--");
+      setText("ian-cal-medium", "--");
+      setText("ian-cal-low", "--");
+
+      setText("ian-cal-message", error.message);
+      $("ian-cal-message").classList.add("ec-error");
+
+    } finally {
+      loading = false;
+      button.disabled = false;
+      button.textContent = "↻ REFRESH EVENTS";
+    }
+  }
+
+  // Called by Section 1 after a successful login.
+  window.ianCalendarOnLogin = function () {
+    loggedIn = true;
+    refreshCalendar();
+  };
+
+  // Supabase session check.
+  if (window.ianSupabase) {
+    window.ianSupabase.auth.getSession()
+      .then(({ data, error }) => {
+        if (error) throw error;
+
+        if (data && data.session) {
+          loggedIn = true;
+          refreshCalendar();
+        }
+      })
+      .catch(error => {
+        console.error("Calendar session check:", error);
       });
 
-      message("Settings submitted successfully.");
-    } catch (error) {
-      message(error.message);
-    }
-  });
+    window.ianSupabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_OUT" || !session) {
+          loggedIn = false;
+          events = [];
+          setText("ian-cal-status", "SIGNED OUT");
+        }
 
-  function updateStatus(data) {
-    connected = data.connected === true;
-    running = data.running === true;
-
-    $("ianMt5Status").textContent =
-      connected ? "Connected" : "Not connected";
-
-    $("ianBotStatus").textContent =
-      running ? "Running" : "Stopped";
-
-    $("ianStartBot").disabled = !connected || running;
-    $("ianStopBot").disabled = !connected || !running;
-  }
-
-  async function checkMt5() {
-    try {
-      const data = await api("/api/mt5/status");
-      updateStatus(data);
-    } catch (error) {
-      connected = false;
-      running = false;
-      updateStatus({connected:false, running:false});
-      $("ianMt5Status").textContent = "Backend unavailable";
-    }
-  }
-
-  async function botCommand(action) {
-    try {
-      message(action === "start" ? "Starting bot..." : "Stopping bot...");
-
-      const data = await api("/api/mt5/" + action, {
-        method: "POST",
-        body: JSON.stringify({plan:selectedPlan})
-      });
-
-      if (data.connected !== undefined) {
-        updateStatus(data);
-      } else {
-        await checkMt5();
+        if (event === "SIGNED_IN" && session) {
+          loggedIn = true;
+          refreshCalendar();
+        }
       }
-
-      message(data.message || "Command received.");
-    } catch (error) {
-      message(error.message);
-    }
+    );
   }
 
-  $("ianStartBot").addEventListener("click", () => {
-    if (connected && !running) botCommand("start");
+  $("ian-cal-refresh").addEventListener(
+    "click",
+    refreshCalendar
+  );
+
+  [
+    "ian-cal-search",
+    "ian-cal-currency",
+    "ian-cal-impact",
+    "ian-cal-date"
+  ].forEach(id => {
+    $(id).addEventListener("input", renderEvents);
+    $(id).addEventListener("change", renderEvents);
   });
 
-  $("ianStopBot").addEventListener("click", () => {
-    if (connected && running) botCommand("stop");
-  });
-
-  window.ianCheckMt5Status = checkMt5;
-
-  selectPlan("standard");
-  checkMt5();
 })();
 </script>
-</section>
-<!-- END SECTION 4 -->
 
-<!-- SECTION 5: IAN XAU AI FAQ + CONTACT -->
-<section id="ian-contact-section">
+</section>
+<!-- END SECTION 3 -->
+ 
+<!-- SECTION 4 PART 1: IAN XAU AI MT5 CONTROL CENTER -->
+<section id="ian-mt5-control" style="display:none;">
+
 <style>
-#ian-contact-section {
-  background:#030603;
+#ian-mt5-control {
+  --green:#39ff78;
+  --bg:#030603;
+  --panel:#0a110c;
+  --border:rgba(57,255,120,.20);
+  --muted:#91a497;
+  background:var(--bg);
   color:#e9f5eb;
-  padding:35px 15px;
   font-family:Arial,sans-serif;
+  padding:16px;
+  min-height:100vh;
+  width:100%;
+  box-sizing:border-box;
 }
-#ian-contact-section * {box-sizing:border-box}
-#ian-contact-section .ian-contact-wrap {
-  max-width:850px;margin:auto;
+#ian-mt5-control * {box-sizing:border-box}
+#ian-mt5-control .mt-wrap {max-width:1150px;margin:auto}
+#ian-mt5-control .mt-header {
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;padding:12px 0 20px;
+  border-bottom:1px solid var(--border);
 }
-#ian-contact-section h2 {
-  color:#39ff78;text-align:center;font-size:27px;
+#ian-mt5-control .mt-brand {
+  font-size:21px;font-weight:900;letter-spacing:1px;
 }
-#ian-contact-section .ian-intro {
-  text-align:center;color:#aab9ad;margin-bottom:25px;
+#ian-mt5-control .mt-green {color:var(--green)}
+#ian-mt5-control .mt-sub {
+  color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:5px;
 }
-#ian-contact-section .ian-faq {
-  background:#09110b;border:1px solid #203b27;
-  border-radius:10px;margin:12px 0;padding:15px;
+#ian-mt5-control .mt-title {
+  font-size:18px;font-weight:800;margin:25px 0 12px;
 }
-#ian-contact-section .ian-faq summary {
-  color:#39ff78;font-weight:bold;cursor:pointer;
+#ian-mt5-control .mt-muted {
+  color:var(--muted);font-size:12px;line-height:1.6;
 }
-#ian-contact-section .ian-faq p {
-  color:#c5d2c8;line-height:1.7;margin-bottom:0;
+#ian-mt5-control .mt-grid {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
 }
-#ian-contact-section .ian-contact-card {
-  margin-top:25px;padding:22px;
-  background:#09110b;border:1px solid #39ff78;
-  border-radius:14px;text-align:center;
+#ian-mt5-control .mt-card {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:16px;min-width:0;
 }
-#ian-contact-section .ian-contact-card h3 {
-  color:#39ff78;
+#ian-mt5-control .mt-plan-price {
+  font-size:30px;font-weight:900;color:var(--green);margin:8px 0;
 }
-#ian-contact-section .ian-contact-btn {
-  display:block;text-decoration:none;
-  padding:14px;margin:12px auto;
-  border-radius:8px;font-weight:bold;
-  max-width:360px;
+#ian-mt5-control .mt-vip {color:#d5b65e}
+#ian-mt5-control .mt-label {
+  display:block;color:var(--muted);font-size:10px;
+  letter-spacing:1px;margin:13px 0 6px;
 }
-#ian-contact-section .ian-whatsapp {
-  background:#25D366;color:#06220e;
+#ian-mt5-control input,
+#ian-mt5-control select {
+  width:100%;background:#101a12;color:#e9f5eb;
+  border:1px solid var(--border);border-radius:7px;
+  padding:12px;font-size:13px;outline:none;
 }
-#ian-contact-section .ian-instagram {
-  background:#d94683;color:white;
+#ian-mt5-control input:focus,
+#ian-mt5-control select:focus {border-color:var(--green)}
+#ian-mt5-control .mt-btn {
+  width:100%;padding:13px;border:0;border-radius:7px;
+  font-weight:900;font-size:12px;cursor:pointer;margin-top:10px;
 }
-#ian-contact-section .ian-disclaimer {
-  color:#87968b;font-size:12px;
-  line-height:1.7;text-align:center;
-  margin-top:25px;
+#ian-mt5-control .mt-primary {background:var(--green);color:#031006}
+#ian-mt5-control .mt-outline {
+  background:transparent;color:var(--green);border:1px solid var(--green);
 }
-#ian-contact-section .ian-footer {
-  border-top:1px solid #203b27;
-  margin-top:25px;padding-top:18px;
-  color:#87968b;text-align:center;font-size:12px;
+#ian-mt5-control .mt-danger {
+  background:#341010;color:#ff7777;border:1px solid #9b3434;
+}
+#ian-mt5-control .mt-gold {
+  background:#d5b65e;color:#171207;
+}
+#ian-mt5-control .mt-badge {
+  display:inline-block;border:1px solid var(--border);
+  color:var(--green);background:rgba(57,255,120,.06);
+  padding:6px 10px;border-radius:30px;font-size:10px;
+}
+#ian-mt5-control .mt-warning {
+  border:1px solid rgba(255,189,85,.4);
+  background:rgba(255,189,85,.06);
+  color:#eacb91;border-radius:9px;padding:12px;
+  font-size:11px;line-height:1.6;
+}
+#ian-mt5-control .mt-connection {
+  border:1px solid #9b3434;background:rgba(255,80,80,.06);
+  border-radius:10px;padding:15px;
+}
+#ian-mt5-control .mt-connection strong {color:#ff7777}
+#ian-mt5-control .mt-row {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:12px;
+}
+#ian-mt5-control .mt-row:last-child {border-bottom:0}
+#ian-mt5-control .mt-check {
+  display:flex;align-items:center;gap:9px;
+  color:#c2d0c5;font-size:12px;margin-top:12px;
+}
+#ian-mt5-control .mt-check input {width:auto;accent-color:var(--green)}
+#ian-mt5-control .mt-message {
+  display:none;margin-top:12px;padding:12px;border-radius:8px;
+  background:rgba(255,80,80,.08);border:1px solid #803333;
+  color:#ff9999;font-size:12px;line-height:1.6;
+}
+#ian-mt5-control .mt-message.ok {
+  background:rgba(57,255,120,.06);
+  border-color:var(--border);color:var(--green);
+}
+#ian-mt5-control .mt-footer {
+  text-align:center;color:#718174;font-size:10px;padding:28px 0 10px;
+}
+@media(max-width:650px) {
+  #ian-mt5-control {padding:12px}
+  #ian-mt5-control .mt-grid {grid-template-columns:1fr}
+  #ian-mt5-control .mt-brand {font-size:18px}
 }
 </style>
 
-<div class="ian-contact-wrap">
+<div class="mt-wrap">
 
-  <h2>FREQUENTLY ASKED QUESTIONS</h2>
-  <p class="ian-intro">
-    Everything you need to know about IAN XAU AI.
+  <header class="mt-header">
+    <div>
+      <div class="mt-brand">IAN XAU AI <span class="mt-green">PRO PLUS</span></div>
+      <div class="mt-sub">MT5 EA CONTROL CENTER</div>
+    </div>
+    <span class="mt-badge">MEMBER CONTROL</span>
+  </header>
+
+  <div class="mt-title">TRADING <span class="mt-green">CONTROL CENTER</span></div>
+  <p class="mt-muted">
+    Manage your membership, MT5 activation and EA trading parameters.
   </p>
 
-  <details class="ian-faq">
-    <summary>1. What is IAN XAU AI?</summary>
-    <p>
-      IAN XAU AI is a rule-based XAUUSD trading system
-      designed to help traders follow structured market
-      conditions and trading rules.
-    </p>
-  </details>
+  <!-- 01 MEMBERSHIP -->
+  <div class="mt-title">01 · MEMBERSHIP PLANS</div>
 
-  <details class="ian-faq">
-    <summary>2. What is the difference between Standard and VIP?</summary>
-    <p>
-      Standard Bot Access costs $50. VIP Tick Scalper costs
-      $120 and includes additional scalping settings,
-      including minimum and maximum trade-holding times.
-    </p>
-  </details>
+  <div class="mt-grid">
+    <div class="mt-card">
+      <span class="mt-badge">BOT ACCESS</span>
+      <div class="mt-plan-price">$50</div>
+      <div class="mt-muted">One-time payment</div>
+      <p class="mt-muted">
+        Standard EA controls<br>
+        Tick Scalper controls<br>
+        Position and lot-size settings<br>
+        Risk management tools<br>
+        MT5 activation request
+      </p>
+      <button class="mt-btn mt-primary" type="button"
+        onclick="ianSelectPlan('bot')">SELECT BOT ACCESS</button>
+    </div>
 
-  <details class="ian-faq">
-    <summary>3. Do I need an MT5 account?</summary>
-    <p>
-      Yes. You need a compatible MetaTrader 5 account
-      with a broker that supports XAUUSD trading.
-    </p>
-  </details>
-
-  <details class="ian-faq">
-    <summary>4. Can I use a demo account?</summary>
-    <p>
-      Yes. We recommend testing on a demo account before
-      considering live trading.
-    </p>
-  </details>
-
-  <details class="ian-faq">
-    <summary>5. Does the bot guarantee profits?</summary>
-    <p>
-      No. No trading system can guarantee profits.
-      Trading involves risk, including the possibility
-      of losing your capital.
-    </p>
-  </details>
-
-  <details class="ian-faq">
-    <summary>6. Does selecting a package activate my bot?</summary>
-    <p>
-      No. Selecting a package or saving MT5 settings
-      does not confirm payment or activate trading access.
-      Activation requires a verified payment and a working
-      account connection.
-    </p>
-  </details>
-
-  <details class="ian-faq">
-    <summary>7. How can I get support?</summary>
-    <p>
-      Contact IAN XAU AI through our official WhatsApp
-      or Instagram channels below.
-    </p>
-  </details>
-
-  <div class="ian-contact-card">
-    <h3>NEED HELP?</h3>
-    <p>Contact IAN XAU AI directly.</p>
-
-    <a class="ian-contact-btn ian-whatsapp"
-       href="https://wa.me/254707307519"
-       target="_blank" rel="noopener">
-      CHAT WITH US ON WHATSAPP
-    </a>
-
-    <a class="ian-contact-btn ian-instagram"
-       href="https://instagram.com/ianke77"
-       target="_blank" rel="noopener">
-      FOLLOW US ON INSTAGRAM
-    </a>
-
-    <p style="color:#aab9ad;font-size:13px">
-      WhatsApp: +254 707 307 519
-    </p>
-    <p style="color:#aab9ad;font-size:13px">
-      Instagram: @ianke77
-    </p>
+    <div class="mt-card">
+      <span class="mt-badge mt-vip">VIP ACCESS</span>
+      <div class="mt-plan-price mt-vip">$120</div>
+      <div class="mt-muted">One-time payment</div>
+      <p class="mt-muted">
+        Everything in Bot Access<br>
+        Premium strategy resources<br>
+        Advanced analytics<br>
+        Priority support<br>
+        Additional VIP features
+      </p>
+      <button class="mt-btn mt-gold" type="button"
+        onclick="ianSelectPlan('vip')">SELECT VIP ACCESS</button>
+    </div>
   </div>
 
-  <p class="ian-disclaimer">
-    RISK DISCLAIMER: Forex and gold trading carry significant
-    financial risk. Past performance does not guarantee future
-    results. IAN XAU AI does not guarantee profits or provide
-    guaranteed investment returns. Only trade with money you
-    can afford to lose.
-  </p>
+  <div id="ian-plan-message" class="mt-message"></div>
 
-  <div class="ian-footer">
-    © <span id="ianFooterYear"></span> IAN XAU AI.
-    All Rights Reserved.
-    <br>
-    RULE-BASED XAUUSD TRADING SYSTEM
+  <!-- 02 MT5 ACTIVATION -->
+  <div class="mt-title">02 · MT5 ACCOUNT ACTIVATION</div>
+
+  <div class="mt-card">
+    <div class="mt-warning">
+      Never enter your MT5 trading password or investor password.
+      Only provide the details needed to identify your account.
+    </div>
+
+    <label class="mt-label" for="ian-mt5-login">MT5 LOGIN ID</label>
+    <input id="ian-mt5-login" type="text"
+      inputmode="numeric" placeholder="Enter MT5 account number">
+
+    <label class="mt-label" for="ian-mt5-broker">BROKER</label>
+    <select id="ian-mt5-broker">
+      <option value="">Select broker</option>
+      <option value="Exness">Exness</option>
+      <option value="IC Markets">IC Markets</option>
+      <option value="XM">XM</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label class="mt-label" for="ian-mt5-server">BROKER SERVER</label>
+    <input id="ian-mt5-server" type="text"
+      placeholder="Example: Exness-MT5Real">
+
+    <label class="mt-label" for="ian-mt5-type">ACCOUNT TYPE</label>
+    <select id="ian-mt5-type">
+      <option value="">Select account type</option>
+      <option value="Demo">Demo</option>
+      <option value="Live">Live</option>
+    </select>
+
+    <button class="mt-btn mt-primary" type="button"
+      onclick="ianSubmitActivation()">SUBMIT ACTIVATION REQUEST</button>
+
+    <div id="ian-activation-message" class="mt-message"></div>
+  </div>
+
+  <!-- 03 CONNECTION -->
+  <div class="mt-title">03 · MT5 CONNECTION STATUS</div>
+
+  <div class="mt-connection">
+    <div class="mt-row">
+      <span>MT5 connection</span>
+      <strong id="ian-mt5-connection">NOT CONNECTED</strong>
+    </div>
+    <div class="mt-row">
+      <span>EA status</span>
+      <strong id="ian-mt5-ea-status">UNKNOWN</strong>
+    </div>
+    <div class="mt-row">
+      <span>Last response</span>
+      <span id="ian-mt5-last-response">Not checked</span>
+    </div>
+    <button class="mt-btn mt-outline" type="button"
+      onclick="ianCheckMT5()">CHECK CONNECTION</button>
+    <div id="ian-connection-message" class="mt-message"></div>
+  </div>
+
+  <!-- 04 STANDARD EA -->
+  <div class="mt-title">04 · STANDARD EA SETTINGS</div>
+
+  <div class="mt-card">
+    <span class="mt-badge">BOT ACCESS FEATURE</span>
+
+    <label class="mt-label" for="ian-standard-positions">
+      MAXIMUM OPEN POSITIONS
+    </label>
+    <input id="ian-standard-positions" type="number"
+      min="1" max="20" value="3">
+
+    <label class="mt-label" for="ian-standard-lot">LOT SIZE</label>
+    <input id="ian-standard-lot" type="number"
+      min="0.01" max="10" step="0.01" value="0.01">
+
+    <label class="mt-label" for="ian-standard-risk">RISK PER TRADE (%)</label>
+    <input id="ian-standard-risk" type="number"
+      min="0.1" max="5" step="0.1" value="1">
+
+    <label class="mt-label" for="ian-standard-sl">STOP LOSS (POINTS)</label>
+    <input id="ian-standard-sl" type="number" min="1" value="500">
+
+    <label class="mt-label" for="ian-standard-tp">TAKE PROFIT (POINTS)</label>
+    <input id="ian-standard-tp" type="number" min="1" value="750">
+
+    <label class="mt-label" for="ian-standard-daily">DAILY TRADE LIMIT</label>
+    <input id="ian-standard-daily" type="number"
+      min="1" max="100" value="20">
+
+    <button class="mt-btn mt-primary" type="button"
+      onclick="ianSaveSettings()">SAVE STANDARD EA SETTINGS</button>
+  </div>
+
+<!-- PART 2 CONTINUES HERE -->
+  <!-- 05 TICK SCALPER -->
+  <div class="mt-title">05 · TICK SCALPER SETTINGS</div>
+
+  <div class="mt-card">
+    <span class="mt-badge mt-vip">FAST TRADE MANAGEMENT</span>
+
+    <label class="mt-label" for="ian-scalper-min">
+      MINIMUM HOLD TIME (SECONDS)
+    </label>
+    <input id="ian-scalper-min" type="number"
+      min="0" max="3600" value="5">
+
+    <label class="mt-label" for="ian-scalper-max">
+      MAXIMUM HOLD TIME (SECONDS)
+    </label>
+    <input id="ian-scalper-max" type="number"
+      min="1" max="3600" value="60">
+
+    <label class="mt-label" for="ian-scalper-positions">
+      MAXIMUM OPEN POSITIONS
+    </label>
+    <input id="ian-scalper-positions" type="number"
+      min="1" max="20" value="2">
+
+    <label class="mt-label" for="ian-scalper-lot">LOT SIZE</label>
+    <input id="ian-scalper-lot" type="number"
+      min="0.01" max="10" step="0.01" value="0.01">
+
+    <label class="mt-label" for="ian-scalper-profit">
+      PROFIT TARGET PER POSITION ($)
+    </label>
+    <input id="ian-scalper-profit" type="number"
+      min="0.01" step="0.01" value="0.50">
+
+    <label class="mt-label" for="ian-scalper-daily">
+      DAILY TRADE LIMIT
+    </label>
+    <input id="ian-scalper-daily" type="number"
+      min="1" max="100" value="20">
+
+    <label class="mt-label" for="ian-scalper-cooldown">
+      COOLDOWN BETWEEN TRADES (SECONDS)
+    </label>
+    <input id="ian-scalper-cooldown" type="number"
+      min="0" max="3600" value="10">
+
+    <button class="mt-btn mt-primary" type="button"
+      onclick="ianSaveSettings()">SAVE TICK SCALPER SETTINGS</button>
+  </div>
+
+  <!-- 06 RISK PROTECTION -->
+  <div class="mt-title">06 · RISK PROTECTION</div>
+
+  <div class="mt-card">
+    <label class="mt-label" for="ian-max-spread">
+      MAXIMUM SPREAD (POINTS)
+    </label>
+    <input id="ian-max-spread" type="number"
+      min="1" value="100">
+
+    <label class="mt-label" for="ian-daily-loss">
+      DAILY LOSS LIMIT ($)
+    </label>
+    <input id="ian-daily-loss" type="number"
+      min="0" step="0.01" value="20">
+
+    <label class="mt-label" for="ian-max-losses">
+      MAXIMUM CONSECUTIVE LOSSES
+    </label>
+    <input id="ian-max-losses" type="number"
+      min="1" max="20" value="3">
+
+    <label class="mt-check">
+      <input type="checkbox" id="ian-break-even" checked>
+      Enable break-even protection
+    </label>
+
+    <label class="mt-check">
+      <input type="checkbox" id="ian-trailing-stop">
+      Enable trailing stop
+    </label>
+
+    <label class="mt-check">
+      <input type="checkbox" id="ian-buy" checked>
+      Allow BUY trades
+    </label>
+
+    <label class="mt-check">
+      <input type="checkbox" id="ian-sell" checked>
+      Allow SELL trades
+    </label>
+
+    <label class="mt-check">
+      <input type="checkbox" id="ian-london" checked>
+      Allow London session
+    </label>
+
+    <label class="mt-check">
+      <input type="checkbox" id="ian-newyork" checked>
+      Allow New York session
+    </label>
+
+    <button class="mt-btn mt-primary" type="button"
+      onclick="ianSaveSettings()">SAVE RISK SETTINGS</button>
+  </div>
+
+  <!-- 07 BOT CONTROLS -->
+  <div class="mt-title">07 · BOT POWER CONTROL</div>
+
+  <div class="mt-card">
+    <div class="mt-row">
+      <span>Current bot state</span>
+      <strong id="ian-bot-state" style="color:#ff7777;">UNKNOWN</strong>
+    </div>
+
+    <button class="mt-btn mt-primary" type="button"
+      onclick="ianBotCommand('start')">▶ START BOT</button>
+
+    <button class="mt-btn mt-danger" type="button"
+      onclick="ianBotCommand('stop')">■ STOP BOT</button>
+
+    <button class="mt-btn mt-danger" type="button"
+      onclick="ianBotCommand('emergency_stop')">EMERGENCY STOP</button>
+
+    <div id="ian-bot-message" class="mt-message"></div>
+
+    <div class="mt-warning" style="margin-top:14px;">
+      STOP BOT means stop opening new trades. Existing positions remain
+      under their current protective orders. Emergency Stop is a separate
+      command intended to stop new entries and invoke the EA's configured
+      emergency-position policy.
+    </div>
+  </div>
+
+  <div class="mt-footer">
+    IAN XAU AI PRO PLUS · MT5 CONTROL CENTER
   </div>
 
 </div>
+</section>
 
 <script>
-(function(){
-  const year = document.getElementById("ianFooterYear");
-  if(year) year.textContent = new Date().getFullYear();
+(function () {
+  "use strict";
+
+  const root = document.getElementById("ian-mt5-control");
+  if (!root) return;
+
+  let mt5Connected = false;
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function showMessage(id, message, success) {
+    const el = byId(id);
+    if (!el) return;
+    el.textContent = message;
+    el.className = "mt-message" + (success ? " ok" : "");
+    el.style.display = "block";
+  }
+
+  function readValue(id) {
+    const el = byId(id);
+    return el ? el.value : "";
+  }
+
+  function readChecked(id) {
+    const el = byId(id);
+    return !!(el && el.checked);
+  }
+
+  window.ianSelectPlan = function (plan) {
+    const label = plan === "vip" ? "VIP ACCESS ($120)" : "BOT ACCESS ($50)";
+    showMessage(
+      "ian-plan-message",
+      label + " selected. Payment checkout must be connected before purchase.",
+      true
+    );
+  };
+
+  function collectSettings() {
+    return {
+      standard: {
+        max_positions: Number(readValue("ian-standard-positions")),
+        lot_size: Number(readValue("ian-standard-lot")),
+        risk_percent: Number(readValue("ian-standard-risk")),
+        stop_loss_points: Number(readValue("ian-standard-sl")),
+        take_profit_points: Number(readValue("ian-standard-tp")),
+        daily_trade_limit: Number(readValue("ian-standard-daily"))
+      },
+      tick_scalper: {
+        min_hold_seconds: Number(readValue("ian-scalper-min")),
+        max_hold_seconds: Number(readValue("ian-scalper-max")),
+        max_positions: Number(readValue("ian-scalper-positions")),
+        lot_size: Number(readValue("ian-scalper-lot")),
+        profit_target_usd: Number(readValue("ian-scalper-profit")),
+        daily_trade_limit: Number(readValue("ian-scalper-daily")),
+        cooldown_seconds: Number(readValue("ian-scalper-cooldown"))
+      },
+      risk: {
+        max_spread_points: Number(readValue("ian-max-spread")),
+        daily_loss_limit_usd: Number(readValue("ian-daily-loss")),
+        max_consecutive_losses: Number(readValue("ian-max-losses")),
+        break_even: readChecked("ian-break-even"),
+        trailing_stop: readChecked("ian-trailing-stop"),
+        allow_buy: readChecked("ian-buy"),
+        allow_sell: readChecked("ian-sell"),
+        london_session: readChecked("ian-london"),
+        new_york_session: readChecked("ian-newyork")
+      }
+    };
+  }
+
+  function validateSettings(settings) {
+    const s = settings.standard;
+    const t = settings.tick_scalper;
+    const r = settings.risk;
+
+    if (!s.max_positions || s.max_positions < 1 || s.max_positions > 20)
+      return "Standard EA positions must be between 1 and 20.";
+
+    if (!s.lot_size || s.lot_size < 0.01 || s.lot_size > 10)
+      return "Standard EA lot size must be between 0.01 and 10.";
+
+    if (!s.risk_percent || s.risk_percent < 0.1 || s.risk_percent > 5)
+      return "Risk per trade must be between 0.1% and 5%.";
+
+    if (!s.stop_loss_points || s.stop_loss_points <= 0 ||
+        !s.take_profit_points || s.take_profit_points <= 0)
+      return "Stop loss and take profit must be greater than zero.";
+
+    if (!t.max_positions || t.max_positions < 1 || t.max_positions > 20)
+      return "Scalper positions must be between 1 and 20.";
+
+    if (t.min_hold_seconds < 0 ||
+        t.max_hold_seconds <= 0 ||
+        t.min_hold_seconds > t.max_hold_seconds)
+      return "Check the Tick Scalper holding times.";
+
+    if (!t.lot_size || t.lot_size < 0.01 || t.lot_size > 10)
+      return "Tick Scalper lot size must be between 0.01 and 10.";
+
+    if (!t.profit_target_usd || t.profit_target_usd <= 0)
+      return "Tick Scalper profit target must be greater than zero.";
+
+    if (!r.allow_buy && !r.allow_sell)
+      return "Enable BUY, SELL, or both directions.";
+
+    return null;
+  }
+
+  window.ianSaveSettings = async function () {
+    const settings = collectSettings();
+    const error = validateSettings(settings);
+
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/mt5/settings", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: "same-origin",
+        body: JSON.stringify(settings)
+      });
+
+      if (!response.ok) throw new Error("Settings service unavailable.");
+
+      const result = await response.json();
+
+      if (!result || result.saved !== true)
+        throw new Error("Server did not confirm settings were saved.");
+
+      alert("Settings saved by the server.");
+
+    } catch (error) {
+      console.error(error);
+      alert("SETTINGS NOT SAVED. The secure backend endpoint is not connected yet.");
+    }
+  };
+
+  window.ianCheckMT5 = async function () {
+    mt5Connected = false;
+    byId("ian-mt5-connection").textContent = "CHECKING...";
+    byId("ian-mt5-ea-status").textContent = "UNKNOWN";
+
+    try {
+      const response = await fetch("/api/mt5/status", {
+        method: "GET",
+        cache: "no-store",
+        credentials: "same-origin"
+      });
+
+      if (!response.ok) throw new Error("Status endpoint unavailable.");
+
+      const result = await response.json();
+
+      mt5Connected = result.connected === true &&
+        result.authorized === true;
+
+      byId("ian-mt5-connection").textContent =
+        mt5Connected ? "CONNECTED" : "NOT CONNECTED";
+
+      byId("ian-mt5-connection").style.color =
+        mt5Connected ? "#39ff78" : "#ff7777";
+
+      byId("ian-mt5-ea-status").textContent =
+        result.ea_status || "UNKNOWN";
+
+      byId("ian-mt5-last-response").textContent =
+        new Date().toLocaleTimeString();
+
+      showMessage(
+        "ian-connection-message",
+        mt5Connected
+          ? "MT5 connection confirmed by the backend."
+          : "MT5 is not connected or not authorized.",
+        mt5Connected
+      );
+
+    } catch (error) {
+      mt5Connected = false;
+      byId("ian-mt5-connection").textContent = "NOT CONNECTED";
+      byId("ian-mt5-connection").style.color = "#ff7777";
+      byId("ian-mt5-ea-status").textContent = "UNKNOWN";
+      byId("ian-mt5-last-response").textContent = "Unavailable";
+
+      showMessage(
+        "ian-connection-message",
+        "NO CONNECTION. MT5 status service is unavailable.",
+        false
+      );
+    }
+  };
+
+  window.ianBotCommand = async function (command) {
+    await window.ianCheckMT5();
+
+    if (!mt5Connected) {
+      byId("ian-bot-state").textContent = "NOT CONNECTED";
+      byId("ian-bot-state").style.color = "#ff7777";
+
+      showMessage(
+        "ian-bot-message",
+        "NO CONNECTION. " + command.toUpperCase() +
+        " command NOT SENT.",
+        false
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/mt5/command", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: "same-origin",
+        body: JSON.stringify({command: command})
+      });
+
+      if (!response.ok) throw new Error("Command service unavailable.");
+
+      const result = await response.json();
+
+      if (result.accepted !== true)
+        throw new Error(result.message || "Command not accepted.");
+
+      showMessage(
+        "ian-bot-message",
+        "Command accepted by backend. Waiting for MT5 EA confirmation.",
+        true
+      );
+
+      byId("ian-bot-state").textContent = "COMMAND PENDING";
+      byId("ian-bot-state").style.color = "#ffbd55";
+
+    } catch (error) {
+      showMessage(
+        "ian-bot-message",
+        "COMMAND NOT CONFIRMED. " + error.message,
+        false
+      );
+    }
+  };
+
+  window.ianSubmitActivation = async function () {
+    const login = readValue("ian-mt5-login").trim();
+    const broker = readValue("ian-mt5-broker");
+    const server = readValue("ian-mt5-server").trim();
+    const type = readValue("ian-mt5-type");
+
+    if (!login || !broker || !server || !type) {
+      showMessage(
+        "ian-activation-message",
+        "Complete all MT5 activation fields.",
+        false
+      );
+      return;
+    }
+
+    if (!/^[0-9]{4,20}$/.test(login)) {
+      showMessage(
+        "ian-activation-message",
+        "Enter a valid numeric MT5 login ID.",
+        false
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/mt5/activation-request", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: "same-origin",
+        body: JSON.stringify({
+          login_id: login,
+          broker: broker,
+          server: server,
+          account_type: type
+        })
+      });
+
+      if (!response.ok) throw new Error("Activation service unavailable.");
+
+      const result = await response.json();
+
+      if (result.accepted !== true)
+        throw new Error(result.message || "Request not accepted.");
+
+      showMessage(
+        "ian-activation-message",
+        "Activation request received. EA activation is not yet confirmed.",
+        true
+      );
+
+    } catch (error) {
+      showMessage(
+        "ian-activation-message",
+        "ACTIVATION REQUEST NOT SENT. Backend endpoint is not connected yet.",
+        false
+      );
+    }
+  };
+
+  window.ianRefreshMT5Control = window.ianCheckMT5;
+
+  window.ianOpenMT5Control = function () {
+    window.ianCheckMT5();
+  };
+
 })();
 </script>
+
+<!-- SECTION 5: IAN XAU AI FAQ & CONTACT -->
+<section id="ian-faq-contact" style="display:none;">
+
+<style>
+#ian-faq-contact {
+  background:#030603;
+  color:#e9f5eb;
+  font-family:Arial,sans-serif;
+  padding:25px 15px;
+  width:100%;
+  box-sizing:border-box;
+}
+#ian-faq-contact * {box-sizing:border-box}
+#ian-faq-contact .faq-wrap {
+  max-width:1000px;
+  margin:auto;
+}
+#ian-faq-contact .faq-heading {
+  font-size:24px;
+  font-weight:900;
+  margin:10px 0;
+}
+#ian-faq-contact .faq-green {color:#39ff78}
+#ian-faq-contact .faq-sub {
+  color:#91a497;
+  font-size:13px;
+  line-height:1.7;
+  margin-bottom:25px;
+}
+#ian-faq-contact .faq-card {
+  background:#0a110c;
+  border:1px solid rgba(57,255,120,.2);
+  border-radius:12px;
+  padding:17px;
+  margin-bottom:12px;
+}
+#ian-faq-contact details {
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:14px 0;
+}
+#ian-faq-contact details:last-child {border-bottom:0}
+#ian-faq-contact summary {
+  cursor:pointer;
+  font-size:13px;
+  font-weight:bold;
+  color:#e9f5eb;
+  line-height:1.6;
+}
+#ian-faq-contact details p {
+  color:#a8b8ab;
+  font-size:12px;
+  line-height:1.8;
+  margin:10px 0 0;
+}
+#ian-faq-contact .faq-contact-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+#ian-faq-contact .faq-contact-link {
+  display:block;
+  text-decoration:none;
+  text-align:center;
+  padding:17px 12px;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:900;
+  margin-top:10px;
+}
+#ian-faq-contact .faq-whatsapp {
+  background:#39ff78;
+  color:#031006;
+}
+#ian-faq-contact .faq-instagram {
+  background:transparent;
+  border:1px solid #39ff78;
+  color:#39ff78;
+}
+#ian-faq-contact .faq-note {
+  color:#91a497;
+  font-size:11px;
+  line-height:1.7;
+  margin-top:15px;
+}
+#ian-faq-contact .faq-footer {
+  border-top:1px solid rgba(57,255,120,.2);
+  margin-top:30px;
+  padding-top:20px;
+  text-align:center;
+  color:#718174;
+  font-size:10px;
+  line-height:1.8;
+}
+@media(max-width:600px) {
+  #ian-faq-contact .faq-contact-grid {
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
+<div class="faq-wrap">
+
+  <!-- FAQ HEADER -->
+  <div class="faq-heading">
+    FREQUENTLY ASKED <span class="faq-green">QUESTIONS</span>
+  </div>
+
+  <p class="faq-sub">
+    Everything you need to know about IAN XAU AI PRO PLUS.
+    Contact our support team if you need further assistance.
+  </p>
+
+  <!-- FAQ QUESTIONS -->
+  <div class="faq-card">
+
+    <details>
+      <summary>1. What is IAN XAU AI?</summary>
+      <p>
+        IAN XAU AI is a trading-system access platform focused on
+        XAUUSD (Gold), offering EA settings, strategy resources and
+        trading-control features.
+      </p>
+    </details>
+
+    <details>
+      <summary>2. What is included in the $50 Bot Access?</summary>
+      <p>
+        Bot Access is designed to include Standard EA controls,
+        Tick Scalper settings and risk-management controls.
+        Actual MT5 execution requires a connected and authorized EA.
+      </p>
+    </details>
+
+    <details>
+      <summary>3. What is included in VIP Access?</summary>
+      <p>
+        VIP is listed as a separate $120 package with Bot Access
+        features, premium strategy resources, advanced analytics
+        and priority support. Confirm the final VIP benefits before purchase.
+      </p>
+    </details>
+
+    <details>
+      <summary>4. Does the bot guarantee profits?</summary>
+      <p>
+        No. Trading involves risk. No profit or winning rate is guaranteed.
+        Past performance does not guarantee future results.
+      </p>
+    </details>
+
+    <details>
+      <summary>5. Which trading platform is required?</summary>
+      <p>
+        The MT5 control features are designed for MetaTrader 5.
+        You need a supported broker account and a compatible EA connection.
+      </p>
+    </details>
+
+    <details>
+      <summary>6. Can I use a demo account?</summary>
+      <p>
+        Yes. Demo testing is recommended before considering live trading.
+        Test the EA and its risk settings carefully.
+      </p>
+    </details>
+
+    <details>
+      <summary>7. Does clicking Start Bot immediately start trading?</summary>
+      <p>
+        No. The website must first verify your activation and real MT5
+        connection. The EA connector and backend must also be operational.
+      </p>
+    </details>
+
+    <details>
+      <summary>8. What happens if MT5 is disconnected?</summary>
+      <p>
+        The website should display NO CONNECTION and refuse to report
+        a successful Start or Stop command.
+      </p>
+    </details>
+
+    <details>
+      <summary>9. How do I get support?</summary>
+      <p>
+        Contact IAN XAU AI through WhatsApp or Instagram using the
+        contact links below.
+      </p>
+    </details>
+
+  </div>
+
+  <!-- CONTACT -->
+  <div class="faq-heading">
+    CONTACT <span class="faq-green">IAN XAU AI</span>
+  </div>
+
+  <p class="faq-sub">
+    Need assistance, have a question or want to learn more?
+    Reach out through our official contact channels.
+  </p>
+
+  <div class="faq-contact-grid">
+
+    <div class="faq-card">
+      <div class="faq-green">WHATSAPP SUPPORT</div>
+      <p class="faq-sub">Chat directly with IAN XAU AI support.</p>
+
+      <a class="faq-contact-link faq-whatsapp"
+         href="https://wa.me/254707307519"
+         target="_blank" rel="noopener noreferrer">
+        CHAT ON WHATSAPP
+      </a>
+    </div>
+
+    <div class="faq-card">
+      <div class="faq-green">INSTAGRAM</div>
+      <p class="faq-sub">Follow us and send us a direct message.</p>
+
+      <a class="faq-contact-link faq-instagram"
+         href="https://instagram.com/ianke77"
+         target="_blank" rel="noopener noreferrer">
+        FOLLOW ON INSTAGRAM
+      </a>
+    </div>
+
+  </div>
+
+  <p class="faq-note">
+    Important: IAN XAU AI provides trading-related tools and resources.
+    Trading financial markets carries risk. Always use appropriate
+    risk management and test on a demo account first.
+  </p>
+
+  <!-- FOOTER -->
+  <div class="faq-footer">
+    <strong>IAN XAU AI PRO PLUS</strong><br>
+    RULE-BASED XAUUSD TRADING SYSTEM<br>
+    © 2026 IAN XAU AI. All rights reserved.
+  </div>
+
+</div>
 </section>
 <!-- END SECTION 5 -->
   
+      
