@@ -1,7 +1,7 @@
 
 const express = require("express");
 const session = require("express-session");
-const bcrypt = require("bcryptjs");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,9 +10,11 @@ app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve website files
 app.use(express.static(__dirname));
 
-/* SESSION */
+// Sessions
 app.use(
     session({
         name: "ian.sid",
@@ -23,15 +25,21 @@ app.use(
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: 86400000
         }
     })
 );
 
-/* ADMIN LOGIN */
+// HOMEPAGE
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ADMIN LOGIN
 app.post("/api/login", async (req, res) => {
     try {
         const { email, password } = req.body || {};
+
         const correctEmail = process.env.ADMIN_EMAIL;
         const correctPassword = process.env.ADMIN_PASSWORD;
 
@@ -53,7 +61,8 @@ app.post("/api/login", async (req, res) => {
         }
 
         if (
-            email.trim().toLowerCase() !== correctEmail.trim().toLowerCase() ||
+            email.trim().toLowerCase() !==
+                correctEmail.trim().toLowerCase() ||
             password !== correctPassword
         ) {
             return res.status(401).json({
@@ -65,7 +74,7 @@ app.post("/api/login", async (req, res) => {
 
         req.session.save((error) => {
             if (error) {
-                console.error("Session save error:", error.message);
+                console.error("Session error:", error.message);
                 return res.status(500).json({
                     error: "Could not save login session."
                 });
@@ -78,11 +87,13 @@ app.post("/api/login", async (req, res) => {
         });
     } catch (error) {
         console.error("Login error:", error.message);
-        return res.status(500).json({ error: "Login failed." });
+        return res.status(500).json({
+            error: "Login failed."
+        });
     }
 });
 
-/* CHECK LOGIN */
+// CHECK LOGIN
 app.get("/api/me", (req, res) => {
     if (!req.session.user) {
         return res.json({ loggedIn: false });
@@ -94,11 +105,10 @@ app.get("/api/me", (req, res) => {
     });
 });
 
-/* LOGOUT — FIXED */
+// LOGOUT
 app.post("/api/logout", (req, res) => {
     req.session.destroy((error) => {
         if (error) {
-            console.error("Logout error:", error.message);
             return res.status(500).json({
                 error: "Logout failed."
             });
@@ -114,7 +124,7 @@ app.post("/api/logout", (req, res) => {
     });
 });
 
-/* GOLD SPOT PRICE */
+// GOLD SPOT PRICE
 app.get("/api/market/gold", async (req, res) => {
     try {
         const response = await fetch(
@@ -136,7 +146,7 @@ app.get("/api/market/gold", async (req, res) => {
 
         if (!Number.isFinite(price) || price <= 0) {
             return res.status(502).json({
-                error: "The provider returned an invalid gold price."
+                error: "Invalid gold price received."
             });
         }
 
@@ -152,21 +162,21 @@ app.get("/api/market/gold", async (req, res) => {
                 "Indicative spot price; not an Exness trading quote."
         });
     } catch (error) {
-        console.error("Gold market data error:", error.message);
+        console.error("Gold price error:", error.message);
         return res.status(502).json({
-            error: "Could not retrieve the gold price."
+            error: "Could not retrieve gold price."
         });
     }
 });
 
-/* XAUUSD CANDLE DATA */
+// XAUUSD CANDLE DATA
 app.get("/api/xauusd/candles", async (req, res) => {
     try {
         const apiKey = process.env.TWELVE_DATA_API_KEY;
 
         if (!apiKey) {
             return res.status(500).json({
-                error: "TWELVE_DATA_API_KEY is missing in Render."
+                error: "TWELVE_DATA_API_KEY is missing in Vercel."
             });
         }
 
@@ -181,7 +191,7 @@ app.get("/api/xauusd/candles", async (req, res) => {
         };
 
         const timeframe = String(
-            req.query.timeframe || "M1"
+            req.query.timeframe || "M15"
         ).toUpperCase();
 
         const interval = intervals[timeframe];
@@ -241,7 +251,7 @@ app.get("/api/xauusd/candles", async (req, res) => {
 
             return res.status(502).json({
                 error: data.message ||
-                    "Candle provider failed. Check API key, plan and request limits.",
+                    "Candle provider failed. Check API key and plan.",
                 providerCode: data.code || null
             });
         }
@@ -276,9 +286,9 @@ app.get("/api/xauusd/candles", async (req, res) => {
             )
             .sort((a, b) => a.time - b.time);
 
-        if (candles.length === 0) {
+        if (!candles.length) {
             return res.status(502).json({
-                error: "The provider returned no valid candles."
+                error: "No valid candles were returned."
             });
         }
 
@@ -293,14 +303,14 @@ app.get("/api/xauusd/candles", async (req, res) => {
             candles
         });
     } catch (error) {
-        console.error("XAUUSD candles error:", error.message);
+        console.error("Candles error:", error.message);
         return res.status(502).json({
             error: "Could not retrieve XAUUSD candles."
         });
     }
 });
 
-/* LEGACY PAYSTACK PAYMENT */
+// PAYSTACK PAYMENT INITIALIZATION
 app.post("/api/paystack", async (req, res) => {
     try {
         const { email, product } = req.body || {};
@@ -334,7 +344,7 @@ app.post("/api/paystack", async (req, res) => {
                     amount,
                     currency: "KES",
                     callback_url:
-                        "https://ian-xau-bot.onrender.com/payment-success"
+                        "https://ian-xau-bot.vercel.app/payment-success"
                 }),
                 signal: AbortSignal.timeout(15000)
             }
@@ -360,7 +370,8 @@ app.post("/api/paystack", async (req, res) => {
     }
 });
 
-/* PAYMENT RETURN — DOES NOT VERIFY PAYMENT */
+// PAYMENT RETURN
+// This page does NOT verify payment or grant access.
 app.get("/payment-success", (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -378,7 +389,7 @@ app.get("/payment-success", (req, res) => {
 </html>`);
 });
 
-/* SECTION 3: ECONOMIC CALENDAR API */
+// ECONOMIC CALENDAR
 app.get("/api/economic-calendar", async (req, res) => {
     try {
         const apiKey = process.env.TRADING_ECONOMICS_API_KEY;
@@ -396,6 +407,7 @@ app.get("/api/economic-calendar", async (req, res) => {
             !Number.isNaN(Date.parse(value + "T00:00:00Z"));
 
         const today = new Date().toISOString().slice(0, 10);
+
         const nextWeek = new Date(
             Date.now() + 7 * 86400000
         ).toISOString().slice(0, 10);
@@ -431,7 +443,7 @@ app.get("/api/economic-calendar", async (req, res) => {
 
         if (!response.ok) {
             console.error(
-                "Economic calendar provider status:",
+                "Calendar provider status:",
                 response.status
             );
 
@@ -445,7 +457,7 @@ app.get("/api/economic-calendar", async (req, res) => {
 
         if (!Array.isArray(data)) {
             return res.status(502).json({
-                error: "Unexpected calendar provider response.",
+                error: "Unexpected calendar response.",
                 events: []
             });
         }
@@ -483,10 +495,7 @@ app.get("/api/economic-calendar", async (req, res) => {
             events
         });
     } catch (error) {
-        console.error(
-            "Economic calendar error:",
-            error.message
-        );
+        console.error("Calendar error:", error.message);
 
         return res.status(500).json({
             error: "Unable to load economic calendar events.",
@@ -495,8 +504,8 @@ app.get("/api/economic-calendar", async (req, res) => {
     }
 });
 
-/* START SERVER */
+// START SERVER
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`IAN XAU AI server running on port ${PORT}`);
 });
-                    
+        
