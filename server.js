@@ -87,7 +87,6 @@ app.post("/api/login", async (req, res) => {
         });
     } catch (error) {
         console.error("Login error:", error.message);
-
         return res.status(500).json({
             error: "Login failed."
         });
@@ -164,7 +163,6 @@ app.get("/api/market/gold", async (req, res) => {
         });
     } catch (error) {
         console.error("Gold price error:", error.message);
-
         return res.status(502).json({
             error: "Could not retrieve gold price."
         });
@@ -307,7 +305,6 @@ app.get("/api/xauusd/candles", async (req, res) => {
         });
     } catch (error) {
         console.error("Candles error:", error.message);
-
         return res.status(502).json({
             error: "Could not retrieve XAUUSD candles."
         });
@@ -368,7 +365,6 @@ app.post("/api/paystack", async (req, res) => {
         });
     } catch (error) {
         console.error("Paystack error:", error.message);
-
         return res.status(500).json({
             error: "Payment service error."
         });
@@ -394,7 +390,7 @@ app.get("/payment-success", (req, res) => {
 </html>`);
 });
 
-// ECONOMIC CALENDAR - SHOWMYTRADES (NO API KEY)
+// ECONOMIC CALENDAR - SHOWMYTRADES
 app.get("/api/economic-calendar", async (req, res) => {
     try {
         const url = new URL(
@@ -477,4 +473,4 @@ app.get("/api/economic-calendar", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`IAN XAU AI server running on port ${PORT}`);
 });
-    
+                
