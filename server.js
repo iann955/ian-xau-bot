@@ -87,6 +87,7 @@ app.post("/api/login", async (req, res) => {
         });
     } catch (error) {
         console.error("Login error:", error.message);
+
         return res.status(500).json({
             error: "Login failed."
         });
@@ -163,6 +164,7 @@ app.get("/api/market/gold", async (req, res) => {
         });
     } catch (error) {
         console.error("Gold price error:", error.message);
+
         return res.status(502).json({
             error: "Could not retrieve gold price."
         });
@@ -259,6 +261,7 @@ app.get("/api/xauusd/candles", async (req, res) => {
         const candles = data.values
             .map((candle) => {
                 const datetime = String(candle.datetime || "");
+
                 const timestamp = datetime.includes("T")
                     ? datetime
                     : datetime.replace(" ", "T");
@@ -304,6 +307,7 @@ app.get("/api/xauusd/candles", async (req, res) => {
         });
     } catch (error) {
         console.error("Candles error:", error.message);
+
         return res.status(502).json({
             error: "Could not retrieve XAUUSD candles."
         });
@@ -364,6 +368,7 @@ app.post("/api/paystack", async (req, res) => {
         });
     } catch (error) {
         console.error("Paystack error:", error.message);
+
         return res.status(500).json({
             error: "Payment service error."
         });
@@ -389,52 +394,24 @@ app.get("/payment-success", (req, res) => {
 </html>`);
 });
 
-// ECONOMIC CALENDAR
+// ECONOMIC CALENDAR - SHOWMYTRADES (NO API KEY)
 app.get("/api/economic-calendar", async (req, res) => {
     try {
-        const apiKey = process.env.TRADING_ECONOMICS_API_KEY;
-
-        if (!apiKey) {
-            return res.status(503).json({
-                error: "Economic calendar provider is not configured.",
-                events: []
-            });
-        }
-
-        const validDate = (value) =>
-            typeof value === "string" &&
-            /^\d{4}-\d{2}-\d{2}$/.test(value) &&
-            !Number.isNaN(Date.parse(value + "T00:00:00Z"));
-
-        const today = new Date().toISOString().slice(0, 10);
-
-        const nextWeek = new Date(
-            Date.now() + 7 * 86400000
-        ).toISOString().slice(0, 10);
-
-        const from = validDate(req.query.from)
-            ? req.query.from
-            : today;
-
-        const to = validDate(req.query.to)
-            ? req.query.to
-            : nextWeek;
-
-        if (from > to) {
-            return res.status(400).json({
-                error: "Start date must be before end date.",
-                events: []
-            });
-        }
-
         const url = new URL(
-            "https://api.tradingeconomics.com/calendar"
+            "https://showmytrades.com/api/public/calendar/v1"
         );
 
-        url.searchParams.set("c", apiKey);
-        url.searchParams.set("f", "json");
-        url.searchParams.set("d1", from);
-        url.searchParams.set("d2", to);
+        url.searchParams.set(
+            "currency",
+            "USD,EUR,GBP,JPY,CAD,AUD,NZD,CHF,CNY"
+        );
+
+        url.searchParams.set(
+            "impact",
+            "high,medium,low"
+        );
+
+        url.searchParams.set("days", "7");
 
         const response = await fetch(url, {
             headers: { Accept: "application/json" },
@@ -455,49 +432,41 @@ app.get("/api/economic-calendar", async (req, res) => {
 
         const data = await response.json();
 
-        if (!Array.isArray(data)) {
+        if (!data || !Array.isArray(data.events)) {
             return res.status(502).json({
                 error: "Unexpected calendar response.",
                 events: []
             });
         }
 
-        const events = data.map((event) => {
-            const importance = Number(event.Importance);
-
-            return {
-                date: event.Date ?? null,
-                country: event.Country ?? "",
-                currency: event.Currency ?? "",
-                name: event.Event ?? "Economic event",
-                impact:
-                    importance >= 3
-                        ? "HIGH"
-                        : importance === 2
-                        ? "MEDIUM"
-                        : importance === 1
-                        ? "LOW"
-                        : "UNKNOWN",
-                actual: event.Actual ?? null,
-                forecast: event.Forecast ?? null,
-                previous: event.Previous ?? null
-            };
-        }).filter((event) =>
+        const events = data.events.map((event) => ({
+            date: event.time || null,
+            country: event.currency || "",
+            currency: event.currency || "",
+            name: event.title || "Economic event",
+            impact: String(
+                event.impact || "UNKNOWN"
+            ).toUpperCase(),
+            actual: event.actual ?? null,
+            forecast: event.forecast ?? null,
+            previous: event.previous ?? null
+        })).filter((event) =>
             event.date &&
             !Number.isNaN(Date.parse(event.date))
         );
 
-        res.set("Cache-Control", "public, max-age=60");
+        res.set("Cache-Control", "public, max-age=900");
 
         return res.json({
-            source: "Trading Economics",
-            updatedAt: new Date().toISOString(),
+            source: "ShowMyTrades",
+            updatedAt: data.generated_at ||
+                new Date().toISOString(),
             events
         });
     } catch (error) {
         console.error("Calendar error:", error.message);
 
-        return res.status(500).json({
+        return res.status(502).json({
             error: "Unable to load economic calendar events.",
             events: []
         });
@@ -508,4 +477,4 @@ app.get("/api/economic-calendar", async (req, res) => {
 app.listen(PORT, () => {
     console.log(`IAN XAU AI server running on port ${PORT}`);
 });
-        
+    
